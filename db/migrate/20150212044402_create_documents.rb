@@ -3,6 +3,8 @@ class CreateDocuments < ActiveRecord::Migration
     create_table :documents do |t|
       t.string :title
 
+      t.belongs_to :user
+
       t.timestamps null: false
     end
   end
