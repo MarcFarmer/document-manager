@@ -4,6 +4,8 @@
   <button type="submit" class="btn btn-success">Create a new organisation</button>
 </form>
 
+<%= session[:current_organisation] %>
+
 <% if @organisations.empty? %>
     You are not a member of any organisations.
 <% else %>
@@ -28,9 +30,7 @@
                 <% if org == @current_organisation %>
                     Active
                 <% else %>
-                    <form action="organisations/index">
-                      <button type="submit" class="btn">Make active</button>
-                    </form>
+                    <%= link_to 'Make active', "organisations/save_current_organisation?organisation_id=" + org.id.to_s, method: :post %>
                 <% end %>
               </td>
             </tr>
