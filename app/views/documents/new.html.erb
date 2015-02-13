@@ -1,0 +1,4 @@
+<%= form_for @document, :url => user_session_path, :html => { :multipart => true } do |form| %>
+    <%= form.file_field :doc %>
+<% end %>
+
