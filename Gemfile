@@ -46,5 +46,12 @@ group :development, :test do
 
   #solve db migrate problem
   gem 'tzinfo-data'
+
+  #solving object type not support error
+  gem 'coffee-script-source', '1.8.0'
+
+  #for file uploading
+  gem 'paperclip', '~> 4.2'
+
 end
 
