@@ -1,0 +1,40 @@
+<h1>My organisations</h1>
+
+<form action="organisations/new">
+  <button type="submit" class="btn btn-success">Create a new organisation</button>
+</form>
+
+<%= session[:current_organisation] %>
+
+<% if @organisations.empty? %>
+    You are not a member of any organisations.
+<% else %>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+          <th>
+            Organisation
+          </th>
+          <th style="width: 20%;">
+            <!-- Active / Make active -->
+          </th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @organisations.each do |org| %>
+            <tr>
+              <td>
+                <%= org.name %>
+              </td>
+              <td>
+                <% if org == @current_organisation %>
+                    Active
+                <% else %>
+                    <%= link_to 'Make active', "organisations/save_current_organisation?organisation_id=" + org.id.to_s, method: :post %>
+                <% end %>
+              </td>
+            </tr>
+        <% end %>
+    </tbody>
+    </table>
+<% end %>

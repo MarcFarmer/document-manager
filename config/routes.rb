@@ -1,10 +1,16 @@
 Rails.application.routes.draw do
+  resources :organisations do
+    put :save_current_organisation#, :on => :collection
+  end
+
   devise_for :users
 
   get 'documents/index'
   get 'documents/dashboard'
 
-  root to: "documents#dashboard"
+  match 'organisations/save_current_organisation', to: 'organisations#save_current_organisation', via: :post
+
+  root to: "organisations#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
