@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  get 'organisations/index'
+
   devise_for :users
 
   get 'documents/index'
