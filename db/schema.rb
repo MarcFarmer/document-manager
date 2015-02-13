@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150212052358) do
+ActiveRecord::Schema.define(version: 20150213004621) do
 
   create_table "approvals", force: :cascade do |t|
     t.integer  "status"
@@ -33,6 +33,15 @@ ActiveRecord::Schema.define(version: 20150212052358) do
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "organisation_users", force: :cascade do |t|
+    t.boolean  "accepted"
+    t.integer  "type"
+    t.integer  "user_id"
+    t.integer  "organisation_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "organisations", force: :cascade do |t|
