@@ -5,7 +5,14 @@ class ApplicationController < ActionController::Base
 
   before_action :authenticate_user!
 
-  def set_organisation
-    @administration = Administration.first
+  public
+
+  def get_current_organisation
+    @current_organisation
   end
+
+  def set_current_organisation org
+    @current_organisation = org
+  end
+
 end

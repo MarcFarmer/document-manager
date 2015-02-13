@@ -1,2 +1,40 @@
-<h1>Organisations#index</h1>
-<p>Find me in app/views/organisations/index.html.erb</p>
+<h1>My organisations</h1>
+
+<form action="organisations/new">
+  <button type="submit" class="btn btn-success">Create a new organisation</button>
+</form>
+
+<% if @organisations.empty? %>
+    You are not a member of any organisations.
+<% else %>
+    <table class="table table-striped">
+    <thead>
+        <tr>
+          <th>
+            Organisation
+          </th>
+          <th style="width: 20%;">
+            <!-- Active / Make active -->
+          </th>
+        </tr>
+    </thead>
+    <tbody>
+        <% @organisations.each do |org| %>
+            <tr>
+              <td>
+                <%= org.name %>
+              </td>
+              <td>
+                <% if org == @current_organisation %>
+                    Active
+                <% else %>
+                    <form action="organisations/index">
+                      <button type="submit" class="btn">Make active</button>
+                    </form>
+                <% end %>
+              </td>
+            </tr>
+        <% end %>
+    </tbody>
+    </table>
+<% end %>

@@ -1,12 +1,12 @@
 Rails.application.routes.draw do
-  get 'organisations/index'
+  resources :organisations
 
   devise_for :users
 
   get 'documents/index'
   get 'documents/dashboard'
 
-  root to: "documents#dashboard"
+  root to: "organisations#index"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
