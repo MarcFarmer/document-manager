@@ -1,7 +1,10 @@
 class User < ActiveRecord::Base
+  has_many :organisations
   has_many :approvals
   has_many :reviews
   has_many :documents
+  has_many :organisation_users
+
 
   has_many :documents, through: :approvals
   has_many :documents, through: :reviews
