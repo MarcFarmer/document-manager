@@ -2,6 +2,11 @@ Rails.application.routes.draw do
   get 'upload_action/uploadIndex'
 
   devise_for :users
+
+  get 'documents/index'
+  get 'documents/dashboard'
+
+  root to: "documents#dashboard"
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
