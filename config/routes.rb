@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
-  get 'upload_action/uploadIndex'
+  resources :organisations do
+    put :save_current_organisation#, :on => :collection
+  end
 
   devise_for :users
   resources :users
@@ -8,10 +10,9 @@ Rails.application.routes.draw do
   get 'documents/index'
   get 'documents/dashboard'
 
-  root to: "documents#dashboard"
+  match 'organisations/save_current_organisation', to: 'organisations#save_current_organisation', via: :post
 
-
-  get 'documents/new'
+  root to: "organisations#index"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

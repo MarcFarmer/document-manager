@@ -4,6 +4,8 @@ class CreateDocumentTypes < ActiveRecord::Migration
       t.string :name
       t.string :description
 
+      t.belongs_to :organisation
+
       t.timestamps null: false
     end
   end

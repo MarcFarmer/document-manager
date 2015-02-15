@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150213000045) do
+ActiveRecord::Schema.define(version: 20150213021108) do
 
   create_table "approvals", force: :cascade do |t|
     t.integer  "status"
@@ -24,13 +24,16 @@ ActiveRecord::Schema.define(version: 20150213000045) do
   create_table "document_types", force: :cascade do |t|
     t.string   "name"
     t.string   "description"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.integer  "organisation_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
   end
 
   create_table "documents", force: :cascade do |t|
     t.string   "title"
     t.integer  "user_id"
+    t.integer  "organisation_id"
+    t.integer  "document_type_id"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
     t.string   "doc_file_name"
@@ -39,8 +42,19 @@ ActiveRecord::Schema.define(version: 20150213000045) do
     t.datetime "doc_updated_at"
   end
 
+  create_table "organisation_users", force: :cascade do |t|
+    t.boolean  "accepted"
+    t.integer  "type"
+    t.integer  "user_id"
+    t.integer  "organisation_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "inviter_id"
+  end
+
   create_table "organisations", force: :cascade do |t|
     t.string   "name"
+    t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
