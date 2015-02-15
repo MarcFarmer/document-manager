@@ -2,7 +2,9 @@ Rails.application.routes.draw do
   get 'upload_action/uploadIndex'
 
   devise_for :users
+  resources :users
 
+  resources :documents
   get 'documents/index'
   get 'documents/dashboard'
 

@@ -54,6 +54,10 @@ ActiveRecord::Schema.define(version: 20150213000045) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string   "doc_file_name"
+    t.string   "doc_content_type"
+    t.integer  "doc_file_size"
+    t.datetime "doc_updated_at"
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
