@@ -44,7 +44,7 @@ ActiveRecord::Schema.define(version: 20150213021108) do
 
   create_table "organisation_users", force: :cascade do |t|
     t.boolean  "accepted"
-    t.integer  "type"
+    t.integer  "user_type"
     t.integer  "user_id"
     t.integer  "organisation_id"
     t.datetime "created_at",      null: false

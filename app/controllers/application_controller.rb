@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   before_action :authenticate_user!
+  before_action :get_current_organisation
 
   public
 
@@ -12,6 +13,10 @@ class ApplicationController < ActionController::Base
   end
 
   def get_current_organisation
-    Organisation.find_by_id cookies[:current_organisation_id].to_i
+    if cookies[:current_organisation_id] == nil
+      @current_organisation = nil
+    else
+      @current_organisation = Organisation.find_by_id cookies[:current_organisation_id].to_i
+    end
   end
 end
