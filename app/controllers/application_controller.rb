@@ -9,11 +9,11 @@ class ApplicationController < ActionController::Base
   public
 
   def set_current_organisation_id org_id
-    cookies[:current_organisation_id] = org_id
+    session[:current_organisation_id] = org_id
   end
 
   def get_current_organisation
-    if cookies[:current_organisation_id] == nil
+    if session[:current_organisation_id] == nil
       @current_organisation = nil
     else
       @current_organisation = Organisation.find_by_id cookies[:current_organisation_id].to_i
