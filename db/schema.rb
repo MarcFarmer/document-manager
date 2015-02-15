@@ -36,11 +36,15 @@ ActiveRecord::Schema.define(version: 20150213021108) do
     t.integer  "document_type_id"
     t.datetime "created_at",       null: false
     t.datetime "updated_at",       null: false
+    t.string   "doc_file_name"
+    t.string   "doc_content_type"
+    t.integer  "doc_file_size"
+    t.datetime "doc_updated_at"
   end
 
   create_table "organisation_users", force: :cascade do |t|
     t.boolean  "accepted"
-    t.integer  "type"
+    t.integer  "user_type"
     t.integer  "user_id"
     t.integer  "organisation_id"
     t.datetime "created_at",      null: false
@@ -64,6 +68,10 @@ ActiveRecord::Schema.define(version: 20150213021108) do
   end
 
   create_table "users", force: :cascade do |t|
+    t.string   "doc_file_name"
+    t.string   "doc_content_type"
+    t.integer  "doc_file_size"
+    t.datetime "doc_updated_at"
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"

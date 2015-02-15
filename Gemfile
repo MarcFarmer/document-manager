@@ -42,9 +42,16 @@ group :development, :test do
   gem 'web-console', '~> 2.0'
 
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
-  gem 'spring'
+#  gem 'spring'
 
   #solve db migrate problem
   gem 'tzinfo-data'
+
+  #solving object type not support error
+  gem 'coffee-script-source', '1.8.0'
+
+  #for file uploading
+  gem 'paperclip', '~> 4.2'
+
 end
 
