@@ -1,0 +1,12 @@
+<%= form_for @organisation do |form| %>
+    <%= form.hidden_field :user_id, value: @current_user_id %>
+
+    <div class="field">
+      <%= form.label :name %><br>
+      <%= form.text_field :name %>
+    </div>
+
+    <div class="actions">
+      <%= form.submit %>
+    </div>
+<% end %>
