@@ -11,8 +11,9 @@ Rails.application.routes.draw do
   get 'documents/dashboard'
 
   match 'organisations/save_current_organisation', to: 'organisations#save_current_organisation', via: :post
-
   match "organisations/accept_organisation_invitation", to: 'organisations#accept_organisation_invitation', via: :post
+  match 'organisations/invite', to: 'organisations#invite', via: :get, as: :organisation_invite
+  match 'organisations/users', to: 'organisations#users', via: :get, as: :organisation_users
 
   root to: "organisations#index"
 

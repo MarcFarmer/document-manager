@@ -34,6 +34,26 @@ class OrganisationsController < ApplicationController
     end
   end
 
+  def invite
+    @users = []
+    users = User.list
+    users.each do |u|
+      if OrganisationUser.find_by_user_id_and_organisation_id(u.id, get_current_organisation.id) == nil
+        @users << u
+      end
+    end
+  end
+
+  def users
+    @users = []
+    users = User.list
+    users.each do |u|
+      if OrganisationUser.find_by_user_id_and_organisation_id(u.id, get_current_organisation.id) != nil
+        @users << u
+      end
+    end
+  end
+
   def save_current_organisation
     set_current_organisation_id params[:organisation_id]
     redirect_to :organisations      # call index action

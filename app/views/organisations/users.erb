@@ -1,0 +1,23 @@
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>
+      Email
+    </th>
+    <th style="width: 20%;">
+      <!-- Option -->
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <% @users.each do |u| %>
+      <tr>
+        <td>
+          <%= u.email %>
+        </td>
+        <td>
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
