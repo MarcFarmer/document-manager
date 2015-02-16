@@ -36,8 +36,8 @@
                       Settings
                       <span class="caret"></span></a>
                     <ul class="dropdown-menu" role="menu">
-                      <li><a href="<%= organisation_users_path %>">Manage Users</a></li>
-                      <li><a href="#">Invite Users</a></li>
+                      <li><%= link_to 'Manage users', users_organisations_path %></li>
+                      <li><%= link_to 'Invite users', invite_organisations_path %></li>
                       <li class="divider"></li>
                       <li><a href="#">Separated link</a></li>
                     </ul>

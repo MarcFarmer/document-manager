@@ -4,19 +4,43 @@
     <th>
       Email
     </th>
-    <th style="width: 20%;">
+    <th>
+      User Type
+    </th>
+    <th style="width: 10%;">
+      <!-- Option -->
+    </th>
+    <th style="width: 10%;">
       <!-- Option -->
     </th>
   </tr>
   </thead>
   <tbody>
-  <% @users.each do |u| %>
+  <% @organisation_users.each do |u| %>
       <tr>
         <td>
-          <%= u.email %>
+          <%= u[:user].email %>
         </td>
         <td>
+          <% ou = u[:organisation_user] %>
+          <% if ou.user_type == 1 %>
+              Basic
+          <% elsif u[:user].id == u[:organisation].user_id %>
+            Creator
+          <% else %>
+            Quality
+          <% end %>
         </td>
+        <% if current_user.id == u[:organisation].user_id && u[:user].id != current_user.id %> <%# creator can remove anyone except themselves %>
+            <td>
+              Edit
+            </td>
+            <td>
+              <%= link_to remove_user_organisations_path + "?user_id=#{u[:user].id}", method: :delete, data: { confirm: 'Are you sure you want to remove this user?', class: 'delete-link' } do %>
+                  Remove
+              <% end %>
+            </td>
+        <% end %>
       </tr>
   <% end %>
   </tbody>
