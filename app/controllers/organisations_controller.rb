@@ -39,6 +39,19 @@ class OrganisationsController < ApplicationController
     redirect_to :organisations      # call index action
   end
 
+  def accept_organisation_invitation
+    ou = OrganisationUser.find_by_user_id_and_organisation_id(current_user.id, params[:organisation_id].to_i)
+    ou.accepted = true
+    ou.save
+    redirect_to :organisations, notice: "Invitation to organisation accepted."      # call index action
+  end
+
+  def decline_organisation_invitation
+    ou = OrganisationUser.find_by_user_id_and_organisation_id(current_user.id, params[:organisation_id].to_i)
+    ou.destroy
+    redirect_to :organisations, notice: "Invitation to organisation declined."      # call index action
+  end
+
   private
 
   def organisation_params
