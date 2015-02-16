@@ -12,6 +12,10 @@
   <%= @document.updated_at %>
 </p>
 <p>
+  <b>Status: </b>
+  <%= status_to_string @document.status %>
+</p>
+<p>
   <b>Document type: </b>
   <% if @document.document_type == nil %>
     Unspecified

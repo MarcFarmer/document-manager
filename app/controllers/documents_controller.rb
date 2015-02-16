@@ -21,6 +21,7 @@ class DocumentsController < ApplicationController
   def create
     @document = Document.new(document_params)
     @document.organisation = get_current_organisation
+    @document.status = 0
 
     if @document.save
       redirect_to action: 'index', notice: 'Document was successfully created.'

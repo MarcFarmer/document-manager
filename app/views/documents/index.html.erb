@@ -1,9 +1,23 @@
 <h1>Documents</h1>
 
+<form action="<%= new_document_path %>">
+  <button type="submit" class="btn btn-success">Create a new document</button>
+</form>
+<br />
+
 <% if @documents.empty? %>
     There are no documents in this organisation.
 <% else %>
+
     <%= form_for :document, method: :put do |f| %>
+        <%= f.submit "Draft", class: "btn btn-medium", name: "status" %>
+        <%= f.submit "For review", class: "btn btn-medium", name: "status" %>
+        <%= f.submit "For approval", class: "btn btn-medium", name: "status" %>
+        <%= f.submit "Approved", class: "btn btn-medium", name: "status" %>
+
+        <br />
+        <br />
+
         <%= f.submit "Send for review", class: "btn btn-medium", name: "submit" %>
         <%= f.submit "Send for approval", class: "btn btn-medium", name: "submit" %>
         <%= f.submit "Delete", class: "btn btn-medium", name: "submit" %>
