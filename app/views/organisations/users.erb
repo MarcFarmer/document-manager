@@ -1,3 +1,5 @@
+<h1>Users</h1>
+
 <table class="table table-striped">
   <thead>
   <tr>
@@ -29,6 +31,9 @@
             Creator
           <% else %>
             Quality
+          <% end %>
+          <% if !u[:organisation_user].accepted %>
+            (pending)
           <% end %>
         </td>
         <% if current_user.id == u[:organisation].user_id && u[:user].id != current_user.id %> <%# creator can remove anyone except themselves %>
