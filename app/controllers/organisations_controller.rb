@@ -39,7 +39,7 @@ class OrganisationsController < ApplicationController
     users = User.all
     users.each do |u|
       if OrganisationUser.find_by_user_id_and_organisation_id(u.id, get_current_organisation.id) == nil
-        @users << u
+        @users << [u.email, u.id]
       end
     end
   end
