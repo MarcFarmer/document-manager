@@ -16,7 +16,7 @@ class ApplicationController < ActionController::Base
     if session[:current_organisation_id] == nil
       @current_organisation = nil
     else
-      @current_organisation = Organisation.find_by_id cookies[:current_organisation_id].to_i
+      @current_organisation = Organisation.find_by_id session[:current_organisation_id].to_i
     end
   end
 end

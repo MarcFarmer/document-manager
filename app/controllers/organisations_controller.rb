@@ -1,6 +1,16 @@
 class OrganisationsController < ApplicationController
   def index
-    @organisations = Organisation.all     # TODO use
+    my_organisations = OrganisationUser.where(user_id: current_user.id)
+    @organisations = []
+    @organisation_invitations= []
+
+    my_organisations.each do |ou|
+      if ou.accepted
+        @organisations << Organisation.find(ou.organisation_id)
+      else
+        @organisation_invitations << Organisation.find(ou.organisation_id)
+      end
+    end
   end
 
   def new
