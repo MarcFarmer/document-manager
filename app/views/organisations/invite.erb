@@ -1,0 +1,3 @@
+<%= form_for :organisation_user do |form| %>
+    <%= form.select(:name, @users, { :multiple => true, :size => 20 } ) %>
+<% end %>

@@ -4,7 +4,45 @@
   <button type="submit" class="btn btn-success">Create a new organisation</button>
 </form>
 
-<%= session[:current_organisation] %>
+<% if !@organisation_invitations.empty? %>
+    <h3>You have been invited to join</h3>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>
+          Organisation
+        </th>
+        <th>
+          Invited by
+        </th>
+        <th style="width: 20%;">
+          <!-- Accept / Decline -->
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @organisation_invitations.each do |org| %>
+          <tr>
+            <td>
+              <%= org.name %>
+            </td>
+            <td>
+              TODO inviter
+            </td>
+            <td>
+              <form method="post" action="organisations/organisation_invitation">
+                <input type="submit" value="Submit">
+              </form>
+
+              <%= link_to 'Accept', "organisations/accept_organisation_invitation?organisation_id=" + org.id.to_s, method: :post %>
+              <%= link_to 'Decline', "organisations/decline_organisation_invitation?organisation_id=" + org.id.to_s, method: :post %>
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+<% end %>
 
 <% if @organisations.empty? %>
     You are not a member of any organisations.

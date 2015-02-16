@@ -1,15 +1,27 @@
 class DocumentsController < ApplicationController
+  before_action :check_current_organisation
+
   def index
-    @documents = Document.all
+    @documents = Document.where(organisation_id: get_current_organisation.id)
+  end
+
+  def show
+    @document = Document.find(params[:id])
+    @user = @document.user
   end
 
   def new
     @document = Document.new
+#    current_organisation = get_current_organisation
+#    document_types = DocumentType.all.select {|d| d.organisation == current_organisation}
+#    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
     @current_user_id = current_user.id
   end
 
   def create
     @document = Document.new(document_params)
+    @document.organisation = get_current_organisation
+    @document.status = 0
 
     if @document.save
       redirect_to action: 'index', notice: 'Document was successfully created.'
@@ -21,7 +33,13 @@ class DocumentsController < ApplicationController
   private
 
   def document_params
-    params.require(:document).permit(:doc, :title, :user_id)
+    params.require(:document).permit(:doc, :document_type, :title, :user_id)
+  end
+
+  def check_current_organisation
+    if get_current_organisation == nil
+      redirect_to root_path, notice: "You must select an organisation before viewing documents."
+    end
   end
 
 end

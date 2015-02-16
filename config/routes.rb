@@ -1,5 +1,10 @@
 Rails.application.routes.draw do
   resources :organisations do
+    collection do
+      get :invite
+      get :users
+      delete :remove_user
+    end
     put :save_current_organisation#, :on => :collection
   end
 
@@ -11,6 +16,7 @@ Rails.application.routes.draw do
   get 'documents/dashboard'
 
   match 'organisations/save_current_organisation', to: 'organisations#save_current_organisation', via: :post
+  match "organisations/accept_organisation_invitation", to: 'organisations#accept_organisation_invitation', via: :post
 
   root to: "organisations#index"
 
