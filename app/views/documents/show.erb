@@ -1,0 +1,29 @@
+<h1><%= @document.title %></h1>
+<p>
+  <b>Created by: </b>
+  <%= @user.email %>
+</p>
+<p>
+  <b>Created at: </b>
+  <%= @document.created_at %>
+</p>
+<p>
+  <b>Updated at: </b>
+  <%= @document.updated_at %>
+</p>
+<p>
+  <b>Document type: </b>
+  <% if @document.document_type == nil %>
+    Unspecified
+  <% else %>
+    <%= @document.doc %>
+  <% end %>
+</p>
+<p>
+  <b>Document file: </b>
+  <% if @document.doc_file_name == nil %>
+      No document file attached
+  <% else %>
+      <%= @document.doc %>
+  <% end %>
+</p>

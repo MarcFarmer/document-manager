@@ -5,6 +5,11 @@ class DocumentsController < ApplicationController
     @documents = Document.where(organisation_id: get_current_organisation.id)
   end
 
+  def show
+    @document = Document.find(params[:id])
+    @user = @document.user
+  end
+
   def new
     @document = Document.new
 #    current_organisation = get_current_organisation

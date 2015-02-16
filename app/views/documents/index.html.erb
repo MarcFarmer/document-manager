@@ -1,10 +1,12 @@
-<h1>Documents#index</h1>
-
+<h1>Documents</h1>
 
 <% if @documents.empty? %>
     There are no documents in this organisation.
 <% else %>
     <%= form_for :document, method: :put do |f| %>
+        <%= f.submit "Send for review", class: "btn btn-medium", name: "submit" %>
+        <%= f.submit "Send for approval", class: "btn btn-medium", name: "submit" %>
+        <%= f.submit "Delete", class: "btn btn-medium", name: "submit" %>
         <table class="table table-striped">
           <thead>
           <tr>
@@ -35,12 +37,11 @@
                   <%= d.updated_at %>
                 </td>
                 <td>
-                    placeholder
+                  <input id=<%= "#{d.id}" %> name=<%= "[selected_documents][#{d.id}]" %> type="checkbox">
                 </td>
               </tr>
           <% end %>
           </tbody>
         </table>
-        <%= f.submit "Save", class: "btn btn-medium btn-inverse" %>
     <% end %>
 <% end %>
