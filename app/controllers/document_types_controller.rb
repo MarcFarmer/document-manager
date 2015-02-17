@@ -48,13 +48,13 @@ class DocumentTypesController < ApplicationController
 
   # # DELETE /document_types/1
   # # DELETE /document_types/1.json
-  # def destroy
-  #   @document_type.destroy
-  #   respond_to do |format|
-  #     format.html { redirect_to document_types_url, notice: 'Document type was successfully destroyed.' }
-  #     format.json { head :no_content }
-  #   end
-  # end
+  def destroy
+    DocumentType.find(params[:id]).destroy
+    respond_to do |format|
+      format.html { redirect_to document_types_url, notice: 'Document type was successfully destroyed.' }
+      format.json { head :no_content }
+    end
+  end
 
   private
   def all_document_types
