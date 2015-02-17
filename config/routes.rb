@@ -22,8 +22,9 @@ Rails.application.routes.draw do
 
   match 'organisations/invite', to: 'organisations#inviteSubmission', via: :post
 
-
-
+  get "your_documents" => 'documents#your_documents', as: 'your_documents'
+  get "your_actions" => 'documents#your_actions', as: 'your_actions'
+  get "all_documents" => 'documents#all_documents', as: 'all_documents'
 
   root to: "organisations#index"
 

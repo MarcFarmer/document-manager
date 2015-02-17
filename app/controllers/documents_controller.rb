@@ -2,7 +2,13 @@ class DocumentsController < ApplicationController
   before_action :check_current_organisation
 
   def index
-    @documents = Document.where(organisation_id: get_current_organisation.id, status: 0)    # view draft documents by default
+    @documents = Document.where(organisation_id: get_current_organisation.id, status: 0, user_id: current_user.id)    # view draft documents by current user default
+    if !document_filter_is_set?
+      set_document_filter "all_documents"
+    end
+    if !status_filter_is_set?
+      set_status_filter 0
+    end
   end
 
   def show
@@ -49,7 +55,6 @@ class DocumentsController < ApplicationController
       if params[:selected_documents] != nil   # at least one document selected
         new_status = status_change_to_int params[:submit]
         old_status = Document.find(params[:selected_documents].keys[0].to_i).status
-        print "--------------------------------------------------------------- #{old_status}\n"
         params[:selected_documents].each do |doc_id, select_action|
           d = Document.find(doc_id.to_i)
           d.status = new_status
@@ -62,6 +67,25 @@ class DocumentsController < ApplicationController
         end
       end
     end
+  end
+
+  def document_filter_is_set?
+    if session[:document_filter] == nil
+      false
+    end
+    true
+  end
+
+  def your_documents
+    set_document_filter "your_documents"
+  end
+
+  def your_actions
+    set_document_filter "your_actions"
+  end
+
+  def all_documents
+    set_document_filter "all_documents"
   end
 
   private
@@ -87,6 +111,41 @@ class DocumentsController < ApplicationController
       3
     else    # unknown
       -1
+    end
+  end
+
+  def set_document_filter filter
+    session[:document_filter] = filter
+  end
+
+  def get_document_filter
+    session[:document_filter]
+  end
+
+  def set_status_filter filter
+    session[:status_filter] = filter
+  end
+
+  def get_status_filter
+    session[:status_filter].to_i
+  end
+
+  def get_filtered_documents
+    # check document and status filters
+    if get_document_filter == "your_actions"
+      if get_status_filter == 1 # for review
+        Review.find user_id
+      elsif get_status_filter == 2 # for approval
+      elsif get_status_filter == 3 # approved
+
+      end
+
+    else
+      where_hash = {organisation_id: get_current_organisation.id, status: get_status_filter}
+      if get_document_filter == "your documents"  # do nothing if all documents
+        where_hash[:user_id] = current_user.id
+      end
+      Documents.where(where_hash)
     end
   end
 

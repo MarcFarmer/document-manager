@@ -5,6 +5,13 @@
 </form>
 <br />
 
+<ul class="nav nav-tabs nav-justified">
+    <li role="presentation"><%= link_to "Your documents", your_documents_path, remote: true %></li>
+    <li role="presentation"><%= link_to "Your actions", your_documents_path, remote: true %></li>
+    <li role="presentation"><%= link_to "All documents", your_documents_path, remote: true %></li>
+</ul>
+<br />
+
 <%= form_for :document, method: :put, remote: true do |f| %>
     <%= f.submit "Draft", class: "btn btn-medium", name: "status" %>
     <%= f.submit "For review", class: "btn btn-medium", name: "status" %>
