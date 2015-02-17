@@ -53,5 +53,8 @@ group :development, :test do
   #for file uploading
   gem 'paperclip', '~> 4.2'
 
+  #gem for creating existing data to seed file
+  gem 'seed_dump'
+
 end
 
