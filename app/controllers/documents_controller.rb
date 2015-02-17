@@ -2,7 +2,7 @@ class DocumentsController < ApplicationController
   before_action :check_current_organisation
 
   def index
-    @documents = Document.where(organisation_id: get_current_organisation.id)
+    @documents = Document.where(organisation_id: get_current_organisation.id, status: 0)
   end
 
   def show
@@ -32,13 +32,27 @@ class DocumentsController < ApplicationController
 
   def handle_status
     if params[:status] != nil   # view documents with different status
-      new_status = status_to_int params[:status]
+      new_status = status_change_to_int params[:status]
       @new_documents = Document.where organisation_id: get_current_organisation.id, status: new_status
       respond_to do |format|
         format.js
       end
-    else
-      status_change = params[:submit]
+    else    # change status of one or more documents
+      if params[:selected_documents] != nil   # at least one document selected
+        new_status = status_change_to_int params[:submit]
+        old_status = Document.find(params[:selected_documents].keys[0].to_i).status
+        print "--------------------------------------------------------------- #{old_status}\n"
+        params[:selected_documents].each do |doc_id, select_action|
+          d = Document.find(doc_id.to_i)
+          d.status = new_status
+          d.save
+        end
+
+        @new_documents = Document.where organisation_id: get_current_organisation.id, status: old_status
+        respond_to do |format|
+          format.js
+        end
+      end
     end
   end
 
@@ -54,12 +68,12 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def status_to_int status
+  def status_change_to_int status
     if status == "Draft"
       0
-    elsif status == "For review"
+    elsif status == "Send for review" || status == "For review"
       1
-    elsif status == "For approval"
+    elsif status == "Send for approval"  || status == "For approval"
       2
     elsif status == "Approved"
       3

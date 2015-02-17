@@ -5,22 +5,18 @@
 </form>
 <br />
 
-<% if @documents.empty? %>
-    There are no documents in this organisation.
-<% else %>
-    <%= form_for :document, method: :put, remote: true do |f| %>
-        <%= f.submit "Draft", class: "btn btn-medium", name: "status" %>
-        <%= f.submit "For review", class: "btn btn-medium", name: "status" %>
-        <%= f.submit "For approval", class: "btn btn-medium", name: "status" %>
-        <%= f.submit "Approved", class: "btn btn-medium", name: "status" %>
+<%= form_for :document, method: :put, remote: true do |f| %>
+    <%= f.submit "Draft", class: "btn btn-medium", name: "status" %>
+    <%= f.submit "For review", class: "btn btn-medium", name: "status" %>
+    <%= f.submit "For approval", class: "btn btn-medium", name: "status" %>
+    <%= f.submit "Approved", class: "btn btn-medium", name: "status" %>
 
-        <br />
-        <br />
+    <br />
+    <br />
 
-        <%= f.submit "Send for review", class: "btn btn-medium", name: "submit" %>
-        <%= f.submit "Send for approval", class: "btn btn-medium", name: "submit" %>
-        <%= f.submit "Delete", class: "btn btn-medium", name: "submit" %>
+    <%= f.submit "Send for review", class: "btn btn-medium", name: "submit" %>
+    <%= f.submit "Send for approval", class: "btn btn-medium", name: "submit" %>
+    <%= f.submit "Delete", class: "btn btn-medium", name: "submit" %>
 
-        <%= render partial: 'list', locals: {documents: @documents} %>
-    <% end %>
+    <%= render partial: 'list', locals: {documents: @documents} %>
 <% end %>
