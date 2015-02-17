@@ -1,5 +1,7 @@
 <h1>Document Types</h1>
 
+<br>
+
 <%= form_for :create, method: :put, remote: true do |f| %>
   <%= f.label :name %><strong>:</strong>
   <%= f.text_field :name %>
@@ -8,6 +10,4 @@
 
 <br>
 
-<ul>
-  <%= render partial: 'document_types', locals: {document_types: @document_types} %>
-</ul>
+<%= render partial: 'document_types', locals: {document_types: @document_types} %>
