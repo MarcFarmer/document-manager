@@ -6,7 +6,7 @@ class DocumentTypesController < ApplicationController
   # GET /document_types
   # GET /document_types.json
   def index
-    @document_types = DocumentType.where(get_current_organisation.id)
+    @document_types = DocumentType.where(organisation_id: get_current_organisation.id)
     @document_type = DocumentType.new
   end
 
@@ -24,7 +24,7 @@ class DocumentTypesController < ApplicationController
   # end
 
   def create
-    @document_type = DocumentType.new(name: params[:create][:name])
+    @document_type = DocumentType.new(name: params[:create][:name], organisation_id: get_current_organisation.id)
     @document_type.save
 
     respond_to do |format|
