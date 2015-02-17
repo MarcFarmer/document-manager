@@ -2,7 +2,7 @@ class DocumentsController < ApplicationController
   before_action :check_current_organisation
 
   def index
-    @documents = Document.where(organisation_id: get_current_organisation.id, status: 0)
+    @documents = Document.where(organisation_id: get_current_organisation.id, status: 0)    # view draft documents by default
   end
 
   def show
@@ -12,6 +12,13 @@ class DocumentsController < ApplicationController
 
   def new
     @document = Document.new
+    current_user_id = current_user.id
+    current_org_id = get_current_organisation.id
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    @users = []
+    organisation_users.each do |ou|
+      @users << ou.user
+    end
 #    current_organisation = get_current_organisation
 #    document_types = DocumentType.all.select {|d| d.organisation == current_organisation}
 #    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
