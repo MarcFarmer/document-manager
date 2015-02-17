@@ -11,6 +11,11 @@
       <%= form.file_field :doc %>
     </div>
 
+    <div class="field">
+      <%= form.select(:reviews, @users, {prompt: 'Select users to review the document'}, { :multiple => true, :size => 20 } ) %>
+      <%= form.select(:approvals, @users, {prompt: 'Select users to approve the document'}, { :multiple => true, :size => 20 } ) %>
+    </div>
+
     <div class="actions">
       <%= form.submit %>
     </div>
