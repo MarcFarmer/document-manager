@@ -30,10 +30,6 @@
               TODO inviter
             </td>
             <td>
-              <form method="post" action="organisations/organisation_invitation">
-                <input type="submit" value="Submit">
-              </form>
-
               <%= link_to 'Accept', "organisations/accept_organisation_invitation?organisation_id=" + org.id.to_s, method: :post %>
               <%= link_to 'Decline', "organisations/decline_organisation_invitation?organisation_id=" + org.id.to_s, method: :post %>
             </td>

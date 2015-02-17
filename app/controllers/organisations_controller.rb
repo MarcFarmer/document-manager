@@ -55,6 +55,7 @@ class OrganisationsController < ApplicationController
         blah2.organisation_id = get_current_organisation.id
         blah2.accepted = false
         blah2.user_type = params[:organisation_user][:typesSelection].to_i
+        blah2.inviter_id = current_user.id
         blah2.save
       end
     end
