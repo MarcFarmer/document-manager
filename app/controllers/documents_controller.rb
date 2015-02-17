@@ -30,6 +30,18 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def handle_status
+    if params[:status] != nil   # view documents with different status
+      new_status = status_to_int params[:status]
+      @new_documents = Document.where organisation_id: get_current_organisation.id, status: new_status
+      respond_to do |format|
+        format.js
+      end
+    else
+      status_change = params[:submit]
+    end
+  end
+
   private
 
   def document_params
@@ -39,6 +51,20 @@ class DocumentsController < ApplicationController
   def check_current_organisation
     if get_current_organisation == nil
       redirect_to root_path, notice: "You must select an organisation before viewing documents."
+    end
+  end
+
+  def status_to_int status
+    if status == "Draft"
+      0
+    elsif status == "For review"
+      1
+    elsif status == "For approval"
+      2
+    elsif status == "Approved"
+      3
+    else    # unknown
+      -1
     end
   end
 

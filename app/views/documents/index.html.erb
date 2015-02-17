@@ -8,8 +8,7 @@
 <% if @documents.empty? %>
     There are no documents in this organisation.
 <% else %>
-
-    <%= form_for :document, method: :put do |f| %>
+    <%= form_for :document, method: :put, remote: true do |f| %>
         <%= f.submit "Draft", class: "btn btn-medium", name: "status" %>
         <%= f.submit "For review", class: "btn btn-medium", name: "status" %>
         <%= f.submit "For approval", class: "btn btn-medium", name: "status" %>
@@ -21,41 +20,7 @@
         <%= f.submit "Send for review", class: "btn btn-medium", name: "submit" %>
         <%= f.submit "Send for approval", class: "btn btn-medium", name: "submit" %>
         <%= f.submit "Delete", class: "btn btn-medium", name: "submit" %>
-        <table class="table table-striped">
-          <thead>
-          <tr>
-            <th>
-              Document
-            </th>
-            <th>
-              Created
-            </th>
-            <th>
-              Updated
-            </th>
-            <th style="width: 20%;">
-              <!-- Change status -->
-            </th>
-          </tr>
-          </thead>
-          <tbody>
-          <% @documents.each do |d| %>
-              <tr>
-                <td>
-                  <%= link_to d.title, document_path(d.id) %>
-                </td>
-                <td>
-                  <%= d.created_at %>
-                </td>
-                <td>
-                  <%= d.updated_at %>
-                </td>
-                <td>
-                  <input id=<%= "#{d.id}" %> name=<%= "[selected_documents][#{d.id}]" %> type="checkbox">
-                </td>
-              </tr>
-          <% end %>
-          </tbody>
-        </table>
+
+        <%= render partial: 'list', locals: {documents: @documents} %>
     <% end %>
 <% end %>

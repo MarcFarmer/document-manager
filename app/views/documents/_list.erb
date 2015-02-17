@@ -1,0 +1,39 @@
+<div id="documents_list">
+<table class="table table-striped">
+  <thead>
+  <tr>
+    <th>
+      Document
+    </th>
+    <th>
+      Created
+    </th>
+    <th>
+      Updated
+    </th>
+    <th style="width: 20%;">
+      <!-- Change status -->
+    </th>
+  </tr>
+  </thead>
+  <tbody>
+  <% documents.each do |d| %>
+      <tr>
+        <td>
+          <%= link_to d.title, document_path(d.id) %>
+        </td>
+        <td>
+          <%= d.created_at %>
+        </td>
+        <td>
+          <%= d.updated_at %>
+        </td>
+        <td>
+          <input id=<%= "#{d.id}" %> name=<%= "[selected_documents][#{d.id}]" %> type="checkbox">
+        </td>
+      </tr>
+  <% end %>
+  </tbody>
+</table>
+</div>
+
