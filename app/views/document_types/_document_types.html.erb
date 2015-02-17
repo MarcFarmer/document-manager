@@ -1,14 +1,25 @@
 <div id = "document_type_list">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>
+          Type
+        </th>
+        <th>
+          Edit
+        </th>
+        <th>
+          Delete
+        </th>
+      </tr>
+    </thead>
 
-  <% document_types.each do |x| %>
-    <li><%= x.name %></li>
-  <% end %>
-
-  <!-- <table> -->
-  <!--   <tr> -->
-  <!--     <td>Jill</td> -->
-  <!--   </tr> -->
-  <!-- </table>  -->
-
-
+    <tbody>
+      <% document_types.each do |type| %>
+        <tr>
+          <td><%= type.name %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table> 
 </div>
