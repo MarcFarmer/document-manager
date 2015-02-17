@@ -18,6 +18,12 @@ Rails.application.routes.draw do
   match 'organisations/save_current_organisation', to: 'organisations#save_current_organisation', via: :post
   match "organisations/accept_organisation_invitation", to: 'organisations#accept_organisation_invitation', via: :post
 
+
+  match 'organisations/invite', to: 'organisations#inviteSubmission', via: :post
+
+
+
+
   root to: "organisations#index"
 
   # The priority is based upon order of creation: first created -> highest priority.

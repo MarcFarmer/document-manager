@@ -35,6 +35,7 @@ class OrganisationsController < ApplicationController
   end
 
   def invite
+    @typesOptions = [['Quality', 0],['Basic', 1]]
     @users = []
     users = User.all
     users.each do |u|
@@ -42,6 +43,22 @@ class OrganisationsController < ApplicationController
         @users << [u.email, u.id]
       end
     end
+  end
+
+  def inviteSubmission
+    instantUserArray = params[:organisation_user][:invitedID]
+
+    instantUserArray.each do |blah|
+      if blah != ''
+        blah2 = OrganisationUser.new
+        blah2.user_id = blah.to_i
+        blah2.organisation_id = get_current_organisation.id
+        blah2.accepted = false
+        blah2.user_type = params[:organisation_user][:typesSelection].to_i
+        blah2.save
+      end
+    end
+    redirect_to :organisations, notice: "Selected users have been Invited"
   end
 
   def show

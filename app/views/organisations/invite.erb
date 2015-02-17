@@ -1,3 +1,5 @@
 <%= form_for :organisation_user do |form| %>
-    <%= form.select(:name, @users, { :multiple => true, :size => 20 } ) %>
+    <%= form.select(:invitedID, @users, {:prompt => "select user to invite"}, { :multiple => true, :size => 20 } ) %>
+    <%= form.select(:typesSelection, @typesOptions) %>
+    <%= form.submit %>
 <% end %>
