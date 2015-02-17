@@ -2,7 +2,13 @@ class DocumentsController < ApplicationController
   before_action :check_current_organisation
 
   def index
-    @documents = Document.where(organisation_id: get_current_organisation.id, status: 0)    # view draft documents by default
+    if get_document_filter == nil
+      set_document_filter "all_documents"
+    end
+    if get_status_filter == nil
+      set_status_filter 0
+    end
+    @documents = get_filtered_documents    # view draft documents by current user default
   end
 
   def show
@@ -40,28 +46,44 @@ class DocumentsController < ApplicationController
 
   def handle_status
     if params[:status] != nil   # view documents with different status
-      new_status = status_change_to_int params[:status]
-      @new_documents = Document.where organisation_id: get_current_organisation.id, status: new_status
+      set_status_filter status_change_to_int params[:status]
+      @new_documents = get_filtered_documents
       respond_to do |format|
         format.js
       end
     else    # change status of one or more documents
       if params[:selected_documents] != nil   # at least one document selected
         new_status = status_change_to_int params[:submit]
-        old_status = Document.find(params[:selected_documents].keys[0].to_i).status
-        print "--------------------------------------------------------------- #{old_status}\n"
         params[:selected_documents].each do |doc_id, select_action|
           d = Document.find(doc_id.to_i)
           d.status = new_status
           d.save
         end
 
-        @new_documents = Document.where organisation_id: get_current_organisation.id, status: old_status
+        @new_documents = get_filtered_documents
         respond_to do |format|
           format.js
         end
       end
     end
+  end
+
+  def your_documents
+    set_document_filter "your_documents"
+    @new_documents = get_filtered_documents
+    render 'handle_status.js.erb'
+  end
+
+  def your_actions
+    set_document_filter "your_actions"
+    @new_documents = get_filtered_documents
+    render 'handle_status.js.erb'
+  end
+
+  def all_documents
+    set_document_filter "all_documents"
+    @new_documents = get_filtered_documents
+    render 'handle_status.js.erb'
   end
 
   private
@@ -87,6 +109,64 @@ class DocumentsController < ApplicationController
       3
     else    # unknown
       -1
+    end
+  end
+
+  def set_document_filter filter
+    session[:document_filter] = filter
+  end
+
+  def get_document_filter
+    session[:document_filter]
+  end
+
+  def set_status_filter filter
+    session[:status_filter] = filter
+  end
+
+  def get_status_filter
+    session[:status_filter].to_i
+  end
+
+  def get_filtered_documents
+    # check document and status filters
+    if get_document_filter == "your_actions"
+      org_id = get_current_organisation.id
+      if get_status_filter == 1 # for review
+        documents_for_review = []
+        reviews = Review.where user_id: current_user.id
+        reviews.each do |r|
+          if r.document.organisation_id == org_id
+            documents_for_review << r.document
+          end
+        end
+        documents_for_review
+      elsif get_status_filter == 2 # for approval
+        documents_for_approval = []
+        approvals = Approval.where user_id: current_user.id
+        approvals.each do |a|
+          if a.document.organisation_id == org_id && a.document.status == 2
+            documents_for_approval << a.document
+          end
+        end
+        documents_for_approval
+      elsif get_status_filter == 3 # approved
+        documents_approved = []
+        approvals = Approval.where user_id: current_user.id
+        approvals.each do |a|
+          if a.document.organisation_id == org_id && a.document.status == 3
+            documents_approved << a.document
+          end
+        end
+        documents_approved
+      end
+    else
+      where_hash = {organisation_id: get_current_organisation.id, status: get_status_filter}
+      if get_document_filter == "your_documents"  # do nothing if all documents
+        where_hash[:user_id] = current_user.id
+      end
+      print where_hash
+      Document.where(where_hash)
     end
   end
 
