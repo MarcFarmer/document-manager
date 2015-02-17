@@ -17,7 +17,8 @@ class DocumentsController < ApplicationController
     organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
     @users = []
     organisation_users.each do |ou|
-      @users << ou.user
+      user = ou.user
+      @users << [user.email, user.id]
     end
 #    current_organisation = get_current_organisation
 #    document_types = DocumentType.all.select {|d| d.organisation == current_organisation}
