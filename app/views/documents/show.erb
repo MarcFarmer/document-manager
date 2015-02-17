@@ -31,3 +31,15 @@
       <%= @document.doc %>
   <% end %>
 </p>
+
+<p>
+  <h3>Reviewers:</h3>
+  <% @viewerUsers.each do |user| %>
+    <%= user.email %>
+  <% end %>
+</p>
+
+<p>
+<h3>Approvals:</h3>
+
+</p>
