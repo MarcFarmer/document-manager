@@ -6,9 +6,9 @@
 <br />
 
 <ul class="nav nav-tabs nav-justified">
-    <li role="presentation"><%= link_to "Your documents", your_documents_path, remote: true %></li>
-    <li role="presentation"><%= link_to "Your actions", your_documents_path, remote: true %></li>
-    <li role="presentation"><%= link_to "All documents", your_documents_path, remote: true %></li>
+    <li role="presentation"><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
+    <li role="presentation"><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
+    <li role="presentation"><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
 </ul>
 <br />
 
