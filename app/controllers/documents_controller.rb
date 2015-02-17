@@ -2,13 +2,13 @@ class DocumentsController < ApplicationController
   before_action :check_current_organisation
 
   def index
-    @documents = Document.where(organisation_id: get_current_organisation.id, status: 0, user_id: current_user.id)    # view draft documents by current user default
     if get_document_filter == nil
       set_document_filter "all_documents"
     end
     if get_status_filter == nil
       set_status_filter 0
     end
+    @documents = get_filtered_documents    # view draft documents by current user default
   end
 
   def show
@@ -162,9 +162,10 @@ class DocumentsController < ApplicationController
       end
     else
       where_hash = {organisation_id: get_current_organisation.id, status: get_status_filter}
-      if get_document_filter == "your documents"  # do nothing if all documents
+      if get_document_filter == "your_documents"  # do nothing if all documents
         where_hash[:user_id] = current_user.id
       end
+      print where_hash
       Document.where(where_hash)
     end
   end
