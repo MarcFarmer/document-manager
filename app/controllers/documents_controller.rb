@@ -3,10 +3,10 @@ class DocumentsController < ApplicationController
 
   def index
     @documents = Document.where(organisation_id: get_current_organisation.id, status: 0, user_id: current_user.id)    # view draft documents by current user default
-    if !document_filter_is_set?
+    if get_document_filter == nil
       set_document_filter "all_documents"
     end
-    if !status_filter_is_set?
+    if get_status_filter == nil
       set_status_filter 0
     end
   end
@@ -69,13 +69,6 @@ class DocumentsController < ApplicationController
     end
   end
 
-  def document_filter_is_set?
-    if session[:document_filter] == nil
-      false
-    end
-    true
-  end
-
   def your_documents
     set_document_filter "your_documents"
   end
@@ -133,13 +126,35 @@ class DocumentsController < ApplicationController
   def get_filtered_documents
     # check document and status filters
     if get_document_filter == "your_actions"
+      org_id = get_current_organisation.id
       if get_status_filter == 1 # for review
-        Review.find user_id
+        documents_for_review = []
+        reviews = Review.where user_id: user_id
+        reviews.each do |r|
+          if r.document.organisation_id == org_id
+            documents_for_review << r.document
+          end
+        end
+        documents_for_review
       elsif get_status_filter == 2 # for approval
+        documents_for_approval = []
+        approvals = Approval.where user_id: user_id
+        approvals.each do |a|
+          if a.document.organisation_id == org_id && a.document.status == 2
+            documents_for_approval << a.document
+          end
+        end
+        documents_for_approval
       elsif get_status_filter == 3 # approved
-
+        documents_approved = []
+        approvals = Approval.where user_id: user_id
+        approvals.each do |a|
+          if a.document.organisation_id == org_id && a.document.status == 3
+            documents_approved << a.document
+          end
+        end
+        documents_approved
       end
-
     else
       where_hash = {organisation_id: get_current_organisation.id, status: get_status_filter}
       if get_document_filter == "your documents"  # do nothing if all documents
