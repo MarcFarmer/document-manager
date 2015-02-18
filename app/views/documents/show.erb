@@ -34,12 +34,64 @@
 
 <p>
   <h3>Reviewers:</h3>
-  <% @reviewers.each do |user| %>
-    <%= user.email %>
+  <% if @reviewers.empty? %>
+    No users selected to review this document.
+  <% else %>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>
+          User
+        </th>
+        <th>
+          Reviewed
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @reviewers.each do |r| %>
+          <tr>
+            <td>
+              <%= r.email %>
+            </td>
+            <td>
+              TODO marked as reviewed?
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
   <% end %>
 </p>
 
 <p>
 <h3>Approvals:</h3>
-
+<% if @reviewers.empty? %>
+    No users selected to approve this document.
+<% else %>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>
+          User
+        </th>
+        <th>
+          Approved
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      <% @reviewers.each do |r| %>
+          <tr>
+            <td>
+              <%= r.email %>
+            </td>
+            <td>
+              TODO marked as reviewed?
+            </td>
+          </tr>
+      <% end %>
+      </tbody>
+    </table>
+<% end %>
 </p>

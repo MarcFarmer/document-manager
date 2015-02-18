@@ -14,10 +14,15 @@ class DocumentsController < ApplicationController
     reviews = Review.where(document_id: @document.id)
     reviews.each do |r|
       @reviewers << r.user
-      print "--------------------"
-      print r.user_id
-      print "--------------------"
     end
+
+    @approvers = []
+
+    approvals = Approval.where(document_id: @document.id)
+    approvals.each do |a|
+      @approvers << a.user
+    end
+
   end
 
   def new
