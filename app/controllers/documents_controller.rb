@@ -35,6 +35,12 @@ class DocumentsController < ApplicationController
       @approvers << a.user
     end
 
+    if @document.status == 1 && (Review.find_by_user_id_and_document_id current_user.id, @document.id) != nil
+      @is_reviewer = true
+    elsif @document.status == 2 && (Approval.find_by_user_id_and_document_id current_user.id, @document.id) != nil
+      @is_approver = true
+    end
+
   end
 
   def new

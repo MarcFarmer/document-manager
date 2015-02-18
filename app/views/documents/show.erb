@@ -95,3 +95,58 @@
     </table>
 <% end %>
 </p>
+
+<% if @is_reviewer || @is_approver %>
+
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+        <% if @is_reviewer %>
+            Mark as reviewed
+        <% else %>
+            Approve
+        <% end %>
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">
+              <% if @is_reviewer %>
+                  Mark as reviewed
+              <% else %>
+                  Approve
+              <% end %>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <% if @is_reviewer %>
+                I have reviewed this document.
+            <% else %>
+                I approve this document.
+            <% end %>
+            <br />
+            <%= form_tag method: :put do %>
+                <%= label_tag(:email, "Email:") %>
+                <%= text_field_tag(:email) %>
+                <br />
+                <%= label_tag(:password, "Password:") %>
+                <%= password_field_tag(:password) %>
+                <br />
+                <br />
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <% if @is_reviewer %>
+                      <input type="submit" class="btn btn-success" value="Mark document as reviewed" name="review" />
+                  <% else %>
+                      <input type="submit" class="btn btn-success" value="Approve document" name="approve" />
+                  <% end %>
+                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+<% end %>
