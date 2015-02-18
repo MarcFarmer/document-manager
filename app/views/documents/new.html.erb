@@ -6,14 +6,21 @@
       <%= form.text_field :title %>
     </div>
 
+    <br />
+
     <div class="field">
       <%= form.label :doc %><br>
       <%= form.file_field :doc %>
     </div>
 
+    <br />
+
     <div class="field">
-      <%= form.select(:document_type, @document_types, {:multiple => true, :size => 20}) %>
+      <%= form.label :document_type_id %><br>
+      <%= form.select(:document_type_id, @document_types, {:multiple => true, :size => 20}) %>
     </div>
+
+    <br />
 
     <div class="actions">
       <%= form.submit %>

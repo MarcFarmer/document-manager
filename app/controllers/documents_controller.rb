@@ -17,10 +17,10 @@ class DocumentsController < ApplicationController
 #    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
     @current_user_id = current_user.id
 
-    @document_types = Array.new
+    @document_types = Hash.new
     org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
     org_doc_types.each do |item|
-      @document_types << item.name
+      @document_types.merge!(item.name.to_sym => item.id)
     end
   end
 
@@ -39,6 +39,6 @@ class DocumentsController < ApplicationController
   private
 
   def document_params
-    params.require(:document).permit(:doc, :document_type, :title, :user_id)
+    params.require(:document).permit(:doc, :document_type_id, :title, :user_id)
   end
 end
