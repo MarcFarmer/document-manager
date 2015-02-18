@@ -11,6 +11,10 @@
       <%= form.file_field :doc %>
     </div>
 
+    <div class="field">
+      <%= form.select(:document_type, @document_types, {:multiple => true, :size => 20}) %>
+    </div>
+
     <div class="actions">
       <%= form.submit %>
     </div>
