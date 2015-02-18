@@ -58,7 +58,7 @@ class DocumentTypesController < ApplicationController
 
   private
   def all_document_types
-    @document_types = DocumentType.where(get_current_organisation.id)
+    @document_types = DocumentType.where(organisation_id: get_current_organisation.id)
   end
 
   # Never trust parameters from the scary internet, only allow the white list through.
