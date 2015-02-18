@@ -8,7 +8,7 @@
 </form>
 <br />
 
-<ul class="nav nav-tabs nav-justified" id="document_filter_buttons">
+<ul class="nav nav-tabs nav-pills nav-justified" id="document_filter_buttons">
     <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
     <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_actions" %>><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
     <li role="presentation" <%= selected_document_filter if @initial_document_filter == "all_documents" %>><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>

@@ -5,4 +5,11 @@ $(document).ready(function () {
             $(this).removeClass("active");
         });
     });
+
+    $("#status_filter_buttons input").click(function () {
+        $(this).addClass("active btn-warning");
+        $(this).siblings("input").each(function () {
+            $(this).removeClass("active btn-warning");
+        });
+    });
 });
