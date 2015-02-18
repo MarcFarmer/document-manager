@@ -14,6 +14,21 @@ class DocumentsController < ApplicationController
   def show
     @document = Document.find(params[:id])
     @user = @document.user
+
+    @reviewers = []
+
+    reviews = Review.where(document_id: @document.id)
+    reviews.each do |r|
+      @reviewers << r.user
+    end
+
+    @approvers = []
+
+    approvals = Approval.where(document_id: @document.id)
+    approvals.each do |a|
+      @approvers << a.user
+    end
+
   end
 
   def new
@@ -30,6 +45,11 @@ class DocumentsController < ApplicationController
 #    document_types = DocumentType.all.select {|d| d.organisation == current_organisation}
 #    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
     @current_user_id = current_user.id
+
+  end
+
+  def saveToReviewApprove
+
   end
 
   def create
@@ -42,6 +62,27 @@ class DocumentsController < ApplicationController
     else
       render action: 'new', alert: 'Document could not be created'
     end
+
+    reviewerArray = params[:document][:reviews]
+    reviewerArray.each do |blah|
+      next if blah.blank?
+      blah2 = Review.new
+      blah2.user_id = blah.to_i
+      blah2.document = @document
+      blah2.status = 0
+      blah2.save
+    end
+
+    approvalArray = params[:document][:approvals]
+    approvalArray.each do |blah|
+      next if blah.blank?
+      blah2 = Approval.new
+      blah2.user_id = blah.to_i
+      blah2.document = @document
+      blah2.status = 0
+      blah2.save
+    end
+
   end
 
   def handle_status

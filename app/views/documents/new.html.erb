@@ -12,7 +12,9 @@
     </div>
 
     <div class="field">
+      <h2>To be Reviewers</h2>
       <%= form.select(:reviews, @users, {prompt: 'Select users to review the document'}, { :multiple => true, :size => 20 } ) %>
+      <h2>To be Approvals</h2>
       <%= form.select(:approvals, @users, {prompt: 'Select users to approve the document'}, { :multiple => true, :size => 20 } ) %>
     </div>
 
