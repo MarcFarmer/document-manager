@@ -18,29 +18,7 @@ class DocumentsController < ApplicationController
   end
 
   def show
-    @document = Document.find(params[:id])
-    @user = @document.user
-
-    @reviewers = []
-
-    reviews = Review.where(document_id: @document.id)
-    reviews.each do |r|
-      @reviewers << r.user
-    end
-
-    @approvers = []
-
-    approvals = Approval.where(document_id: @document.id)
-    approvals.each do |a|
-      @approvers << a.user
-    end
-
-    if @document.status == 1 && (Review.find_by_user_id_and_document_id current_user.id, @document.id) != nil
-      @is_reviewer = true
-    elsif @document.status == 2 && (Approval.find_by_user_id_and_document_id current_user.id, @document.id) != nil
-      @is_approver = true
-    end
-
+    setup_show
   end
 
   def new
@@ -141,10 +119,59 @@ class DocumentsController < ApplicationController
   end
 
   def save_role_response
+    success = ''
+    if params[:approve] != nil
+      a = Approval.find params[:relation_id].to_i
+      a.status = 0
+      a.save
+      success = 'You have approved this document.'
+    elsif params[:decline] != nil
+      a = Approval.find params[:relation_id].to_i
+      a.status = 1
+      a.save
+      success = 'You have declined this document.'
+    elsif params[:review] != nil
+      r = Review.find params[:relation_id].to_i
+      r.status = 0
+      r.save
+      success = 'You have marked this document as reviewed.'
+    end
 
+    setup_show
+    flash[:success] = success
+    render :show
   end
 
   private
+
+  def setup_show
+    @document = Document.find(params[:id])
+    @user = @document.user
+
+    @reviewers = []
+
+    reviews = Review.where(document_id: @document.id)
+    reviews.each do |r|
+      @reviewers << r.user
+    end
+
+    @approvers = []
+
+    approvals = Approval.where(document_id: @document.id)
+    approvals.each do |a|
+      @approvers << a.user
+    end
+
+    @review = Review.find_by_user_id_and_document_id current_user.id, @document.id
+    @approval = Approval.find_by_user_id_and_document_id current_user.id, @document.id
+    if @document.status == 1 && @review != nil
+      @is_reviewer = true
+      @relation_id = @review.id
+    elsif @document.status == 2 && @approval != nil
+      @is_approver = true
+      @relation_id = @approval.id
+    end
+  end
 
   def document_params
     params.require(:document).permit(:doc, :document_type_id, :title, :user_id)

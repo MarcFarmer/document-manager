@@ -97,19 +97,16 @@
 </p>
 
 <% if @is_reviewer || @is_approver %>
-
-    <% if @is_approver %>
-        <%= form_tag 'save_role_response', method: :put do %>
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
-              <% if @is_reviewer %>
-                  Mark as reviewed
-              <% else %>
-                  Approve
-              <% end %>
-            </button>
-            <input type="submit" class="btn btn-danger btn-lg" value="Decline document" name="decline" />
-        <% end %>
+    <%= form_tag 'save_role_response', method: :put do %>
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+          <% if @is_reviewer %>
+              Mark as reviewed
+          <% else %>
+              Approve
+          <% end %>
+        </button>
+        <input type="submit" class="btn btn-danger btn-lg" value="Decline document" name="decline" />
     <% end %>
 
     <!-- Modal -->
@@ -134,6 +131,8 @@
             <% end %>
             <br />
             <%= form_tag 'save_role_response', method: :put do %>
+                <%= hidden_field_tag :id, @document.id %>
+                <%= hidden_field_tag :relation_id, @relation_id %>
                 <%= label_tag(:email, "Email:") %>
                 <%= text_field_tag(:email) %>
                 <br />

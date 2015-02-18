@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       put :save_role_response, as: :save_role_response
     end
   end
+
   get 'documents/index'
   get 'documents/dashboard'
   match 'documents', to: 'documents#handle_status', via: :put, as: :handle_status
