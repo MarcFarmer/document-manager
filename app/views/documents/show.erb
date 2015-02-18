@@ -34,7 +34,7 @@
 
 <p>
   <h3>Reviewers:</h3>
-  <% if @reviewers.empty? %>
+  <% if @review_users.empty? %>
     No users selected to review this document.
   <% else %>
     <table class="table table-striped">
@@ -49,13 +49,13 @@
       </tr>
       </thead>
       <tbody>
-      <% @reviewers.each do |r| %>
+      <% @review_users.each do |r| %>
           <tr>
             <td>
-              <%= r.email %>
+              <%= r[:user].email %>
             </td>
             <td>
-              TODO marked as reviewed?
+              <%= review_status_to_string r[:review].status %>
             </td>
           </tr>
       <% end %>
@@ -66,7 +66,7 @@
 
 <p>
 <h3>Approvals:</h3>
-<% if @reviewers.empty? %>
+<% if @approval_users.empty? %>
     No users selected to approve this document.
 <% else %>
     <table class="table table-striped">
@@ -81,13 +81,13 @@
       </tr>
       </thead>
       <tbody>
-      <% @reviewers.each do |r| %>
+      <% @approval_users.each do |a| %>
           <tr>
             <td>
-              <%= r.email %>
+              <%= a[:user].email %>
             </td>
             <td>
-              TODO marked as reviewed?
+              <%= approval_status_to_string a[:approval].status %>
             </td>
           </tr>
       <% end %>
@@ -102,7 +102,7 @@
         <%= hidden_field_tag :relation_id, @relation_id %>
         <!-- Button trigger modal -->
         <% if @is_reviewer %>
-            <% if @review.status != 0 %>
+            <% if @review.status != 1 %>
                 <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
                       Mark as reviewed
                 </button>
@@ -110,14 +110,14 @@
                 You have already marked this document as reviewed.
             <% end %>
         <% else %>
-            <% if @approval.status != 0 %>
+            <% if @approval.status != 1 %>
                 <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
                   Approve
                 </button>
             <% else %>
                 You have already approved this document.
             <% end %>
-            <% if @approval.status != 1 %>
+            <% if @approval.status != 2 %>
                 <input type="submit" class="btn btn-danger btn-lg" value="Decline document" name="decline" />
             <% else %>
                 You have already declined this document.

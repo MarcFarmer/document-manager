@@ -122,17 +122,17 @@ class DocumentsController < ApplicationController
     success = ''
     if params[:approve] != nil
       a = Approval.find params[:relation_id].to_i
-      a.status = 0
+      a.status = 1
       a.save
       success = 'You have approved this document.'
     elsif params[:decline] != nil
       a = Approval.find params[:relation_id].to_i
-      a.status = 1
+      a.status = 2
       a.save
       success = 'You have declined this document.'
     elsif params[:review] != nil
       r = Review.find params[:relation_id].to_i
-      r.status = 0
+      r.status = 1
       r.save
       success = 'You have marked this document as reviewed.'
     end
@@ -148,18 +148,18 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     @user = @document.user
 
-    @reviewers = []
+    @review_users = []
 
     reviews = Review.where(document_id: @document.id)
     reviews.each do |r|
-      @reviewers << r.user
+      @review_users << {review: r, user: r.user}
     end
 
-    @approvers = []
+    @approval_users = []
 
     approvals = Approval.where(document_id: @document.id)
     approvals.each do |a|
-      @approvers << a.user
+      @approval_users << {approval: a, user: a.user}
     end
 
     @review = Review.find_by_user_id_and_document_id current_user.id, @document.id
