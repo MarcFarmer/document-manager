@@ -75,59 +75,59 @@ DocumentType.create!([
                      ])
 
 Document.create!([
-                     {title: "doc-1@1's 1", status: 0, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 2", status: 0, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 3", status: 0, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 1", status: 0, user_id: 1, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 2", status: 0, user_id: 1, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 3", status: 0, user_id: 1, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
 
-                     {title: "doc-1@1's 4", status: 1, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 5", status: 1, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 6", status: 1, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 4", status: 1, user_id: 1, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 5", status: 1, user_id: 1, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 6", status: 1, user_id: 1, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
 
-                     {title: "doc-1@1's 7", status: 2, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 8", status: 2, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 9", status: 2, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 7", status: 2, user_id: 1, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 8", status: 2, user_id: 1, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 9", status: 2, user_id: 1, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
 
-                     {title: "doc-1@1's 10", status: 3, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 11", status: 3, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@1's 12", status: 3, user_id: 1, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-
-
-
-
-                     {title: "doc-1@2's 1", status: 0, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 2", status: 0, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 3", status: 0, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-
-                     {title: "doc-1@2's 4", status: 1, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 5", status: 1, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 6", status: 1, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-
-                     {title: "doc-1@2's 7", status: 2, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 8", status: 2, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 9", status: 2, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-
-                     {title: "doc-1@2's 10", status: 3, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 11", status: 3, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@2's 12", status: 3, user_id: 2, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 10", status: 3, user_id: 1, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 11", status: 3, user_id: 1, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@1's 12", status: 3, user_id: 1, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
 
 
 
 
-                     {title: "doc-1@6's 1", status: 0, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 2", status: 0, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 3", status: 0, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 1", status: 0, user_id: 2, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 2", status: 0, user_id: 2, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 3", status: 0, user_id: 2, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
 
-                     {title: "doc-1@6's 4", status: 1, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 5", status: 1, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 6", status: 1, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 4", status: 1, user_id: 2, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 5", status: 1, user_id: 2, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 6", status: 1, user_id: 2, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
 
-                     {title: "doc-1@6's 7", status: 2, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 8", status: 2, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 9", status: 2, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 7", status: 2, user_id: 2, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 8", status: 2, user_id: 2, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 9", status: 2, user_id: 2, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
 
-                     {title: "doc-1@6's 10", status: 3, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 11", status: 3, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
-                     {title: "doc-1@6's 12", status: 3, user_id: 6, organisation_id: 1, document_type_id: nil, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 10", status: 3, user_id: 2, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 11", status: 3, user_id: 2, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@2's 12", status: 3, user_id: 2, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+
+
+
+
+                     {title: "doc-1@6's 1", status: 0, user_id: 6, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 2", status: 0, user_id: 6, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 3", status: 0, user_id: 6, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+
+                     {title: "doc-1@6's 4", status: 1, user_id: 6, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 5", status: 1, user_id: 6, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 6", status: 1, user_id: 6, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+
+                     {title: "doc-1@6's 7", status: 2, user_id: 6, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 8", status: 2, user_id: 6, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 9", status: 2, user_id: 6, organisation_id: 1, document_type_id: 1, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+
+                     {title: "doc-1@6's 10", status: 3, user_id: 6, organisation_id: 1, document_type_id: 2, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 11", status: 3, user_id: 6, organisation_id: 1, document_type_id: 3, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
+                     {title: "doc-1@6's 12", status: 3, user_id: 6, organisation_id: 1, document_type_id: 4, doc_file_name: nil, doc_content_type: nil, doc_file_size: nil, doc_updated_at: nil},
                  ])
 
 Review.create!([
