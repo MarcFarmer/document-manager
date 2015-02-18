@@ -11,6 +11,9 @@
     <th>
       Updated
     </th>
+    <th>
+      Type
+    </th>
     <th style="width: 20%;">
       <!-- Change status -->
     </th>
@@ -27,6 +30,9 @@
         </td>
         <td>
           <%= d.updated_at %>
+        </td>
+        <td>
+          <%= d.document_type.name %>
         </td>
         <td>
           <input id=<%= "#{d.id}" %> name=<%= "[selected_documents][#{d.id}]" %> type="checkbox">
