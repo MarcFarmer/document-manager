@@ -9,13 +9,15 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     @user = @document.user
 
-    @viewerUsers = []
+    @reviewers = []
 
-    @viewerList = Review.where(document_id: @document.id)
-    @viewerList.each do |blah|
-      @viewerUsers << User.find(blah.user_id)
+    reviews = Review.where(document_id: @document.id)
+    reviews.each do |r|
+      @reviewers << r.user
+      print "--------------------"
+      print r.user_id
+      print "--------------------"
     end
-
   end
 
   def new
@@ -52,6 +54,7 @@ class DocumentsController < ApplicationController
 
     reviewerArray = params[:document][:reviews]
     reviewerArray.each do |blah|
+      next if blah.blank?
       blah2 = Review.new
       blah2.user_id = blah.to_i
       blah2.document = @document
@@ -61,16 +64,13 @@ class DocumentsController < ApplicationController
 
     approvalArray = params[:document][:approvals]
     approvalArray.each do |blah|
+      next if blah.blank?
       blah2 = Approval.new
       blah2.user_id = blah.to_i
       blah2.document = @document
       blah2.status = 0
       blah2.save
     end
-
-
-
-
 
   end
 
