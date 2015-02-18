@@ -179,7 +179,22 @@ class DocumentsController < ApplicationController
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
       org_id = get_current_organisation.id
-      if get_status_filter == 1 # for review
+      if get_status_filter == 0 # draft, you have been assigned as a reviewer or approver
+        documents_for_approval_or_review = []
+        reviews = Review.where user_id: current_user.id
+        reviews.each do |r|
+          if r.document.organisation_id == org_id && r.document.status == 0
+            documents_for_approval_or_review << r.document
+          end
+        end
+        approvals = Approval.where user_id: current_user.id
+        approvals.each do |a|
+          if a.document.organisation_id == org_id && a.document.status == 0
+            documents_for_approval_or_review << a.document
+          end
+        end
+        documents_for_approval_or_review
+      elsif get_status_filter == 1 # for review
         documents_for_review = []
         reviews = Review.where user_id: current_user.id
         reviews.each do |r|
