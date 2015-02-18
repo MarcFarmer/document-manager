@@ -34,7 +34,7 @@
 
 <p>
   <h3>Reviewers:</h3>
-  <% if @reviewers.empty? %>
+  <% if @review_users.empty? %>
     No users selected to review this document.
   <% else %>
     <table class="table table-striped">
@@ -49,13 +49,13 @@
       </tr>
       </thead>
       <tbody>
-      <% @reviewers.each do |r| %>
+      <% @review_users.each do |r| %>
           <tr>
             <td>
-              <%= r.email %>
+              <%= r[:user].email %>
             </td>
             <td>
-              TODO marked as reviewed?
+              <%= review_status_to_string r[:review].status %>
             </td>
           </tr>
       <% end %>
@@ -66,7 +66,7 @@
 
 <p>
 <h3>Approvals:</h3>
-<% if @reviewers.empty? %>
+<% if @approval_users.empty? %>
     No users selected to approve this document.
 <% else %>
     <table class="table table-striped">
@@ -81,13 +81,13 @@
       </tr>
       </thead>
       <tbody>
-      <% @reviewers.each do |r| %>
+      <% @approval_users.each do |a| %>
           <tr>
             <td>
-              <%= r.email %>
+              <%= a[:user].email %>
             </td>
             <td>
-              TODO marked as reviewed?
+              <%= approval_status_to_string a[:approval].status %>
             </td>
           </tr>
       <% end %>
@@ -95,3 +95,79 @@
     </table>
 <% end %>
 </p>
+
+<% if @is_reviewer || @is_approver %>
+    <%= form_tag 'save_role_response', method: :put do %>
+        <%= hidden_field_tag :id, @document.id %>
+        <%= hidden_field_tag :relation_id, @relation_id %>
+        <!-- Button trigger modal -->
+        <% if @is_reviewer %>
+            <% if @review.status != 1 %>
+                <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+                      Mark as reviewed
+                </button>
+            <% else %>
+                You have already marked this document as reviewed.
+            <% end %>
+        <% else %>
+            <% if @approval.status != 1 %>
+                <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+                  Approve
+                </button>
+            <% else %>
+                You have already approved this document.
+            <% end %>
+            <% if @approval.status != 2 %>
+                <input type="submit" class="btn btn-danger btn-lg" value="Decline document" name="decline" />
+            <% else %>
+                You have already declined this document.
+            <% end %>
+        <% end %>
+    <% end %>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel">
+              <% if @is_reviewer %>
+                  Mark as reviewed
+              <% else %>
+                  Approve
+              <% end %>
+            </h4>
+          </div>
+          <div class="modal-body">
+            <% if @is_reviewer %>
+                I have reviewed this document.
+            <% else %>
+                I approve this document.
+            <% end %>
+            <br />
+            <%= form_tag 'save_role_response', method: :put do %>
+                <%= hidden_field_tag :id, @document.id %>
+                <%= hidden_field_tag :relation_id, @relation_id %>
+                <%= label_tag(:email, "Email:") %>
+                <%= text_field_tag(:email) %>
+                <br />
+                <%= label_tag(:password, "Password:") %>
+                <%= password_field_tag(:password) %>
+                <br />
+                <br />
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <% if @is_reviewer %>
+                      <input type="submit" class="btn btn-success" value="Mark document as reviewed" name="review" />
+                  <% else %>
+                      <input type="submit" class="btn btn-success" value="Approve document" name="approve" />
+                  <% end %>
+                </div>
+            <% end %>
+          </div>
+        </div>
+      </div>
+    </div>
+
+<% end %>
