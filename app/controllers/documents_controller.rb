@@ -1,14 +1,20 @@
 class DocumentsController < ApplicationController
+  @@DF_YOUR_DOCUMENTS = "your_documents"
+  @@DF_YOUR_ACTIONS = "your_actions"
+  @@DF_ALL_DOCUMENTS = "all_documents"
+
   before_action :check_current_organisation
 
   def index
     if get_document_filter == nil
-      set_document_filter "all_documents"
+      set_document_filter @@DF_YOUR_DOCUMENTS
     end
     if get_status_filter == nil
       set_status_filter 0
     end
     @documents = get_filtered_documents    # view draft documents by current user default
+    @initial_document_filter = get_document_filter
+    @initial_status_filter = get_status_filter
   end
 
   def show
@@ -46,10 +52,11 @@ class DocumentsController < ApplicationController
 #    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
     @current_user_id = current_user.id
 
-  end
-
-  def saveToReviewApprove
-
+    @document_types = Hash.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types.merge!(item.name.to_sym => item.id)
+    end
   end
 
   def create
@@ -76,7 +83,7 @@ class DocumentsController < ApplicationController
     approvalArray = params[:document][:approvals]
     approvalArray.each do |blah|
       next if blah.blank?
-      blah2 = Approval.new
+        blah2 = Approval.new
       blah2.user_id = blah.to_i
       blah2.document = @document
       blah2.status = 0
@@ -110,19 +117,19 @@ class DocumentsController < ApplicationController
   end
 
   def your_documents
-    set_document_filter "your_documents"
+    set_document_filter @@DF_YOUR_DOCUMENTS
     @new_documents = get_filtered_documents
     render 'handle_status.js.erb'
   end
 
   def your_actions
-    set_document_filter "your_actions"
+    set_document_filter @@DF_YOUR_ACTIONS
     @new_documents = get_filtered_documents
     render 'handle_status.js.erb'
   end
 
   def all_documents
-    set_document_filter "all_documents"
+    set_document_filter @@DF_ALL_DOCUMENTS
     @new_documents = get_filtered_documents
     render 'handle_status.js.erb'
   end
@@ -130,7 +137,7 @@ class DocumentsController < ApplicationController
   private
 
   def document_params
-    params.require(:document).permit(:doc, :document_type, :title, :user_id)
+    params.require(:document).permit(:doc, :document_type_id, :title, :user_id)
   end
 
   def check_current_organisation
@@ -171,9 +178,24 @@ class DocumentsController < ApplicationController
 
   def get_filtered_documents
     # check document and status filters
-    if get_document_filter == "your_actions"
+    if get_document_filter == @@DF_YOUR_ACTIONS
       org_id = get_current_organisation.id
-      if get_status_filter == 1 # for review
+      if get_status_filter == 0 # draft, you have been assigned as a reviewer or approver
+        documents_for_approval_or_review = []
+        reviews = Review.where user_id: current_user.id
+        reviews.each do |r|
+          if r.document.organisation_id == org_id && r.document.status == 0
+            documents_for_approval_or_review << r.document
+          end
+        end
+        approvals = Approval.where user_id: current_user.id
+        approvals.each do |a|
+          if a.document.organisation_id == org_id && a.document.status == 0
+            documents_for_approval_or_review << a.document
+          end
+        end
+        documents_for_approval_or_review
+      elsif get_status_filter == 1 # for review
         documents_for_review = []
         reviews = Review.where user_id: current_user.id
         reviews.each do |r|
@@ -203,12 +225,11 @@ class DocumentsController < ApplicationController
       end
     else
       where_hash = {organisation_id: get_current_organisation.id, status: get_status_filter}
-      if get_document_filter == "your_documents"  # do nothing if all documents
+      if get_document_filter == @@DF_YOUR_DOCUMENTS  # do nothing if all documents
         where_hash[:user_id] = current_user.id
       end
       print where_hash
       Document.where(where_hash)
     end
   end
-
 end
