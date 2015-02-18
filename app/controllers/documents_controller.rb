@@ -140,6 +140,10 @@ class DocumentsController < ApplicationController
     render 'handle_status.js.erb'
   end
 
+  def save_role_response
+
+  end
+
   private
 
   def document_params

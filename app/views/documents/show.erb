@@ -98,14 +98,19 @@
 
 <% if @is_reviewer || @is_approver %>
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
-        <% if @is_reviewer %>
-            Mark as reviewed
-        <% else %>
-            Approve
+    <% if @is_approver %>
+        <%= form_tag 'save_role_response', method: :put do %>
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+              <% if @is_reviewer %>
+                  Mark as reviewed
+              <% else %>
+                  Approve
+              <% end %>
+            </button>
+            <input type="submit" class="btn btn-danger btn-lg" value="Decline document" name="decline" />
         <% end %>
-    </button>
+    <% end %>
 
     <!-- Modal -->
     <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -128,7 +133,7 @@
                 I approve this document.
             <% end %>
             <br />
-            <%= form_tag method: :put do %>
+            <%= form_tag 'save_role_response', method: :put do %>
                 <%= label_tag(:email, "Email:") %>
                 <%= text_field_tag(:email) %>
                 <br />
@@ -149,4 +154,5 @@
         </div>
       </div>
     </div>
+
 <% end %>
