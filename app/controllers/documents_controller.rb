@@ -31,9 +31,7 @@ class DocumentsController < ApplicationController
       user = ou.user
       @users << [user.email, user.id]
     end
-#    current_organisation = get_current_organisation
-#    document_types = DocumentType.all.select {|d| d.organisation == current_organisation}
-#    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
+
     @current_user_id = current_user.id
 
     @document_types = Hash.new
