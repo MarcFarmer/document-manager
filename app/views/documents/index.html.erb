@@ -1,3 +1,5 @@
+<% selected_class = 'class=active'%>
+
 <h1>Documents</h1>
 
 <form action="<%= new_document_path %>">
@@ -5,10 +7,10 @@
 </form>
 <br />
 
-<ul class="nav nav-tabs nav-justified">
-    <li role="presentation"><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
-    <li role="presentation"><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
-    <li role="presentation"><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
+<ul class="nav nav-tabs nav-justified" id="document_filter_buttons">
+    <li role="presentation" <%= selected_class if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
+    <li role="presentation" <%= selected_class if @initial_document_filter == "your_actions" %>><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
+    <li role="presentation" <%= selected_class if @initial_document_filter == "all_documents" %>><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
 </ul>
 <br />
 
