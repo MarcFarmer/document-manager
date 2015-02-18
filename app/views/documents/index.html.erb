@@ -1,21 +1,26 @@
+<% selected_document_filter = 'class=active'%>
+<% selected_status_filter = 'active btn-warning'%>
+
 <h1>Documents</h1>
 <form action="<%= new_document_path %>">
   <button type="submit" class="btn btn-success">Create a new document</button>
 </form>
 <br />
 
-<ul class="nav nav-tabs nav-justified">
-    <li role="presentation"><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
-    <li role="presentation"><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
-    <li role="presentation"><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
+<ul class="nav nav-tabs nav-pills nav-justified" id="document_filter_buttons">
+    <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
+    <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_actions" %>><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
+    <li role="presentation" <%= selected_document_filter if @initial_document_filter == "all_documents" %>><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
 </ul>
 <br />
 
 <%= form_for :document, method: :put, remote: true do |f| %>
-    <%= f.submit "Draft", class: "btn btn-medium", name: "status" %>
-    <%= f.submit "For review", class: "btn btn-medium", name: "status" %>
-    <%= f.submit "For approval", class: "btn btn-medium", name: "status" %>
-    <%= f.submit "Approved", class: "btn btn-medium", name: "status" %>
+    <div id="status_filter_buttons">
+      <%= f.submit "Draft", class: "btn btn-medium #{selected_status_filter if @initial_status_filter == 0}", name: "status" %>
+      <%= f.submit "For review", class: "btn btn-medium #{selected_status_filter if @initial_status_filter == 1}", name: "status" %>
+      <%= f.submit "For approval", class: "btn btn-medium #{selected_status_filter if @initial_status_filter == 2}", name: "status" %>
+      <%= f.submit "Approved", class: "btn btn-medium #{selected_status_filter if @initial_status_filter == 3}", name: "status" %>
+    </div>
 
     <br />
     <br />
