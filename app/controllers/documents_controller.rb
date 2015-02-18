@@ -46,10 +46,11 @@ class DocumentsController < ApplicationController
 #    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
     @current_user_id = current_user.id
 
-  end
-
-  def saveToReviewApprove
-
+    @document_types = Array.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types << item.name
+    end
   end
 
   def create

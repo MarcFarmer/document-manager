@@ -18,6 +18,10 @@
       <%= form.select(:approvals, @users, {prompt: 'Select users to approve the document'}, { :multiple => true, :size => 20 } ) %>
     </div>
 
+    <div class="field">
+      <%= form.select(:document_type, @document_types, {:multiple => true, :size => 20}) %>
+    </div>
+
     <div class="actions">
       <%= form.submit %>
     </div>
