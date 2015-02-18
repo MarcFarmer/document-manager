@@ -210,5 +210,4 @@ class DocumentsController < ApplicationController
       Document.where(where_hash)
     end
   end
-
 end
