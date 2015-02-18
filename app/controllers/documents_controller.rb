@@ -199,7 +199,7 @@ class DocumentsController < ApplicationController
         documents_for_review = []
         reviews = Review.where user_id: current_user.id
         reviews.each do |r|
-          if r.document.organisation_id == org_id
+          if r.document.organisation_id == org_id && r.document.status == 1
             documents_for_review << r.document
           end
         end
