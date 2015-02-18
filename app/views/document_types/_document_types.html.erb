@@ -1,0 +1,27 @@
+<div id = "document_type_list">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>
+          Type
+        </th>
+        <th>
+          Edit
+        </th>
+        <th>
+          Delete
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% document_types.each do |type| %>
+        <tr>
+          <td><%= type.name %></td>
+          <td><%= link_to 'Edit', '#' %></td>
+          <td><%= link_to 'Destroy', type, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table> 
+</div>

@@ -16,6 +16,9 @@ Rails.application.routes.draw do
   get 'documents/dashboard'
   match 'documents', to: 'documents#handle_status', via: :put, as: :handle_status
 
+  resources :document_types
+  match '/document_types', to: 'document_types#create', via: :put, as: :create
+
   match 'organisations/save_current_organisation', to: 'organisations#save_current_organisation', via: :post
   match "organisations/accept_organisation_invitation", to: 'organisations#accept_organisation_invitation', via: :post
 

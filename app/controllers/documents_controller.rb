@@ -46,10 +46,11 @@ class DocumentsController < ApplicationController
 #    @document_types = document_types.each {|d| d.name}.zip(document_types.each {|d| d.id})
     @current_user_id = current_user.id
 
-  end
-
-  def saveToReviewApprove
-
+    @document_types = Hash.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types.merge!(item.name.to_sym => item.id)
+    end
   end
 
   def create
@@ -130,7 +131,7 @@ class DocumentsController < ApplicationController
   private
 
   def document_params
-    params.require(:document).permit(:doc, :document_type, :title, :user_id)
+    params.require(:document).permit(:doc, :document_type_id, :title, :user_id)
   end
 
   def check_current_organisation
@@ -210,5 +211,4 @@ class DocumentsController < ApplicationController
       Document.where(where_hash)
     end
   end
-
 end
