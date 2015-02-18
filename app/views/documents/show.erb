@@ -98,15 +98,31 @@
 
 <% if @is_reviewer || @is_approver %>
     <%= form_tag 'save_role_response', method: :put do %>
+        <%= hidden_field_tag :id, @document.id %>
+        <%= hidden_field_tag :relation_id, @relation_id %>
         <!-- Button trigger modal -->
-        <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
-          <% if @is_reviewer %>
-              Mark as reviewed
-          <% else %>
-              Approve
-          <% end %>
-        </button>
-        <input type="submit" class="btn btn-danger btn-lg" value="Decline document" name="decline" />
+        <% if @is_reviewer %>
+            <% if @review.status != 0 %>
+                <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+                      Mark as reviewed
+                </button>
+            <% else %>
+                You have already marked this document as reviewed.
+            <% end %>
+        <% else %>
+            <% if @approval.status != 0 %>
+                <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
+                  Approve
+                </button>
+            <% else %>
+                You have already approved this document.
+            <% end %>
+            <% if @approval.status != 1 %>
+                <input type="submit" class="btn btn-danger btn-lg" value="Decline document" name="decline" />
+            <% else %>
+                You have already declined this document.
+            <% end %>
+        <% end %>
     <% end %>
 
     <!-- Modal -->
