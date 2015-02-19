@@ -234,7 +234,7 @@ class DocumentsController < ApplicationController
       if get_document_filter == @@DF_YOUR_DOCUMENTS
         Document.where(organisation_id: get_current_organisation.id, status: get_status_filter, user_id: current_user.id)
       elsif get_document_filter == @@DF_ALL_DOCUMENTS
-        user_type = OrganisationUser.where(user: current_user, oranisation: get_current_organisation)[0].user_type
+        user_type = OrganisationUser.where(user: current_user, organisation: get_current_organisation)[0].user_type
         if is_owner(user_type)
           Document.where(organisation_id: get_current_organisation.id, status: get_status_filter)
         else   # for non-owner user, show document if user is: creator / reader / approver / reviewer
