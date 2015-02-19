@@ -16,6 +16,16 @@
     <br />
 
     <div class="field">
+      <%= form.label :assigned_to_all %><br>
+      <%= radio_button_tag('document[assigned_to_all]', 'true') %>
+      <%= label_tag(:assigned_to_all_true, "I want all users to read this document") %>
+      <%= radio_button_tag('document[assigned_to_all]', 'false') %>
+      <%= label_tag(:assigned_to_all_false, "I want to choose specific users who will read this document") %>
+    </div>
+
+    <br />
+
+    <div class="field">
       <h2>Select users to review the document</h2>
       <%= form.select(:reviews, @users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
       <h2>Select users to approve the document</h2>

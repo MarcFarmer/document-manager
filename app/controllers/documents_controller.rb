@@ -70,7 +70,7 @@ class DocumentsController < ApplicationController
     approvalArray = params[:document][:approvals]
     approvalArray.each do |blah|
       next if blah.blank?
-        blah2 = Approval.new
+      blah2 = Approval.new
       blah2.user_id = blah.to_i
       blah2.document = @document
       blah2.status = 0
@@ -177,7 +177,7 @@ class DocumentsController < ApplicationController
   end
 
   def document_params
-    params.require(:document).permit(:doc, :document_type_id, :title, :user_id)
+    params.require(:document).permit(:assigned_to_all, :doc, :document_type_id, :title, :user_id)
   end
 
   def check_current_organisation

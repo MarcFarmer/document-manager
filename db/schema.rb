@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150213021108) do
+ActiveRecord::Schema.define(version: 20150219225299) do
 
   create_table "approvals", force: :cascade do |t|
     t.integer  "status"
@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(version: 20150213021108) do
 
   create_table "document_types", force: :cascade do |t|
     t.string   "name"
-    t.string   "description"
     t.integer  "organisation_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
@@ -32,6 +31,7 @@ ActiveRecord::Schema.define(version: 20150213021108) do
   create_table "documents", force: :cascade do |t|
     t.string   "title"
     t.integer  "status"
+    t.boolean  "assigned_to_all"
     t.integer  "user_id"
     t.integer  "organisation_id"
     t.integer  "document_type_id"
@@ -59,6 +59,16 @@ ActiveRecord::Schema.define(version: 20150213021108) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
+
+  create_table "readers", force: :cascade do |t|
+    t.integer  "document_id"
+    t.integer  "user_id"
+    t.datetime "created_at",  null: false
+    t.datetime "updated_at",  null: false
+  end
+
+  add_index "readers", ["document_id"], name: "index_readers_on_document_id"
+  add_index "readers", ["user_id"], name: "index_readers_on_user_id"
 
   create_table "reviews", force: :cascade do |t|
     t.integer  "status"
