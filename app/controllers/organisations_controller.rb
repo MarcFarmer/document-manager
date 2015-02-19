@@ -1,5 +1,5 @@
 class OrganisationsController < ApplicationController
-  autocomplete :user, :email, :full => true
+  autocomplete :user, :email
 
   def index
     my_organisations = OrganisationUser.where(user_id: current_user.id)
@@ -48,20 +48,43 @@ class OrganisationsController < ApplicationController
   end
 
   def inviteSubmission
-    instantUserArray = params[:organisation_user][:invitedID]
 
-    instantUserArray.each do |blah|
-      if blah != ''
-        blah2 = OrganisationUser.new
-        blah2.user_id = blah.to_i
-        blah2.organisation_id = get_current_organisation.id
-        blah2.accepted = false
-        blah2.user_type = params[:organisation_user][:typesSelection].to_i
-        blah2.inviter_id = current_user.id
-        blah2.save
+    selected_email = params[:organisation_user][:user_email]
+
+
+    if User.where(email: selected_email).first.nil?
+      # Users not registered yet
+
+      redirect_to :organisations, notice: "Unregistreed user has been invited."
+    else
+      # Users that have registered
+      if selected_email != ''
+        invited_user = OrganisationUser.new
+        invited_user.user_id = User.where(email: selected_email).first.id
+        invited_user.organisation_id = get_current_organisation.id
+        invited_user.accepted = false
+        invited_user.user_type = params[:organisation_user][:typesSelection].to_i
+        invited_user.inviter_id = current_user.id
+        invited_user.save
       end
+      redirect_to :organisations, notice: "Registreed user has been invited."
     end
-    redirect_to :organisations, notice: "Selected users have been Invited"
+
+    # instantUserArray = params[:organisation_user][:invitedID]
+
+    # instantUserArray.each do |blah|
+    #   if blah != ''
+    #     blah2 = OrganisationUser.new
+    #     blah2.user_id = blah.to_i
+    #     blah2.organisation_id = get_current_organisation.id
+    #     blah2.accepted = false
+    #     blah2.user_type = params[:organisation_user][:typesSelection].to_i
+    #     blah2.inviter_id = current_user.id
+    #     blah2.save
+    #   end
+    # end
+
+    # redirect_to :organisations, notice: "Selected user have been invited"
   end
 
   def show
