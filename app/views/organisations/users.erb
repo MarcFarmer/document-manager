@@ -24,14 +24,7 @@
           <%= u[:user].email %>
         </td>
         <td>
-          <% ou = u[:organisation_user] %>
-          <% if ou.user_type == 1 %>
-              Basic
-          <% elsif u[:user].id == u[:organisation].user_id %>
-            Creator
-          <% else %>
-            Quality
-          <% end %>
+          <%= user_type_to_string u[:organisation_user].user_type %>
           <% if !u[:organisation_user].accepted %>
             (pending)
           <% end %>
@@ -46,6 +39,8 @@
                   Remove
               <% end %>
             </td>
+        <% else %>
+            <td colspan="2"></td>
         <% end %>
       </tr>
   <% end %>
