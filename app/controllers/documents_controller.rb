@@ -3,6 +3,11 @@ class DocumentsController < ApplicationController
   @@DF_YOUR_ACTIONS = "your_actions"
   @@DF_ALL_DOCUMENTS = "all_documents"
 
+  @@STATUS_DRAFT = 0
+  @@STATUS_FOR_REVIEW = 1
+  @@STATUS_FOR_APPROVAL = 2
+  @@STATUS_APPROVED = 3
+
   before_action :check_current_organisation
 
   def index
@@ -214,57 +219,75 @@ class DocumentsController < ApplicationController
   def get_filtered_documents
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
-      org_id = get_current_organisation.id
       if get_status_filter == 0 # draft, you have been assigned as a reviewer or approver
         documents_for_approval_or_review = []
-        reviews = Review.where user_id: current_user.id
-        reviews.each do |r|
-          if r.document.organisation_id == org_id && r.document.status == 0
-            documents_for_approval_or_review << r.document
-          end
-        end
-        approvals = Approval.where user_id: current_user.id
-        approvals.each do |a|
-          if a.document.organisation_id == org_id && a.document.status == 0
-            documents_for_approval_or_review << a.document
-          end
-        end
-        documents_for_approval_or_review
+        documents_for_approval_or_review << get_documents_for_review
+        documents_for_approval_or_review << get_documents_for_approval
       elsif get_status_filter == 1 # for review
-        documents_for_review = []
-        reviews = Review.where user_id: current_user.id
-        reviews.each do |r|
-          if r.document.organisation_id == org_id && r.document.status == 1
-            documents_for_review << r.document
-          end
-        end
-        documents_for_review
+        get_documents_for_review
       elsif get_status_filter == 2 # for approval
-        documents_for_approval = []
-        approvals = Approval.where user_id: current_user.id
-        approvals.each do |a|
-          if a.document.organisation_id == org_id && a.document.status == 2
-            documents_for_approval << a.document
-          end
-        end
-        documents_for_approval
+        get_documents_for_approval
       elsif get_status_filter == 3 # approved
-        documents_approved = []
-        approvals = Approval.where user_id: current_user.id
-        approvals.each do |a|
-          if a.document.organisation_id == org_id && a.document.status == 3
-            documents_approved << a.document
-          end
-        end
-        documents_approved
+        get_approved_documents
       end
     else
-      where_hash = {organisation_id: get_current_organisation.id, status: get_status_filter}
-      if get_document_filter == @@DF_YOUR_DOCUMENTS  # do nothing if all documents
-        where_hash[:user_id] = current_user.id
+      if get_document_filter == @@DF_YOUR_DOCUMENTS
+        Document.where(organisation_id: get_current_organisation.id, status: get_status_filter, user_id: current_user.id)
+      elsif get_document_filter == @@DF_ALL_DOCUMENTS
+        user_type = OrganisationUser.where(user: current_user, oranisation: get_current_organisation)[0].user_type
+        if is_owner(user_type)
+          Document.where(organisation_id: get_current_organisation.id, status: get_status_filter)
+        else   # for non-owner user, show document if user is: creator / reader / approver / reviewer
+          reader_documents = []   # TODO
+          case get_status_filter
+            when @@STATUS_DRAFT   # your documents and documents where you are a reader
+              get_your_documents(@@STATUS_DRAFT) << reader_documents
+            when @@STATUS_FOR_REVIEW   # your documents and documents where you are a reviewer
+              get_your_documents(@@STATUS_FOR_REVIEW) << get_documents_for_review << reader_documents
+            when @@STATUS_FOR_APPROVAL   # your documents and documents where you are an approver
+              get_your_documents(@@STATUS_FOR_APPROVAL) << get_documents_for_approval << reader_documents
+            when @@STATUS_APPROVED   # your documents and documents where you are an approver, and document is approved
+              get_your_documents(@@STATUS_APPROVED) << get_approved_documents << reader_documents
+          end
+        end
       end
-      print where_hash
-      Document.where(where_hash)
     end
+  end
+
+  def get_documents_for_review
+    documents_for_review = []
+    reviews = Review.where user_id: current_user.id
+    reviews.each do |r|
+      if r.document.organisation == get_current_organisation && r.document.status == @@STATUS_FOR_REVIEW
+        documents_for_review << r.document
+      end
+    end
+    documents_for_review
+  end
+
+  def get_documents_for_approval
+    documents_for_approval = []
+    approvals = Approval.where user_id: current_user.id
+    approvals.each do |a|
+      if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_FOR_APPROVAL
+        documents_for_approval << a.document
+      end
+    end
+    documents_for_approval
+  end
+
+  def get_approved_documents
+    documents_approved = []
+    approvals = Approval.where user_id: current_user.id
+    approvals.each do |a|
+      if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_APPROVED
+        documents_approved << a.document
+      end
+    end
+    documents_approved
+  end
+
+  def get_your_documents status
+    Document.where(organisation_id: get_current_organisation.id, status: status, user_id: current_user.id)
   end
 end

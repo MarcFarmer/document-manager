@@ -8,6 +8,22 @@ class ApplicationController < ActionController::Base
 
   public
 
+  @@USER_TYPE_QUALITY = 0
+  @@USER_TYPE_BASIC = 1
+  @@USER_TYPE_OWNER = 2
+
+  def is_owner type
+    type == @@USER_TYPE_OWNER ? true : false
+  end
+
+  def is_quality type
+    type == @@USER_TYPE_QUALITY ? true : false
+  end
+
+  def is_basic type
+    type == @@USER_TYPE_BASIC ? true : false
+  end
+
   def set_current_organisation_id org_id
     session[:current_organisation_id] = org_id
   end
