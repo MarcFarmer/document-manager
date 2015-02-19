@@ -59,7 +59,7 @@
   </nav>
 
   <% flash.each do |key, value| %>
-      <%= content_tag :div, value, class: "flash #{key}" %>
+      <div class="bg-warning alert alert-<%= key %>"><%= value %></div>
   <% end %>
 
   <%= yield %>

@@ -23,7 +23,6 @@ ActiveRecord::Schema.define(version: 20150213021108) do
 
   create_table "document_types", force: :cascade do |t|
     t.string   "name"
-    t.string   "description"
     t.integer  "organisation_id"
     t.datetime "created_at",      null: false
     t.datetime "updated_at",      null: false
