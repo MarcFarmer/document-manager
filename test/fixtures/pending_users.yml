@@ -2,8 +2,8 @@
 
 one:
   email: MyString
-  type: 
+  user_type: MyString
 
 two:
   email: MyString
-  type: 
+  user_type: MyString

@@ -54,6 +54,10 @@ class OrganisationsController < ApplicationController
 
     if User.where(email: selected_email).first.nil?
       # Users not registered yet
+      pending_user = PendingUser.new
+      pending_user.email = selected_email
+      pending_user.user_type = params[:organisation_user][:typesSelection].to_i
+      pending_user.save
 
       redirect_to :organisations, notice: "Unregistreed user has been invited."
     else
