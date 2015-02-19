@@ -23,7 +23,7 @@ class OrganisationsController < ApplicationController
 
     organisation_user = OrganisationUser.new(organisation: @organisation, user: current_user)   # current user is organisation creator
     organisation_user.accepted = true
-    organisation_user.user_type = 0
+    organisation_user.user_type = 2
     organisation_user.inviter_id = current_user.id
 
     if @organisation.save && organisation_user.save
@@ -35,7 +35,7 @@ class OrganisationsController < ApplicationController
   end
 
   def invite
-    @typesOptions = [['Quality', 0],['Basic', 1]]
+    @typesOptions = [['Quality', 0], ['Basic', 1], ['Owner', 2]]
     @users = []
     users = User.all
     users.each do |u|
@@ -69,6 +69,7 @@ class OrganisationsController < ApplicationController
   def users
     @organisation_users = []
     @organisation_user_id = get_current_organisation.id
+    @organisation_user_type = OrganisationUser.find_by_user_id_and_organisation_id(current_user.id, @organisation_user_id).user_type
     users = User.all
     users.each do |u|
       ou = OrganisationUser.find_by_user_id_and_organisation_id(u.id, get_current_organisation.id)
