@@ -1,4 +1,6 @@
 class OrganisationsController < ApplicationController
+  autocomplete :user, :email, :full => true
+
   def index
     my_organisations = OrganisationUser.where(user_id: current_user.id)
     @organisations = []

@@ -1,11 +1,11 @@
 <%= form_for :organisation_user do |form| %>
 
   <%= form.label :email %><strong>:</strong>
-  <%= form.text_field :email %>
+  <%= form.autocomplete_field :user_email, autocomplete_user_email_organisations_path %>
 
-  <br /><br />
+  <%# <%= form.text_field :email %>
+  <%# <%= form.select(:invitedID, @users, {:prompt => "select user to invite"}, { :multiple => true, :size => 20 } ) %>
 
-  <%= form.select(:invitedID, @users, {:prompt => "select user to invite"}, { :multiple => true, :size => 20 } ) %>
 
   <br /><br />
 

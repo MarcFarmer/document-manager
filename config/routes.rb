@@ -6,7 +6,11 @@ Rails.application.routes.draw do
       delete :remove_user
     end
     put :save_current_organisation#, :on => :collection
+
+    get :autocomplete_user_email, :on => :collection
   end
+
+
 
   devise_for :users
   resources :users

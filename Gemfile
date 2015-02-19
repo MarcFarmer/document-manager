@@ -2,6 +2,9 @@ source 'http://rubygems.org'
 
 gem 'devise', '3.4.1'
 
+gem 'rails4-autocomplete', '1.1.1'
+
+gem 'jquery-ui-rails', '5.0.3'
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
