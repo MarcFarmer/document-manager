@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :null_session
 
   before_action :authenticate_user!
-  before_action :get_current_organisation
+  before_action :setup_header
 
   public
 
@@ -29,12 +29,19 @@ class ApplicationController < ActionController::Base
   end
 
   def get_current_organisation
-    @current_user_is_owner = false
-
     if session[:current_organisation_id] == nil
-      @current_organisation = nil
+      nil
     else
-      @current_organisation = Organisation.find_by_id session[:current_organisation_id].to_i
+      Organisation.find_by_id session[:current_organisation_id].to_i
+    end
+  end
+
+  def setup_header
+    @current_organisation = get_current_organisation
+
+    if @current_organisation == nil
+      @current_user_is_owner = false
+    else
       ou = OrganisationUser.where(user: current_user, organisation: @current_organisation)[0]
       if is_owner(ou.user_type)
         @current_user_is_owner = true

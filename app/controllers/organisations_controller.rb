@@ -35,8 +35,8 @@ class OrganisationsController < ApplicationController
   end
 
   def invite
-    if !is_owner(current_user.id)
-      redirect_to :index, notice: 'Only owners can invite users.'
+    if !@current_user_is_owner
+      redirect_to :organisations, notice: 'Only owners can invite users.'
     end
     @typesOptions = [['Quality', 0], ['Basic', 1], ['Owner', 2]]
     @users = []
