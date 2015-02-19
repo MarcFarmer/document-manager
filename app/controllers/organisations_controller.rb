@@ -2,10 +2,23 @@ class OrganisationsController < ApplicationController
   autocomplete :user, :email
 
   def index
+    pending_user = PendingUser.where(email: current_user.email).first
+    if !pending_user.nil?
+      # Current user is in the PendingUser table
+      invited_user = OrganisationUser.new
+      invited_user.user_id = User.where(email: current_user.email).first.id
+      # invited_user.organisation_id = get_current_organisation.id
+      invited_user.accepted = true
+      invited_user.user_type = pending_user.user_type.to_i
+      invited_user.inviter_id = pending_user.inviter_id
+      invited_user.save
+      
+      pending_user.destroy
+    end
+
     my_organisations = OrganisationUser.where(user_id: current_user.id)
     @organisations = []
     @organisation_invitations= []
-
     my_organisations.each do |ou|
       if ou.accepted
         @organisations << Organisation.find(ou.organisation_id)
@@ -57,6 +70,7 @@ class OrganisationsController < ApplicationController
       pending_user = PendingUser.new
       pending_user.email = selected_email
       pending_user.user_type = params[:organisation_user][:typesSelection].to_i
+      pending_user.inviter_id = current_user.id
       pending_user.save
 
       redirect_to :organisations, notice: "Unregistreed user has been invited."
