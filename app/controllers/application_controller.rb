@@ -51,7 +51,13 @@ class ApplicationController < ActionController::Base
 
   def check_current_organisation
     if get_current_organisation == nil
-      redirect_to root_path, notice: "You must select an organisation before viewing documents."
+      redirect_to root_path, notice: 'You must select an organisation before viewing documents.'
+    end
+  end
+
+  def check_current_user_is_owner
+    if !is_owner(OrganisationUser.where(user: current_user, organisation: @current_organisation)[0].user_type)
+      redirect_to root_path, notice: 'Only owner accounts can manage document types.'
     end
   end
 end

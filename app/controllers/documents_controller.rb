@@ -1,7 +1,7 @@
 class DocumentsController < ApplicationController
-  @@DF_YOUR_DOCUMENTS = "your_documents"
-  @@DF_YOUR_ACTIONS = "your_actions"
-  @@DF_ALL_DOCUMENTS = "all_documents"
+  @@DF_YOUR_DOCUMENTS = 'your_documents'
+  @@DF_YOUR_ACTIONS = 'your_actions'
+  @@DF_ALL_DOCUMENTS = 'all_documents'
 
   @@STATUS_DRAFT = 0
   @@STATUS_FOR_REVIEW = 1
@@ -17,7 +17,7 @@ class DocumentsController < ApplicationController
     if get_status_filter == nil
       set_status_filter @@STATUS_DRAFT
     end
-    @documents = get_filtered_documents    # view draft documents by current user default
+    @documents = get_filtered_documents # view draft documents by current user default
     @initial_document_filter = get_document_filter
     @initial_status_filter = get_status_filter
     @current_user_is_basic = is_basic(OrganisationUser.where(organisation: get_current_organisation, user: current_user)[0].user_type)
@@ -29,7 +29,7 @@ class DocumentsController < ApplicationController
 
   def new
     if is_basic(OrganisationUser.where(organisation: get_current_organisation, user: current_user)[0].user_type)
-      redirect_to :documents, notice: "Basic user accounts cannot create documents."
+      redirect_to :documents, notice: 'Basic user accounts cannot create documents.'
     end
 
     @document = Document.new
@@ -96,14 +96,14 @@ class DocumentsController < ApplicationController
   end
 
   def handle_status
-    if params[:status] != nil   # view documents with different status
+    if params[:status] != nil # view documents with different status
       set_status_filter status_change_to_int params[:status]
       @new_documents = get_filtered_documents
       respond_to do |format|
         format.js
       end
-    else    # change status of one or more documents
-      if params[:selected_documents] != nil   # at least one document selected
+    else # change status of one or more documents
+      if params[:selected_documents] != nil # at least one document selected
         new_status = status_change_to_int params[:submit]
         params[:selected_documents].each do |doc_id, select_action|
           d = Document.find(doc_id.to_i)
@@ -214,11 +214,11 @@ class DocumentsController < ApplicationController
       0
     elsif status == "Send for review" || status == "For review"
       1
-    elsif status == "Send for approval"  || status == "For approval"
+    elsif status == "Send for approval" || status == "For approval"
       2
     elsif status == "Approved"
       3
-    else    # unknown
+    else # unknown
       -1
     end
   end
@@ -258,15 +258,15 @@ class DocumentsController < ApplicationController
         user_type = OrganisationUser.where(user: current_user, organisation: get_current_organisation)[0].user_type
         if is_owner(user_type)
           Document.where(organisation_id: get_current_organisation.id, status: get_status_filter)
-        else   # for non-owner user, show document if user is: creator / reader / approver / reviewer
+        else # for non-owner user, show document if user is: creator / reader / approver / reviewer
           case get_status_filter
-            when @@STATUS_DRAFT   # your documents and documents where you are a reader
+            when @@STATUS_DRAFT # your documents and documents where you are a reader
               get_your_documents(@@STATUS_DRAFT) + get_reader_documents(@@STATUS_DRAFT)
-            when @@STATUS_FOR_REVIEW   # your documents and documents where you are a reviewer
+            when @@STATUS_FOR_REVIEW # your documents and documents where you are a reviewer
               get_your_documents(@@STATUS_FOR_REVIEW) + get_documents_for_review + get_reader_documents(@@STATUS_FOR_REVIEW)
-            when @@STATUS_FOR_APPROVAL   # your documents and documents where you are an approver
+            when @@STATUS_FOR_APPROVAL # your documents and documents where you are an approver
               get_your_documents(@@STATUS_FOR_APPROVAL) + get_documents_for_approval + get_reader_documents(@@STATUS_FOR_APPROVAL)
-            when @@STATUS_APPROVED   # your documents and documents where you are an approver, and document is approved
+            when @@STATUS_APPROVED # your documents and documents where you are an approver, and document is approved
               get_your_documents(@@STATUS_APPROVED) + get_approved_documents + get_reader_documents(@@STATUS_APPROVED)
           end
         end
