@@ -6,6 +6,10 @@ gem 'rails4-autocomplete', '1.1.1'
 
 gem 'jquery-ui-rails', '5.0.3'
 
+
+#TinyMCE
+gem 'tinymce-rails'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 # Use sqlite3 as the database for Active Record
@@ -58,6 +62,8 @@ group :development, :test do
 
   #gem for creating existing data to seed file
   gem 'seed_dump'
+
+
 
 end
 
