@@ -2,10 +2,12 @@
 <% selected_status_filter = 'active btn-warning'%>
 
 <h1>Documents</h1>
-<form action="<%= new_document_path %>">
-  <button type="submit" class="btn btn-success">Create a new document</button>
-</form>
-<br />
+<% if !@current_user_is_basic %>
+    <form action="<%= new_document_path %>">
+      <button type="submit" class="btn btn-success">Create a new document</button>
+    </form>
+    <br />
+<% end %>
 
 <ul class="nav nav-tabs nav-pills nav-justified" id="document_filter_buttons">
     <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>

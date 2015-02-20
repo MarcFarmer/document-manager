@@ -9,25 +9,18 @@ class DocumentsController < ApplicationController
   @@STATUS_APPROVED = 3
 
   before_action :check_current_organisation
-  before_action :set_vars
-
-  def set_vars
-    @@DF_YOUR_DOCUMENTS = "your_documents"
-    @@DF_YOUR_ACTIONS = "your_actions"
-    @@DF_ALL_DOCUMENTS = "all_documents"
-  end
 
   def index
     if get_document_filter == nil
       set_document_filter @@DF_YOUR_DOCUMENTS
     end
     if get_status_filter == nil
-      set_status_filter 0
+      set_status_filter @@STATUS_DRAFT
     end
     @documents = get_filtered_documents    # view draft documents by current user default
     @initial_document_filter = get_document_filter
     @initial_status_filter = get_status_filter
-    @current_user = current_user
+    @current_user_is_basic = is_basic(OrganisationUser.where(organisation: get_current_organisation, user: current_user)[0].user_type)
   end
 
   def show
@@ -35,6 +28,10 @@ class DocumentsController < ApplicationController
   end
 
   def new
+    if is_basic(OrganisationUser.where(organisation: get_current_organisation, user: current_user)[0].user_type)
+      redirect_to :documents, notice: "Basic user accounts cannot create documents."
+    end
+
     @document = Document.new
     current_user_id = current_user.id
     current_org_id = get_current_organisation.id
@@ -57,7 +54,7 @@ class DocumentsController < ApplicationController
   def create
     @document = Document.new(document_params)
     @document.organisation = get_current_organisation
-    @document.status = 0
+    @document.status = @@STATUS_DRAFT
 
     if @document.save
       redirect_to action: 'index', notice: 'Document was successfully created.'
@@ -137,12 +134,6 @@ class DocumentsController < ApplicationController
   def all_documents
     set_document_filter @@DF_ALL_DOCUMENTS
     @new_documents = get_filtered_documents
-    puts '=================================================================\n'
-    puts @new_documents
-    puts @new_documents.class
-    @new_documents.each do |d|
-      puts d.title
-    end
     render 'handle_status.js.erb'
   end
 
@@ -199,10 +190,10 @@ class DocumentsController < ApplicationController
 
     @review = Review.find_by_user_id_and_document_id current_user.id, @document.id
     @approval = Approval.find_by_user_id_and_document_id current_user.id, @document.id
-    if @document.status == 1 && @review != nil
+    if @document.status == @@STATUS_FOR_REVIEW && @review != nil
       @is_reviewer = true
       @relation_id = @review.id
-    elsif @document.status == 2 && @approval != nil
+    elsif @document.status == @@STATUS_FOR_APPROVAL && @approval != nil
       @is_approver = true
       @relation_id = @approval.id
     end
@@ -251,13 +242,13 @@ class DocumentsController < ApplicationController
   def get_filtered_documents
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
-      if get_status_filter == 0 # draft, you have been assigned as a reviewer or approver
+      if get_status_filter == @@STATUS_DRAFT # draft, you have been assigned as a reviewer or approver
         get_documents_for_review + get_documents_for_approval
-      elsif get_status_filter == 1 # for review
+      elsif get_status_filter == @@STATUS_FOR_REVIEW
         get_documents_for_review
-      elsif get_status_filter == 2 # for approval
+      elsif get_status_filter == @@STATUS_FOR_APPROVAL
         get_documents_for_approval
-      elsif get_status_filter == 3 # approved
+      elsif get_status_filter == @@STATUS_APPROVED
         get_approved_documents
       end
     else
