@@ -57,6 +57,17 @@ class DocumentsController < ApplicationController
       render action: 'new', alert: 'Document could not be created'
     end
 
+    if params[:document][:assigned_to_all] != nil
+      readerIds = params[:document][:readers]
+      readerIds.each do |id|
+        next if id.blank?
+        r = Reader.new
+        r.user_id = id.to_i
+        r.document = @document
+        r.save
+      end
+    end
+
     reviewerArray = params[:document][:reviews]
     reviewerArray.each do |blah|
       next if blah.blank?
@@ -150,6 +161,13 @@ class DocumentsController < ApplicationController
   def setup_show
     @document = Document.find(params[:id])
     @user = @document.user
+
+    @reader_users = []
+
+    readers = Reader.where(document: @document)
+    readers.each do |r|
+      @reader_users << {reader: r, user: r.user}
+    end
 
     @review_users = []
 
