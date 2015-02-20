@@ -252,9 +252,7 @@ class DocumentsController < ApplicationController
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
       if get_status_filter == 0 # draft, you have been assigned as a reviewer or approver
-        documents_for_approval_or_review = []
-        documents_for_approval_or_review << get_documents_for_review
-        documents_for_approval_or_review << get_documents_for_approval
+        get_documents_for_review + get_documents_for_approval
       elsif get_status_filter == 1 # for review
         get_documents_for_review
       elsif get_status_filter == 2 # for approval
@@ -270,16 +268,15 @@ class DocumentsController < ApplicationController
         if is_owner(user_type)
           Document.where(organisation_id: get_current_organisation.id, status: get_status_filter)
         else   # for non-owner user, show document if user is: creator / reader / approver / reviewer
-          reader_documents = [] # TODO reader documents
           case get_status_filter
             when @@STATUS_DRAFT   # your documents and documents where you are a reader
-              get_your_documents(@@STATUS_DRAFT) + reader_documents
+              get_your_documents(@@STATUS_DRAFT) + get_reader_documents(@@STATUS_DRAFT)
             when @@STATUS_FOR_REVIEW   # your documents and documents where you are a reviewer
-              get_your_documents(@@STATUS_FOR_REVIEW) + get_documents_for_review + reader_documents
+              get_your_documents(@@STATUS_FOR_REVIEW) + get_documents_for_review + get_reader_documents(@@STATUS_FOR_REVIEW)
             when @@STATUS_FOR_APPROVAL   # your documents and documents where you are an approver
-              get_your_documents(@@STATUS_FOR_APPROVAL) + get_documents_for_approval + reader_documents
+              get_your_documents(@@STATUS_FOR_APPROVAL) + get_documents_for_approval + get_reader_documents(@@STATUS_FOR_APPROVAL)
             when @@STATUS_APPROVED   # your documents and documents where you are an approver, and document is approved
-              get_your_documents(@@STATUS_APPROVED) + get_approved_documents + reader_documents
+              get_your_documents(@@STATUS_APPROVED) + get_approved_documents + get_reader_documents(@@STATUS_APPROVED)
           end
         end
       end
@@ -321,5 +318,16 @@ class DocumentsController < ApplicationController
 
   def get_your_documents status
     Document.where(organisation_id: get_current_organisation.id, status: status, user_id: current_user.id)
+  end
+
+  def get_reader_documents status
+    documents = Document.where(organisation: get_current_organisation, status: status)
+    reader_documents = []
+    documents.each do |d|
+      if d.assigned_to_all || Reader.where(user: User.first, document: Document.first).count > 0
+        reader_documents << d
+      end
+    end
+    reader_documents
   end
 end
