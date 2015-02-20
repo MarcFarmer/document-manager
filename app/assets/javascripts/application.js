@@ -16,3 +16,5 @@
 //= require jquery.turbolinks
 //= require bootstrap
 //= require_tree .
+//= require jquery-ui
+//= require autocomplete-rails

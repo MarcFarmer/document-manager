@@ -60,6 +60,15 @@ ActiveRecord::Schema.define(version: 20150219225299) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "pending_users", force: :cascade do |t|
+    t.string   "email"
+    t.string   "user_type"
+    t.integer  "organisation_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "inviter_id"
+  end
+
   create_table "readers", force: :cascade do |t|
     t.integer  "document_id"
     t.integer  "user_id"
