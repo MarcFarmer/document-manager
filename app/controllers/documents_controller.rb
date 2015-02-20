@@ -9,6 +9,13 @@ class DocumentsController < ApplicationController
   @@STATUS_APPROVED = 3
 
   before_action :check_current_organisation
+  before_action :set_vars
+
+  def set_vars
+    @@DF_YOUR_DOCUMENTS = "your_documents"
+    @@DF_YOUR_ACTIONS = "your_actions"
+    @@DF_ALL_DOCUMENTS = "all_documents"
+  end
 
   def index
     if get_document_filter == nil
@@ -20,6 +27,7 @@ class DocumentsController < ApplicationController
     @documents = get_filtered_documents    # view draft documents by current user default
     @initial_document_filter = get_document_filter
     @initial_status_filter = get_status_filter
+    @current_user = current_user
   end
 
   def show
@@ -129,6 +137,12 @@ class DocumentsController < ApplicationController
   def all_documents
     set_document_filter @@DF_ALL_DOCUMENTS
     @new_documents = get_filtered_documents
+    puts '=================================================================\n'
+    puts @new_documents
+    puts @new_documents.class
+    @new_documents.each do |d|
+      puts d.title
+    end
     render 'handle_status.js.erb'
   end
 
@@ -256,16 +270,16 @@ class DocumentsController < ApplicationController
         if is_owner(user_type)
           Document.where(organisation_id: get_current_organisation.id, status: get_status_filter)
         else   # for non-owner user, show document if user is: creator / reader / approver / reviewer
-          reader_documents = []   # TODO
+          reader_documents = [] # TODO reader documents
           case get_status_filter
             when @@STATUS_DRAFT   # your documents and documents where you are a reader
-              get_your_documents(@@STATUS_DRAFT) << reader_documents
+              get_your_documents(@@STATUS_DRAFT) + reader_documents
             when @@STATUS_FOR_REVIEW   # your documents and documents where you are a reviewer
-              get_your_documents(@@STATUS_FOR_REVIEW) << get_documents_for_review << reader_documents
+              get_your_documents(@@STATUS_FOR_REVIEW) + get_documents_for_review + reader_documents
             when @@STATUS_FOR_APPROVAL   # your documents and documents where you are an approver
-              get_your_documents(@@STATUS_FOR_APPROVAL) << get_documents_for_approval << reader_documents
+              get_your_documents(@@STATUS_FOR_APPROVAL) + get_documents_for_approval + reader_documents
             when @@STATUS_APPROVED   # your documents and documents where you are an approver, and document is approved
-              get_your_documents(@@STATUS_APPROVED) << get_approved_documents << reader_documents
+              get_your_documents(@@STATUS_APPROVED) + get_approved_documents + reader_documents
           end
         end
       end

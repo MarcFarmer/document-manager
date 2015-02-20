@@ -23,7 +23,7 @@
   <% documents.each do |d| %>
       <tr>
         <td>
-              <%= link_to d.title, document_path(d.id) %>
+          <%= link_to d.title, document_path(d.id) %>
         </td>
         <td>
           <%= d.created_at %>
@@ -35,7 +35,9 @@
           <%= d.document_type.name %>
         </td>
         <td>
-          <input id=<%= "#{d.id}" %> name=<%= "[selected_documents][#{d.id}]" %> type="checkbox">
+          <% if d.user == @current_user %>
+              <input id=<%= "#{d.id}" %> name=<%= "[selected_documents][#{d.id}]" %> type="checkbox">
+          <% end %>
         </td>
       </tr>
   <% end %>
