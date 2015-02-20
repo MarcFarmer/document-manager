@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150213021108) do
+ActiveRecord::Schema.define(version: 20150219131336) do
 
   create_table "approvals", force: :cascade do |t|
     t.integer  "status"
@@ -57,6 +57,15 @@ ActiveRecord::Schema.define(version: 20150213021108) do
     t.integer  "user_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "pending_users", force: :cascade do |t|
+    t.string   "email"
+    t.string   "user_type"
+    t.integer  "organisation_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
+    t.integer  "inviter_id"
   end
 
   create_table "reviews", force: :cascade do |t|
