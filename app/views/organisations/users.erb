@@ -24,20 +24,13 @@
           <%= u[:user].email %>
         </td>
         <td>
-          <% ou = u[:organisation_user] %>
-          <% if ou.user_type == 1 %>
-              Basic
-          <% elsif u[:user].id == u[:organisation].user_id %>
-            Creator
-          <% else %>
-            Quality
-          <% end %>
+          <%= user_type_to_string u[:organisation_user].user_type %>
           <% if !u[:organisation_user].accepted %>
             (pending)
           <% end %>
         </td>
-        <%# creator can remove anyone except themselves AND inviter can remove invitation they created %>
-        <% if (current_user.id == u[:organisation].user_id && u[:user].id != current_user.id) || (current_user.id == u[:organisation_user].inviter_id && u[:organisation_user].accepted == false) %>
+        <%# owners can remove any other users AND invitations they created %>
+        <% if (is_owner(@organisation_user_type) && is_owner(u[:organisation_user].user_type) == false) || (current_user.id == u[:organisation_user].inviter_id && u[:organisation_user].accepted == false) %>
             <td>
               Edit
             </td>
@@ -46,6 +39,8 @@
                   Remove
               <% end %>
             </td>
+        <% else %>
+            <td colspan="2"></td>
         <% end %>
       </tr>
   <% end %>

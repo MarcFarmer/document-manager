@@ -3,6 +3,7 @@ class CreateDocuments < ActiveRecord::Migration
     create_table :documents do |t|
       t.string :title
       t.integer :status     # 0: draft, 1: for review, 2: for approval, 3: approved
+      t.boolean :assigned_to_all
 
       t.belongs_to :user
       t.belongs_to :organisation
