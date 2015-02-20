@@ -4,6 +4,7 @@ class CreatePendingUsers < ActiveRecord::Migration
       t.string :email
       t.string :user_type
 
+      t.belongs_to :organisation
       t.timestamps null: false
     end
   end

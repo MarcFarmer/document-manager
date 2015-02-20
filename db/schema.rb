@@ -62,8 +62,9 @@ ActiveRecord::Schema.define(version: 20150219131336) do
   create_table "pending_users", force: :cascade do |t|
     t.string   "email"
     t.string   "user_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.integer  "organisation_id"
+    t.datetime "created_at",      null: false
+    t.datetime "updated_at",      null: false
     t.integer  "inviter_id"
   end
 
