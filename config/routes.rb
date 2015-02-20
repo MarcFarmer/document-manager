@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     put :save_current_organisation#, :on => :collection
   end
 
-  devise_for :users
+  devise_for :users, :controllers => {:registrations => "registrations"}
   resources :users
 
   resources :documents do
@@ -35,6 +35,8 @@ Rails.application.routes.draw do
   match "all_documents" => 'documents#all_documents', via: :post, as: 'all_documents'
 
   root to: "organisations#index"
+
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
