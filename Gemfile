@@ -6,6 +6,9 @@ gem 'rails4-autocomplete', '1.1.1'
 
 gem 'jquery-ui-rails', '5.0.3'
 
+# For file uploading
+gem 'paperclip', '~> 4.2'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 
@@ -55,9 +58,6 @@ group :development, :test do
 
   #solving object type not support error
   gem 'coffee-script-source', '1.8.0'
-
-  #for file uploading
-  gem 'paperclip', '~> 4.2'
 
   #gem for creating existing data to seed file
   gem 'seed_dump'
