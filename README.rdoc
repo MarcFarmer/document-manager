@@ -1,2 +1,2 @@
 == Website Application
-document-manager-uoa.herokuapp.com
+[http://document-manager-uoa.herokuapp.com]
