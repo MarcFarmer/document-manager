@@ -1,9 +1,25 @@
 class OrganisationsController < ApplicationController
+  autocomplete :user, :email
+
   def index
+    pending_user = PendingUser.where(email: current_user.email).first
+    if !pending_user.nil?
+      # Current user is in the PendingUser table
+      # Automatically make current user of the organisation
+      invited_user = OrganisationUser.new
+      invited_user.user_id = User.where(email: current_user.email).first.id
+      invited_user.accepted = true
+      invited_user.user_type = pending_user.user_type.to_i
+      invited_user.inviter_id = pending_user.inviter_id
+      invited_user.organisation_id = pending_user.organisation_id
+      invited_user.save
+      
+      pending_user.destroy
+    end
+
     my_organisations = OrganisationUser.where(user_id: current_user.id)
     @organisations = []
     @organisation_invitations= []
-
     my_organisations.each do |ou|
       if ou.accepted
         @organisations << Organisation.find(ou.organisation_id)
@@ -23,7 +39,7 @@ class OrganisationsController < ApplicationController
 
     organisation_user = OrganisationUser.new(organisation: @organisation, user: current_user)   # current user is organisation creator
     organisation_user.accepted = true
-    organisation_user.user_type = 0
+    organisation_user.user_type = 2
     organisation_user.inviter_id = current_user.id
 
     if @organisation.save && organisation_user.save
@@ -35,7 +51,10 @@ class OrganisationsController < ApplicationController
   end
 
   def invite
-    @typesOptions = [['Quality', 0],['Basic', 1]]
+    if !@current_user_is_owner
+      redirect_to :organisations, notice: 'Only owners can invite users.'
+    end
+    @typesOptions = [['Quality', 0], ['Basic', 1], ['Owner', 2]]
     @users = []
     users = User.all
     users.each do |u|
@@ -46,20 +65,32 @@ class OrganisationsController < ApplicationController
   end
 
   def inviteSubmission
-    instantUserArray = params[:organisation_user][:invitedID]
 
-    instantUserArray.each do |blah|
-      if blah != ''
-        blah2 = OrganisationUser.new
-        blah2.user_id = blah.to_i
-        blah2.organisation_id = get_current_organisation.id
-        blah2.accepted = false
-        blah2.user_type = params[:organisation_user][:typesSelection].to_i
-        blah2.inviter_id = current_user.id
-        blah2.save
+    selected_email = params[:organisation_user][:user_email]
+
+    if User.where(email: selected_email).first.nil?
+      # Users not registered yet
+      pending_user = PendingUser.new
+      pending_user.email = selected_email
+      pending_user.user_type = params[:organisation_user][:typesSelection].to_i
+      pending_user.inviter_id = current_user.id
+      pending_user.organisation_id = get_current_organisation.id
+      pending_user.save
+
+      redirect_to :organisations, notice: "Unregistreed user has been invited."
+    else
+      # Users that have registered
+      if selected_email != ''
+        invited_user = OrganisationUser.new
+        invited_user.user_id = User.where(email: selected_email).first.id
+        invited_user.organisation_id = get_current_organisation.id
+        invited_user.accepted = false
+        invited_user.user_type = params[:organisation_user][:typesSelection].to_i
+        invited_user.inviter_id = current_user.id
+        invited_user.save
       end
+      redirect_to :organisations, notice: "Registreed user has been invited."
     end
-    redirect_to :organisations, notice: "Selected users have been Invited"
   end
 
   def show
@@ -69,6 +100,7 @@ class OrganisationsController < ApplicationController
   def users
     @organisation_users = []
     @organisation_user_id = get_current_organisation.id
+    @organisation_user_type = OrganisationUser.find_by_user_id_and_organisation_id(current_user.id, @organisation_user_id).user_type
     users = User.all
     users.each do |u|
       ou = OrganisationUser.find_by_user_id_and_organisation_id(u.id, get_current_organisation.id)

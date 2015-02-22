@@ -5,8 +5,8 @@ class User < ActiveRecord::Base
   has_many :documents
   has_many :organisation_users
 
-
   has_many :documents, through: :approvals
+  has_many :documents, through: :readers
   has_many :documents, through: :reviews
   has_many :organisations, through: :organisation_users
 

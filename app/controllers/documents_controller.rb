@@ -1,7 +1,12 @@
 class DocumentsController < ApplicationController
-  @@DF_YOUR_DOCUMENTS = "your_documents"
-  @@DF_YOUR_ACTIONS = "your_actions"
-  @@DF_ALL_DOCUMENTS = "all_documents"
+  @@DF_YOUR_DOCUMENTS = 'your_documents'
+  @@DF_YOUR_ACTIONS = 'your_actions'
+  @@DF_ALL_DOCUMENTS = 'all_documents'
+
+  @@STATUS_DRAFT = 0
+  @@STATUS_FOR_REVIEW = 1
+  @@STATUS_FOR_APPROVAL = 2
+  @@STATUS_APPROVED = 3
 
   before_action :check_current_organisation
 
@@ -10,11 +15,12 @@ class DocumentsController < ApplicationController
       set_document_filter @@DF_YOUR_DOCUMENTS
     end
     if get_status_filter == nil
-      set_status_filter 0
+      set_status_filter @@STATUS_DRAFT
     end
-    @documents = get_filtered_documents    # view draft documents by current user default
+    @documents = get_filtered_documents # view draft documents by current user default
     @initial_document_filter = get_document_filter
     @initial_status_filter = get_status_filter
+    @current_user_is_basic = is_basic(OrganisationUser.where(organisation: get_current_organisation, user: current_user)[0].user_type)
   end
 
   def show
@@ -22,6 +28,10 @@ class DocumentsController < ApplicationController
   end
 
   def new
+    if is_basic(OrganisationUser.where(organisation: get_current_organisation, user: current_user)[0].user_type)
+      redirect_to :documents, notice: 'Basic user accounts cannot create documents.'
+    end
+
     @document = Document.new
     current_user_id = current_user.id
     current_org_id = get_current_organisation.id
@@ -44,12 +54,23 @@ class DocumentsController < ApplicationController
   def create
     @document = Document.new(document_params)
     @document.organisation = get_current_organisation
-    @document.status = 0
+    @document.status = @@STATUS_DRAFT
 
     if @document.save
       redirect_to action: 'index', notice: 'Document was successfully created.'
     else
       render action: 'new', alert: 'Document could not be created'
+    end
+
+    if params[:document][:assigned_to_all] != nil
+      readerIds = params[:document][:readers]
+      readerIds.each do |id|
+        next if id.blank?
+        r = Reader.new
+        r.user_id = id.to_i
+        r.document = @document
+        r.save
+      end
     end
 
     reviewerArray = params[:document][:reviews]
@@ -65,7 +86,7 @@ class DocumentsController < ApplicationController
     approvalArray = params[:document][:approvals]
     approvalArray.each do |blah|
       next if blah.blank?
-        blah2 = Approval.new
+      blah2 = Approval.new
       blah2.user_id = blah.to_i
       blah2.document = @document
       blah2.status = 0
@@ -75,14 +96,14 @@ class DocumentsController < ApplicationController
   end
 
   def handle_status
-    if params[:status] != nil   # view documents with different status
+    if params[:status] != nil # view documents with different status
       set_status_filter status_change_to_int params[:status]
       @new_documents = get_filtered_documents
       respond_to do |format|
         format.js
       end
-    else    # change status of one or more documents
-      if params[:selected_documents] != nil   # at least one document selected
+    else # change status of one or more documents
+      if params[:selected_documents] != nil # at least one document selected
         new_status = status_change_to_int params[:submit]
         params[:selected_documents].each do |doc_id, select_action|
           d = Document.find(doc_id.to_i)
@@ -146,6 +167,13 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
     @user = @document.user
 
+    @reader_users = []
+
+    readers = Reader.where(document: @document)
+    readers.each do |r|
+      @reader_users << {reader: r, user: r.user}
+    end
+
     @review_users = []
 
     reviews = Review.where(document_id: @document.id)
@@ -162,17 +190,17 @@ class DocumentsController < ApplicationController
 
     @review = Review.find_by_user_id_and_document_id current_user.id, @document.id
     @approval = Approval.find_by_user_id_and_document_id current_user.id, @document.id
-    if @document.status == 1 && @review != nil
+    if @document.status == @@STATUS_FOR_REVIEW && @review != nil
       @is_reviewer = true
       @relation_id = @review.id
-    elsif @document.status == 2 && @approval != nil
+    elsif @document.status == @@STATUS_FOR_APPROVAL && @approval != nil
       @is_approver = true
       @relation_id = @approval.id
     end
   end
 
   def document_params
-    params.require(:document).permit(:doc, :document_type_id, :title, :user_id)
+    params.require(:document).permit(:assigned_to_all, :doc, :document_type_id, :title, :user_id)
   end
 
   def check_current_organisation
@@ -186,11 +214,11 @@ class DocumentsController < ApplicationController
       0
     elsif status == "Send for review" || status == "For review"
       1
-    elsif status == "Send for approval"  || status == "For approval"
+    elsif status == "Send for approval" || status == "For approval"
       2
     elsif status == "Approved"
       3
-    else    # unknown
+    else # unknown
       -1
     end
   end
@@ -214,57 +242,83 @@ class DocumentsController < ApplicationController
   def get_filtered_documents
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
-      org_id = get_current_organisation.id
-      if get_status_filter == 0 # draft, you have been assigned as a reviewer or approver
-        documents_for_approval_or_review = []
-        reviews = Review.where user_id: current_user.id
-        reviews.each do |r|
-          if r.document.organisation_id == org_id && r.document.status == 0
-            documents_for_approval_or_review << r.document
-          end
-        end
-        approvals = Approval.where user_id: current_user.id
-        approvals.each do |a|
-          if a.document.organisation_id == org_id && a.document.status == 0
-            documents_for_approval_or_review << a.document
-          end
-        end
-        documents_for_approval_or_review
-      elsif get_status_filter == 1 # for review
-        documents_for_review = []
-        reviews = Review.where user_id: current_user.id
-        reviews.each do |r|
-          if r.document.organisation_id == org_id && r.document.status == 1
-            documents_for_review << r.document
-          end
-        end
-        documents_for_review
-      elsif get_status_filter == 2 # for approval
-        documents_for_approval = []
-        approvals = Approval.where user_id: current_user.id
-        approvals.each do |a|
-          if a.document.organisation_id == org_id && a.document.status == 2
-            documents_for_approval << a.document
-          end
-        end
-        documents_for_approval
-      elsif get_status_filter == 3 # approved
-        documents_approved = []
-        approvals = Approval.where user_id: current_user.id
-        approvals.each do |a|
-          if a.document.organisation_id == org_id && a.document.status == 3
-            documents_approved << a.document
-          end
-        end
-        documents_approved
+      if get_status_filter == @@STATUS_DRAFT # draft, you have been assigned as a reviewer or approver
+        get_documents_for_review + get_documents_for_approval
+      elsif get_status_filter == @@STATUS_FOR_REVIEW
+        get_documents_for_review
+      elsif get_status_filter == @@STATUS_FOR_APPROVAL
+        get_documents_for_approval
+      elsif get_status_filter == @@STATUS_APPROVED
+        get_approved_documents
       end
     else
-      where_hash = {organisation_id: get_current_organisation.id, status: get_status_filter}
-      if get_document_filter == @@DF_YOUR_DOCUMENTS  # do nothing if all documents
-        where_hash[:user_id] = current_user.id
+      if get_document_filter == @@DF_YOUR_DOCUMENTS
+        Document.where(organisation_id: get_current_organisation.id, status: get_status_filter, user_id: current_user.id)
+      elsif get_document_filter == @@DF_ALL_DOCUMENTS
+        user_type = OrganisationUser.where(user: current_user, organisation: get_current_organisation)[0].user_type
+        if is_owner(user_type)
+          Document.where(organisation_id: get_current_organisation.id, status: get_status_filter)
+        else # for non-owner user, show document if user is: creator / reader / approver / reviewer
+          case get_status_filter
+            when @@STATUS_DRAFT # your documents and documents where you are a reader
+              get_your_documents(@@STATUS_DRAFT) + get_reader_documents(@@STATUS_DRAFT)
+            when @@STATUS_FOR_REVIEW # your documents and documents where you are a reviewer
+              get_your_documents(@@STATUS_FOR_REVIEW) + get_documents_for_review + get_reader_documents(@@STATUS_FOR_REVIEW)
+            when @@STATUS_FOR_APPROVAL # your documents and documents where you are an approver
+              get_your_documents(@@STATUS_FOR_APPROVAL) + get_documents_for_approval + get_reader_documents(@@STATUS_FOR_APPROVAL)
+            when @@STATUS_APPROVED # your documents and documents where you are an approver, and document is approved
+              get_your_documents(@@STATUS_APPROVED) + get_approved_documents + get_reader_documents(@@STATUS_APPROVED)
+          end
+        end
       end
-      print where_hash
-      Document.where(where_hash)
     end
+  end
+
+  def get_documents_for_review
+    documents_for_review = []
+    reviews = Review.where user_id: current_user.id
+    reviews.each do |r|
+      if r.document.organisation == get_current_organisation && r.document.status == @@STATUS_FOR_REVIEW
+        documents_for_review << r.document
+      end
+    end
+    documents_for_review
+  end
+
+  def get_documents_for_approval
+    documents_for_approval = []
+    approvals = Approval.where user_id: current_user.id
+    approvals.each do |a|
+      if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_FOR_APPROVAL
+        documents_for_approval << a.document
+      end
+    end
+    documents_for_approval
+  end
+
+  def get_approved_documents
+    documents_approved = []
+    approvals = Approval.where user_id: current_user.id
+    approvals.each do |a|
+      if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_APPROVED
+        documents_approved << a.document
+      end
+    end
+    documents_approved
+  end
+
+  def get_your_documents status
+    Document.where(organisation_id: get_current_organisation.id, status: status, user_id: current_user.id)
+  end
+
+  def get_reader_documents status
+    documents = Document.where(organisation: get_current_organisation, status: status)
+    reader_documents = []
+    documents.each do |d|
+      if d.assigned_to_all || Reader.where(user: User.first, document: Document.first).count > 0
+        reader_documents << d
+      end
+    end
+    reader_documents
   end
 end

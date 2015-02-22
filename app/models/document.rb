@@ -3,6 +3,7 @@ class Document < ActiveRecord::Base
   belongs_to :organisation
   has_many :approvals
   has_many :reviews
+  has_many :readers
   belongs_to :document_type
 
   # paperclip gem
@@ -10,5 +11,6 @@ class Document < ActiveRecord::Base
   do_not_validate_attachment_file_type :doc     # TODO choose valid file types
 
   has_many :users, through: :approvals
+  has_many :users, through: :readers
   has_many :users, through: :reviews
 end
