@@ -62,6 +62,9 @@ group :development, :test do
   #gem for creating existing data to seed file
   gem 'seed_dump'
 
+  #gem for emailing
+  gem 'actionmailer'
+
 end
 
 group :production do

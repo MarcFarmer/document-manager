@@ -184,6 +184,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  actionmailer
   byebug
   coffee-rails (~> 4.1.0)
   coffee-script-source (= 1.8.0)
