@@ -24,6 +24,16 @@
   <% end %>
 </p>
 <p>
+  <b>Document content: </b>
+  <% if @document.content == nil %>
+      No document content created
+  <% else %>
+    <div class="well">
+      <%= @document.content.html_safe %>
+    </div>
+  <% end %>
+</p>
+<p>
   <b>Document file: </b>
   <% if @document.doc_file_name == nil %>
       No document file attached

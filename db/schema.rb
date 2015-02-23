@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20150219131336) do
   create_table "documents", force: :cascade do |t|
     t.string   "title"
     t.integer  "status"
+    t.string   "content"
     t.integer  "user_id"
     t.integer  "organisation_id"
     t.integer  "document_type_id"

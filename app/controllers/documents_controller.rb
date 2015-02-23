@@ -43,6 +43,7 @@ class DocumentsController < ApplicationController
 
   def create
     @document = Document.new(document_params)
+    @document.content = params[:content]
     @document.organisation = get_current_organisation
     @document.status = 0
 
@@ -172,7 +173,7 @@ class DocumentsController < ApplicationController
   end
 
   def document_params
-    params.require(:document).permit(:doc, :document_type_id, :title, :user_id)
+    params.require(:document).permit(:content, :doc, :document_type_id, :title, :user_id)
   end
 
   def check_current_organisation
