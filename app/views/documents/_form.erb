@@ -1,0 +1,40 @@
+<%= form_for document, :html => { :multipart => true } do |form| %>
+    <%= form.hidden_field :user_id, value: current_user_id %>
+
+    <div class="field">
+      <%= form.label :title %><br>
+      <%= form.text_field :title %>
+    </div>
+
+    <br />
+
+    <div class="field">
+      <%= form.label :doc %><br>
+      <%= form.file_field :doc %>
+    </div>
+
+    <br />
+
+    <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
+    <%= tinymce %>
+
+    <br />
+
+    <div class="field">
+      <h2>Select users to review the document</h2>
+      <%= form.select(:reviews, users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
+      <h2>Select users to approve the document</h2>
+      <%= form.select(:approvals, users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
+    </div>
+
+    <div class="field">
+      <%= form.label :document_type_id %><br>
+      <%= form.select(:document_type_id, document_types, {:multiple => true, :size => 20}) %>
+    </div>
+
+    <br />
+
+    <div class="actions">
+      <%= form.submit %>
+    </div>
+<% end %>

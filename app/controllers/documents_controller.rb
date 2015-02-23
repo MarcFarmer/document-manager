@@ -43,7 +43,6 @@ class DocumentsController < ApplicationController
 
   def create
     @document = Document.new(document_params)
-    @document.content = params[:content]
     @document.organisation = get_current_organisation
     @document.status = 0
 
@@ -73,6 +72,28 @@ class DocumentsController < ApplicationController
       blah2.save
     end
 
+  end
+
+  def edit
+    @document = Document.find(params[:id])
+    @edit = true
+
+    current_user_id = current_user.id
+    current_org_id = get_current_organisation.id
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    @users = []
+    organisation_users.each do |ou|
+      user = ou.user
+      @users << [user.email, user.id]
+    end
+
+    @current_user_id = current_user.id
+
+    @document_types = Hash.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types.merge!(item.name.to_sym => item.id)
+    end
   end
 
   def handle_status
