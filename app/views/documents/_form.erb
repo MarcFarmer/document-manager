@@ -8,17 +8,31 @@
 
     <br />
 
-    <div class="field">
-      <%= form.label :doc %><br>
-      <%= form.file_field :doc %>
-    </div>
-
-    <br />
-
-    <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
-    <%= tinymce %>
-
-    <br />
+    <% if @edit %>
+        <% if @document.content.blank? %>
+            <div class="field">
+              <%= form.label :doc %><br>
+              <%= form.file_field :doc %>
+            </div>
+        <% else %>
+            <div class="field">
+              <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
+              <%= tinymce %>
+            </div>
+        <% end %>
+        <br />
+    <% else %>
+        <div class="field">
+          <%= form.label :doc %><br>
+          <%= form.file_field :doc %>
+        </div>
+        <br />
+        <div class="field">
+          <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
+          <%= tinymce %>
+        </div>
+        <br />
+    <% end %>
 
     <div class="field">
       <h2>Select users to review the document</h2>

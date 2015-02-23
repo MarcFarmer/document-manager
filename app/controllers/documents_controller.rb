@@ -96,6 +96,36 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def update
+    @document = Document.find(params[:id])
+
+    reviewerArray = params[:document][:reviews]
+    reviewerArray.each do |blah|
+      next if blah.blank?
+      blah2 = Review.new
+      blah2.user_id = blah.to_i
+      blah2.document = @document
+      blah2.status = 0
+      blah2.save
+    end
+
+    approvalArray = params[:document][:approvals]
+    approvalArray.each do |blah|
+      next if blah.blank?
+      blah2 = Approval.new
+      blah2.user_id = blah.to_i
+      blah2.document = @document
+      blah2.status = 0
+      blah2.save
+    end
+
+    if @document.update(document_params)
+      redirect_to action: 'show', notice: 'Document was successfully updated.'
+    else
+      render action: 'edit', alert: 'Document could not be updated.'
+    end
+  end
+
   def handle_status
     if params[:status] != nil   # view documents with different status
       set_status_filter status_change_to_int params[:status]

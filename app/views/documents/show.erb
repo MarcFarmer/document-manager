@@ -25,7 +25,7 @@
 </p>
 <p>
   <b>Document content: </b>
-  <% if @document.content == nil %>
+  <% if @document.content.blank? %>
       No document content created
   <% else %>
     <div class="well">
