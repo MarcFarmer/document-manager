@@ -8,6 +8,13 @@
 
     <br />
 
+    <div class="field">
+      <%= radio_button_tag('document[use_editor]', 'true') %>
+      <%= label_tag(:use_editor_true, "Create new document") %>
+      <%= radio_button_tag('document[use_editor]', 'false') %>
+      <%= label_tag(:use_editor_false, "Upload existing document") %>
+    </div>
+
     <% if @edit %>
         <% if @document.content.blank? %>
             <div class="field">
@@ -22,12 +29,12 @@
         <% end %>
         <br />
     <% else %>
-        <div class="field">
+        <div class="field" id="document_upload_field">
           <%= form.label :doc %><br>
           <%= form.file_field :doc %>
         </div>
         <br />
-        <div class="field">
+        <div class="field" id="document_editor_field">
           <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
           <%= tinymce %>
         </div>
