@@ -1,5 +1,5 @@
 class OrganisationsController < ApplicationController
-  autocomplete :user, :email
+  # autocomplete :user, :email
 
   def index
     pending_user = PendingUser.where(email: current_user.email).first
@@ -66,7 +66,7 @@ class OrganisationsController < ApplicationController
 
   def inviteSubmission
 
-    selected_email = params[:organisation_user][:user_email]
+    selected_email = params[:organisation_user][:email]
 
     if User.where(email: selected_email).first.nil?
       # Users not registered yet
