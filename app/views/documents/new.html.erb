@@ -15,6 +15,11 @@
 
     <br />
 
+    <%= text_area_tag :content, "", :class => "tinymce", :rows => 10, :cols => 120 %>
+    <%= tinymce %>
+
+    <br />
+
     <div class="field">
       <h2>Select users to review the document</h2>
       <%= form.select(:reviews, @users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
