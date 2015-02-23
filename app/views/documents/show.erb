@@ -47,6 +47,34 @@
 </p>
 
 <p>
+  <h3>Assigned to:</h3>
+  <% if @document.assigned_to_all %>
+      All users in the organisation have been assigned to read this document.
+  <% elsif @reader_users.empty? %>
+      No users selected to read this document.
+  <% else %>
+      <table class="table table-striped">
+        <thead>
+        <tr>
+          <th>
+            User
+          </th>
+        </tr>
+        </thead>
+        <tbody>
+        <% @reader_users.each do |r| %>
+            <tr>
+              <td>
+                <%= r[:user].email %>
+              </td>
+            </tr>
+        <% end %>
+        </tbody>
+      </table>
+  <% end %>
+</p>
+
+<p>
   <h3>Reviewers:</h3>
   <% if @review_users.empty? %>
     No users selected to review this document.

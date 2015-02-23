@@ -9,7 +9,7 @@
     <br />
 
     <% if @edit == nil %>
-        <div class="btn-group field" data-toggle="buttons">
+        <div class="btn-group field">
           <label class="btn btn-warning btn-lg">
             <%= radio_button_tag('document[use_editor]', 'true') %>
             Create new document
@@ -18,13 +18,6 @@
             <%= radio_button_tag('document[use_editor]', 'false') %>
             Upload existing document
           </label>
-        </div>
-
-        <div class="field">
-          <%= radio_button_tag('document[use_editor]', 'true') %>
-          <%= label_tag(:use_editor_true, "Create new document") %>
-          <%= radio_button_tag('document[use_editor]', 'false') %>
-          <%= label_tag(:use_editor_false, "Upload existing document") %>
         </div>
     <% end %>
 
@@ -53,6 +46,18 @@
         </div>
         <br />
     <% end %>
+
+    <div class="field">
+      <%= radio_button_tag('document[assigned_to_all]', 'true') %>
+      <%= label_tag(:assigned_to_all_true, "I want all users to read this document") %>
+      <%= radio_button_tag('document[assigned_to_all]', 'false') %>
+      <%= label_tag(:assigned_to_all_false, "I want to choose specific users who will read this document") %>
+    </div>
+
+    <div class="field" id="user_selection">
+      <h2>Assign users to read the document</h2>
+      <%= form.select(:readers, @users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
+    </div>
 
     <div class="field">
       <h2>Select users to review the document</h2>

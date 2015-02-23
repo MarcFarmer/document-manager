@@ -1,4 +1,5 @@
 class DocumentTypesController < ApplicationController
+  before_action :check_current_user_is_owner
   before_action :check_current_organisation
   before_action :all_document_types, only: [:index, :create]
   respond_to :html, :js
