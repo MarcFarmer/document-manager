@@ -8,23 +8,25 @@
 
     <br />
 
-    <div class="btn-group field" data-toggle="buttons">
-      <label class="btn btn-warning btn-lg">
-        <%= radio_button_tag('document[use_editor]', 'true') %>
-        Create new document
-      </label>
-      <label class="btn btn-warning btn-lg">
-        <%= radio_button_tag('document[use_editor]', 'false') %>
-        Upload existing document
-      </label>
-    </div>
+    <% if @edit == nil %>
+        <div class="btn-group field" data-toggle="buttons">
+          <label class="btn btn-warning btn-lg">
+            <%= radio_button_tag('document[use_editor]', 'true') %>
+            Create new document
+          </label>
+          <label class="btn btn-warning btn-lg">
+            <%= radio_button_tag('document[use_editor]', 'false') %>
+            Upload existing document
+          </label>
+        </div>
 
-    <div class="field">
-      <%= radio_button_tag('document[use_editor]', 'true') %>
-      <%= label_tag(:use_editor_true, "Create new document") %>
-      <%= radio_button_tag('document[use_editor]', 'false') %>
-      <%= label_tag(:use_editor_false, "Upload existing document") %>
-    </div>
+        <div class="field">
+          <%= radio_button_tag('document[use_editor]', 'true') %>
+          <%= label_tag(:use_editor_true, "Create new document") %>
+          <%= radio_button_tag('document[use_editor]', 'false') %>
+          <%= label_tag(:use_editor_false, "Upload existing document") %>
+        </div>
+    <% end %>
 
     <% if @edit %>
         <% if @document.content.blank? %>

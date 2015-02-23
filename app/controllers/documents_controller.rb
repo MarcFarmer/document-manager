@@ -23,34 +23,13 @@ class DocumentsController < ApplicationController
 
   def new
     @document = Document.new
-    current_user_id = current_user.id
-    current_org_id = get_current_organisation.id
-    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
-    @users = []
-    organisation_users.each do |ou|
-      user = ou.user
-      @users << [user.email, user.id]
-    end
-
-    @current_user_id = current_user.id
-
-    @document_types = Hash.new
-    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
-    org_doc_types.each do |item|
-      @document_types.merge!(item.name.to_sym => item.id)
-    end
+    setup_new
   end
 
   def create
     @document = Document.new(document_params)
     @document.organisation = get_current_organisation
     @document.status = 0
-
-    if @document.save
-      redirect_to action: 'index', notice: 'Document was successfully created.'
-    else
-      render action: 'new', alert: 'Document could not be created'
-    end
 
     reviewerArray = params[:document][:reviews]
     reviewerArray.each do |blah|
@@ -72,28 +51,17 @@ class DocumentsController < ApplicationController
       blah2.save
     end
 
+    if @document.save
+      redirect_to action: 'index', notice: 'Document was successfully created.'
+    else
+      setup_new
+      render action: 'new', alert: 'Document could not be created'
+    end
   end
 
   def edit
     @document = Document.find(params[:id])
-    @edit = true
-
-    current_user_id = current_user.id
-    current_org_id = get_current_organisation.id
-    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
-    @users = []
-    organisation_users.each do |ou|
-      user = ou.user
-      @users << [user.email, user.id]
-    end
-
-    @current_user_id = current_user.id
-
-    @document_types = Hash.new
-    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
-    org_doc_types.each do |item|
-      @document_types.merge!(item.name.to_sym => item.id)
-    end
+    setup_edit
   end
 
   def update
@@ -122,6 +90,7 @@ class DocumentsController < ApplicationController
     if @document.update(document_params)
       redirect_to action: 'show', notice: 'Document was successfully updated.'
     else
+      setup_edit
       render action: 'edit', alert: 'Document could not be updated.'
     end
   end
@@ -220,6 +189,46 @@ class DocumentsController < ApplicationController
     elsif @document.status == 2 && @approval != nil
       @is_approver = true
       @relation_id = @approval.id
+    end
+  end
+
+  def setup_new
+    current_user_id = current_user.id
+    current_org_id = get_current_organisation.id
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    @users = []
+    organisation_users.each do |ou|
+      user = ou.user
+      @users << [user.email, user.id]
+    end
+
+    @current_user_id = current_user.id
+
+    @document_types = Hash.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types.merge!(item.name.to_sym => item.id)
+    end
+  end
+
+  def setup_edit
+    @edit = true
+
+    current_user_id = current_user.id
+    current_org_id = get_current_organisation.id
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    @users = []
+    organisation_users.each do |ou|
+      user = ou.user
+      @users << [user.email, user.id]
+    end
+
+    @current_user_id = current_user.id
+
+    @document_types = Hash.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types.merge!(item.name.to_sym => item.id)
     end
   end
 
