@@ -1,4 +1,8 @@
 <h1><%= @document.title %></h1>
+<% if @user == @document.user %>
+    <%= link_to 'Edit', edit_document_path(@document.id), class:"btn btn-warning" %>
+    <%= link_to 'Delete', @document, method: :delete, data: { confirm: 'Are you sure you want to delete this document?' }, class:"btn btn-danger" %>
+<% end %>
 <p>
   <b>Created by: </b>
   <%= @user.email %>
