@@ -49,6 +49,11 @@ class DocumentsController < ApplicationController
       blah2.document = @document
       blah2.status = 0
       blah2.save
+
+      #TODO: Send email for reviewer assignment
+      #Notifier.assign_role(email,doc_name,creator,role)
+      Notifier.assign_role('andrewnguyen.x@gmail.com','test-doc-1','Andrew Nguyen','Reviewer')
+
     end
 
     approvalArray = params[:document][:approvals]
@@ -59,6 +64,10 @@ class DocumentsController < ApplicationController
       blah2.document = @document
       blah2.status = 0
       blah2.save
+
+      #TODO: Send email for approver assignment
+      #Notifier.assign_role(email,doc_name,creator,role)
+      Notifier.assign_role('andrewnguyen.x@gmail.com','test-doc-1','Andrew Nguyen','Approver')
     end
 
     if params[:document][:assigned_to_all] != nil
