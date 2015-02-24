@@ -38,7 +38,7 @@
           <%= d.document_type.name %>
         </td>
         <td>
-          <%= d.version_number %>
+          <%= d.major_version %>.<%= d.minor_version %>
         </td>
         <td>
           <% if d.user == @current_user %>

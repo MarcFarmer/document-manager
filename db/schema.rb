@@ -54,7 +54,8 @@ ActiveRecord::Schema.define(version: 20150224132437) do
     t.string   "doc_content_type"
     t.integer  "doc_file_size"
     t.datetime "doc_updated_at"
-    t.string   "version_number"
+    t.string   "major_version"
+    t.string   "minor_version"
   end
 
   create_table "organisation_users", force: :cascade do |t|

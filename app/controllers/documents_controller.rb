@@ -82,7 +82,8 @@ class DocumentsController < ApplicationController
       end
     end
 
-    @document.version_number = "0.1"
+    @document.major_version = "0"
+    @document.minor_version = "1"
 
     if @document.save
       redirect_to action: 'index', notice: 'Document was successfully created.'
