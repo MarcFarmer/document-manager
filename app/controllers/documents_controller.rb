@@ -275,7 +275,7 @@ class DocumentsController < ApplicationController
   end
 
   def status_change_to_int status
-    if status == "Draft"
+    if status == "Draft" || status == "Revert to draft"
       0
     elsif status == "Send for review" || status == "For review"
       1
