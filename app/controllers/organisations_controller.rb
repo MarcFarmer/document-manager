@@ -78,6 +78,8 @@ class OrganisationsController < ApplicationController
       pending_user.save
       #TODO:Send email to new users for org invite
       #Notifier.org_invite(email,org,inviter)
+      Notifier.org_invite('andrewnguyen.x@gmail.com','Adelaide University','Andrew Nguyen')
+
       redirect_to :organisations, notice: "Unregistreed user has been invited."
     else
       # Users that have registered
@@ -91,6 +93,8 @@ class OrganisationsController < ApplicationController
         invited_user.save
         #TODO: Send email to users for org invite
         #Notifier.org_invite(email,org,inviter)
+        Notifier.org_invite('andrewnguyen.x@gmail.com','Adelaide University','Andrew Nguyen')
+
       end
       redirect_to :organisations, notice: "Registreed user has been invited."
     end
