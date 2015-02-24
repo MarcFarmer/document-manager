@@ -1,5 +1,26 @@
 $(document).ready(function () {
-    if ($('input#document_assigned_to_all_false').prop("checked") == true) {
+    if ($("input#document_use_editor_true").prop("checked") == true) {
+        $("div#document_editor_field").show();
+        $("div#document_upload_field").hide();
+    } else if ($('input#document_use_editor_false').prop("checked") == true) {
+        $("div#document_editor_field").hide();
+        $("div#document_upload_field").show();
+    } else {
+        $("div#document_editor_field").hide();
+        $("div#document_upload_field").hide();
+    }
+
+    $("input#document_use_editor_true").change(function () {
+        $("div#document_editor_field").show();
+        $("div#document_upload_field").hide();
+    });
+
+    $("input#document_use_editor_false").change(function () {
+        $("div#document_editor_field").hide();
+        $("div#document_upload_field").show();
+    });
+
+    if ($("input#document_assigned_to_all_false").prop("checked") == true) {
         $("div#user_selection").show();
     } else {
         $("div#user_selection").hide();

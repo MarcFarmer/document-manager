@@ -33,45 +33,13 @@ class DocumentsController < ApplicationController
     end
 
     @document = Document.new
-    current_user_id = current_user.id
-    current_org_id = get_current_organisation.id
-    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
-    @users = []
-    organisation_users.each do |ou|
-      user = ou.user
-      @users << [user.email, user.id]
-    end
-
-    @current_user_id = current_user.id
-
-    @document_types = Hash.new
-    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
-    org_doc_types.each do |item|
-      @document_types.merge!(item.name.to_sym => item.id)
-    end
+    setup_new
   end
 
   def create
     @document = Document.new(document_params)
     @document.organisation = get_current_organisation
     @document.status = @@STATUS_DRAFT
-
-    if @document.save
-      redirect_to action: 'index', notice: 'Document was successfully created.'
-    else
-      render action: 'new', alert: 'Document could not be created'
-    end
-
-    if params[:document][:assigned_to_all] != nil
-      readerIds = params[:document][:readers]
-      readerIds.each do |id|
-        next if id.blank?
-        r = Reader.new
-        r.user_id = id.to_i
-        r.document = @document
-        r.save
-      end
-    end
 
     reviewerArray = params[:document][:reviews]
     reviewerArray.each do |blah|
@@ -93,6 +61,63 @@ class DocumentsController < ApplicationController
       blah2.save
     end
 
+    if params[:document][:assigned_to_all] != nil
+      readerIds = params[:document][:readers]
+      readerIds.each do |id|
+        next if id.blank?
+        r = Reader.new
+        r.user_id = id.to_i
+        r.document = @document
+        r.save
+      end
+    end
+
+    if @document.save
+      redirect_to action: 'index', notice: 'Document was successfully created.'
+    else
+      setup_new
+      render action: 'new', alert: 'Document could not be created'
+    end
+  end
+
+  def edit
+    @document = Document.find(params[:id])
+    if @document.user != current_user
+      redirect_to action: 'index', notice: 'You can only edit documents that you created.'
+    end
+    setup_edit
+  end
+
+  def update
+    @document = Document.find(params[:id])
+
+    if @document.update(document_params)
+      # also update reviewers and approvers
+      reviewerArray = params[:document][:reviews]
+      reviewerArray.each do |blah|
+        next if blah.blank?
+        blah2 = Review.new
+        blah2.user_id = blah.to_i
+        blah2.document = @document
+        blah2.status = 0
+        blah2.save
+      end
+
+      approvalArray = params[:document][:approvals]
+      approvalArray.each do |blah|
+        next if blah.blank?
+        blah2 = Approval.new
+        blah2.user_id = blah.to_i
+        blah2.document = @document
+        blah2.status = 0
+        blah2.save
+      end
+
+      redirect_to action: 'show', notice: 'Document was successfully updated.'
+    else
+      setup_edit
+      render action: 'edit', alert: 'Document could not be updated.'
+    end
   end
 
   def handle_status
@@ -199,8 +224,48 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def setup_new
+    current_user_id = current_user.id
+    current_org_id = get_current_organisation.id
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    @users = []
+    organisation_users.each do |ou|
+      user = ou.user
+      @users << [user.email, user.id]
+    end
+
+    @current_user_id = current_user.id
+
+    @document_types = Hash.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types.merge!(item.name.to_sym => item.id)
+    end
+  end
+
+  def setup_edit
+    @edit = true
+
+    current_user_id = current_user.id
+    current_org_id = get_current_organisation.id
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    @users = []
+    organisation_users.each do |ou|
+      user = ou.user
+      @users << [user.email, user.id]
+    end
+
+    @current_user_id = current_user.id
+
+    @document_types = Hash.new
+    org_doc_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    org_doc_types.each do |item|
+      @document_types.merge!(item.name.to_sym => item.id)
+    end
+  end
+
   def document_params
-    params.require(:document).permit(:assigned_to_all, :doc, :document_type_id, :title, :user_id)
+    params.require(:document).permit(:assigned_to_all, :content, :doc, :document_type_id, :title, :user_id)
   end
 
   def check_current_organisation

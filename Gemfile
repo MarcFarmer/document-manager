@@ -6,6 +6,9 @@ gem 'rails4-autocomplete', '1.1.1'
 
 gem 'jquery-ui-rails', '5.0.3'
 
+# Document editor
+gem 'tinymce-rails', '4.1.6'
+
 # For file uploading
 gem 'paperclip', '~> 4.2'
 
