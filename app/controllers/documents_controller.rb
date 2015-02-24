@@ -163,12 +163,35 @@ class DocumentsController < ApplicationController
   end
 
   def save_role_response
+    # password is filtered in params log by Devise gem
+    if params[:email] != current_user.email || !current_user.valid_password?(params[:password])   # if wrong email or password
+      if params[:review] != nil
+        document = Review.find(params[:relation_id].to_i).document
+        flash[:danger] = 'Incorrect email or password.'
+        setup_show
+        redirect_to documents_path + "/#{document.id}"
+        return
+      else
+        document = Approval.find(params[:relation_id].to_i).document
+        setup_show
+        flash[:danger] = 'Incorrect email or password.'
+        redirect_to documents_path + "/#{document.id}"
+        return
+      end
+    end
+
     success = ''
     if params[:approve] != nil
       a = Approval.find params[:relation_id].to_i
       a.status = 1
       a.save
       success = 'You have approved this document.'
+
+      # if all approvers have approved the document, make it effective
+      approvals = Approval.where(document: a.document).where.not(status: 1)   # approvals where status != approved
+      if approvals.empty?
+        a.document.update(status: 3)    # document is now effective
+      end
     elsif params[:decline] != nil
       a = Approval.find params[:relation_id].to_i
       a.status = 2
@@ -275,13 +298,13 @@ class DocumentsController < ApplicationController
   end
 
   def status_change_to_int status
-    if status == "Draft"
+    if status == "Draft" || status == "Revert to draft"
       0
     elsif status == "Send for review" || status == "For review"
       1
     elsif status == "Send for approval" || status == "For approval"
       2
-    elsif status == "Approved"
+    elsif status == "Effective"
       3
     else # unknown
       -1
@@ -308,7 +331,7 @@ class DocumentsController < ApplicationController
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
       if get_status_filter == @@STATUS_DRAFT # draft, you have been assigned as a reviewer or approver
-        get_documents_for_review + get_documents_for_approval
+        get_documents_for_review | get_documents_for_approval
       elsif get_status_filter == @@STATUS_FOR_REVIEW
         get_documents_for_review
       elsif get_status_filter == @@STATUS_FOR_APPROVAL
@@ -326,13 +349,13 @@ class DocumentsController < ApplicationController
         else # for non-owner user, show document if user is: creator / reader / approver / reviewer
           case get_status_filter
             when @@STATUS_DRAFT # your documents and documents where you are a reader
-              get_your_documents(@@STATUS_DRAFT) + get_reader_documents(@@STATUS_DRAFT)
+              get_your_documents(@@STATUS_DRAFT) | get_reader_documents(@@STATUS_DRAFT)
             when @@STATUS_FOR_REVIEW # your documents and documents where you are a reviewer
-              get_your_documents(@@STATUS_FOR_REVIEW) + get_documents_for_review + get_reader_documents(@@STATUS_FOR_REVIEW)
+              get_your_documents(@@STATUS_FOR_REVIEW) | get_documents_for_review | get_reader_documents(@@STATUS_FOR_REVIEW)
             when @@STATUS_FOR_APPROVAL # your documents and documents where you are an approver
-              get_your_documents(@@STATUS_FOR_APPROVAL) + get_documents_for_approval + get_reader_documents(@@STATUS_FOR_APPROVAL)
+              get_your_documents(@@STATUS_FOR_APPROVAL) | get_documents_for_approval | get_reader_documents(@@STATUS_FOR_APPROVAL)
             when @@STATUS_APPROVED # your documents and documents where you are an approver, and document is approved
-              get_your_documents(@@STATUS_APPROVED) + get_approved_documents + get_reader_documents(@@STATUS_APPROVED)
+              get_your_documents(@@STATUS_APPROVED) | get_approved_documents | get_reader_documents(@@STATUS_APPROVED)
           end
         end
       end
