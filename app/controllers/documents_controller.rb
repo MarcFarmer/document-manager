@@ -163,6 +163,23 @@ class DocumentsController < ApplicationController
   end
 
   def save_role_response
+    # password is filtered in params log by Devise gem
+    if params[:email] != current_user.email || !current_user.valid_password?(params[:password])   # if wrong email or password
+      if params[:review] != nil
+        document = Review.find(params[:relation_id].to_i).document
+        flash[:danger] = 'Incorrect email or password.'
+        setup_show
+        redirect_to documents_path + "/#{document.id}"
+        return
+      else
+        document = Approval.find(params[:relation_id].to_i).document
+        setup_show
+        flash[:danger] = 'Incorrect email or password.'
+        redirect_to documents_path + "/#{document.id}"
+        return
+      end
+    end
+
     success = ''
     if params[:approve] != nil
       a = Approval.find params[:relation_id].to_i
