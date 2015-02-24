@@ -43,6 +43,12 @@
         <div class="field" id="document_editor_field">
           <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
           <%= tinymce %>
+
+          <%= form.fields_for :document_revisions do |f| %>
+            <%= f.label :change_control, "Change control message:" %>
+            <%= f.text_field :change_control, :size => 130 %>
+          <% end %>
+
         </div>
         <br />
     <% end %>

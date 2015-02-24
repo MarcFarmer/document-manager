@@ -33,6 +33,7 @@ class DocumentsController < ApplicationController
     end
 
     @document = Document.new
+    @document.document_revisions.build
     setup_new
   end
 

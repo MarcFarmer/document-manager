@@ -6,6 +6,9 @@ class Document < ActiveRecord::Base
   has_many :readers
   belongs_to :document_type
 
+  has_many :document_revisions
+  accepts_nested_attributes_for :document_revisions
+
   # paperclip gem
   has_attached_file :doc
   do_not_validate_attachment_file_type :doc     # TODO choose valid file types
@@ -13,8 +16,6 @@ class Document < ActiveRecord::Base
   has_many :users, through: :approvals
   has_many :users, through: :readers
   has_many :users, through: :reviews
-
-  has_many :document_revisions
 
   validates :title, presence: true, length: { maximum: 255 }
   validates :status, presence: true
