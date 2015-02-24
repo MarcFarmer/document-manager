@@ -18,7 +18,7 @@
       <% document_types.each do |type| %>
         <tr>
           <td><%= type.name %></td>
-          <td><%= link_to 'Edit', '#' %></td>
+          <td><%= link_to 'Edit', edit_document_type_path(type.id) ,class:"btn btn-sm btn-danger" %></td>
           <td><%= link_to 'Destroy', type, method: :delete, data: { confirm: 'Are you sure?' },class:"btn btn-sm btn-danger" %></td>
         </tr>
       <% end %>
