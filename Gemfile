@@ -64,6 +64,7 @@ group :development, :test do
 
   #gem for emailing
   gem 'actionmailer'
+  gem 'mailcatcher'
 
 end
 
