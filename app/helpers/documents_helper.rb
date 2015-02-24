@@ -7,7 +7,7 @@ module DocumentsHelper
     elsif status == 2
       "For approval"
     elsif status == 3
-      "Approved"
+      "Effective"
     else
       "Unknown"
     end

@@ -21,7 +21,7 @@
       <%= f.submit "Draft", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 0}", name: "status" %>
       <%= f.submit "For review", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 1}", name: "status" %>
       <%= f.submit "For approval", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 2}", name: "status" %>
-      <%= f.submit "Approved", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 3}", name: "status" %>
+      <%= f.submit "Effective", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 3}", name: "status" %>
     </div>
 
     <br/>
