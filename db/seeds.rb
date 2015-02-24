@@ -39,7 +39,7 @@ Organisation.create!([
                      ])
 
 OrganisationUser.create!([
-                             {accepted: true, user_type: 0, user_id: 1, organisation_id: 1, inviter_id: 1},
+                             {accepted: true, user_type: 2, user_id: 1, organisation_id: 1, inviter_id: 1},
                              {accepted: true, user_type: 0, user_id: 2, organisation_id: 1, inviter_id: 1},
                              {accepted: true, user_type: 0, user_id: 3, organisation_id: 1, inviter_id: 1},
                              {accepted: true, user_type: 0, user_id: 4, organisation_id: 1, inviter_id: 1},
@@ -50,7 +50,7 @@ OrganisationUser.create!([
                              {accepted: true, user_type: 1, user_id: 9, organisation_id: 1, inviter_id: 1},
                              {accepted: true, user_type: 1, user_id: 10, organisation_id: 1, inviter_id: 1},
 
-                             {accepted: true, user_type: 0, user_id: 11, organisation_id: 2, inviter_id: 11},
+                             {accepted: true, user_type: 2, user_id: 11, organisation_id: 2, inviter_id: 11},
                              {accepted: true, user_type: 0, user_id: 12, organisation_id: 2, inviter_id: 11},
                              {accepted: true, user_type: 0, user_id: 13, organisation_id: 2, inviter_id: 11},
                              {accepted: true, user_type: 0, user_id: 14, organisation_id: 2, inviter_id: 11},
