@@ -1,3 +1,4 @@
+<% disabled_button = 'disabled="disabled"' %>
 <% selected_document_filter = 'class=active' %>
 <% selected_status_filter = 'active btn-warning' %>
 
@@ -18,23 +19,24 @@
 
 <%= form_for :document, method: :put, remote: true do |f| %>
     <div id="status_filter_buttons" style="width:103%">
-      <%= f.submit "Draft", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 0}", name: "status" %>
-      <%= f.submit "For review", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 1}", name: "status" %>
-      <%= f.submit "For approval", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 2}", name: "status" %>
-      <%= f.submit "Effective", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 3}", name: "status" %>
+      <%= f.submit "Draft", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 0}", name: "status", id: "draft_state" %>
+      <%= f.submit "For review", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 1}", name: "status", id: "review_state" %>
+      <%= f.submit "For approval", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 2}", name: "status", id: "approval_state" %>
+      <%= f.submit "Effective", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 3}", name: "status", id: "effective_state" %>
     </div>
 
     <br/>
 
+    <% if !@current_user_is_basic %>
+        <div id="movingButtons" style="float: left">
+          <%= f.submit "Revert to draft", class: "btn btn-info", name: "submit", id: "draft_action" %>
+          <%= f.submit "Send for review", class: "btn btn-info", name: "submit", id: "review_action" %>
+          <%= f.submit "Send for approval", class: "btn btn-info", name: "submit", id: "approval_action" %>
+          <%= f.submit "Delete", class: "btn btn-info", name: "submit", id: "delete_action" %>
+        </div>
+    <% end %>
 
-    <div id="movingButtons" style="float: left">
-      <%= f.submit "Revert to draft", class: "btn btn-info", name: "submit" %>
-      <%= f.submit "Send for review", class: "btn btn-info", name: "submit" %>
-      <%= f.submit "Send for approval", class: "btn btn-info", name: "submit" %>
-      <%= f.submit "Delete", class: "btn btn-info", name: "submit" %>
-      <br/><br/>
-    </div>
-    <br/>
+    <br/><br/><br/>
 
     <%= render partial: 'list', locals: {documents: @documents} %>
 <% end %>
