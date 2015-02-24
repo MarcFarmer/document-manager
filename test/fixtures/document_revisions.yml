@@ -1,0 +1,13 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  major_version: 1
+  minor_version: 1
+  content: MyString
+  change_control: MyString
+
+two:
+  major_version: 1
+  minor_version: 1
+  content: MyString
+  change_control: MyString

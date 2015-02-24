@@ -14,6 +14,8 @@ class Document < ActiveRecord::Base
   has_many :users, through: :readers
   has_many :users, through: :reviews
 
+  has_many :document_revisions
+
   validates :title, presence: true, length: { maximum: 255 }
   validates :status, presence: true
   validate :content_xor_doc
