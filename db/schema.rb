@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224052238) do
+ActiveRecord::Schema.define(version: 20150224132437) do
 
   create_table "approvals", force: :cascade do |t|
     t.integer  "status"
@@ -54,6 +54,7 @@ ActiveRecord::Schema.define(version: 20150224052238) do
     t.string   "doc_content_type"
     t.integer  "doc_file_size"
     t.datetime "doc_updated_at"
+    t.string   "version_number"
   end
 
   create_table "organisation_users", force: :cascade do |t|
