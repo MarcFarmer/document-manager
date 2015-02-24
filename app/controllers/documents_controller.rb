@@ -88,6 +88,11 @@ class DocumentsController < ApplicationController
       setup_new
       render action: 'new', alert: 'Document could not be created'
     end
+
+    @document_revision = DocumentRevision.new(major_version: 0, minor_version: 1, content: @document.content,
+                                              change_control: params[:document][:document_revisions_attributes]["0"][:change_control],
+                                              document_id: @document.id)
+    @document_revision.save
   end
 
   def edit
@@ -300,7 +305,8 @@ class DocumentsController < ApplicationController
   end
 
   def document_params
-    params.require(:document).permit(:assigned_to_all, :content, :doc, :document_type_id, :title, :user_id)
+    params.require(:document).permit(:assigned_to_all, :content, :doc, :document_type_id, :title, :user_id,
+                                     document_revisions_attributes: [:change_control])
   end
 
   def check_current_organisation
