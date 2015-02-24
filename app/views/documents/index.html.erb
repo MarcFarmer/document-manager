@@ -10,9 +10,9 @@
 <% end %>
 
 <ul class="nav nav-tabs nav-pills nav-justified" id="document_filter_buttons" style="font-size: 18pt">
-  <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
-  <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_actions" %>><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
-  <li role="presentation" <%= selected_document_filter if @initial_document_filter == "all_documents" %>><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
+  <li id="yourDocFilter" role="presentation" <%= selected_document_filter if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
+  <li id="yourActFilter" role="presentation" <%= selected_document_filter if @initial_document_filter == "your_actions" %>><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
+  <li id="allDocFilter" role="presentation" <%= selected_document_filter if @initial_document_filter == "all_documents" %>><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
 </ul>
 <br/>
 
@@ -26,14 +26,15 @@
 
     <br/>
 
-    <div style="float: left">
+
+    <div id="movingButtons" style="float: left">
       <%= f.submit "Revert to draft", class: "btn btn-info", name: "submit" %>
       <%= f.submit "Send for review", class: "btn btn-info", name: "submit" %>
       <%= f.submit "Send for approval", class: "btn btn-info", name: "submit" %>
       <%= f.submit "Delete", class: "btn btn-info", name: "submit" %>
+      <br/><br/>
     </div>
-
-    <br/><br/><br/>
+    <br/>
 
     <%= render partial: 'list', locals: {documents: @documents} %>
 <% end %>
