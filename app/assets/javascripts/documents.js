@@ -34,6 +34,38 @@ $(document).ready(function () {
         $("div#user_selection").show();
     });
 
+    if ($("input#draft_state").hasClass("active")) {
+        $("input#draft_action").prop('disabled', true);
+    } else if ($("input#review_state").hasClass("active")) {
+        $("input#review_action").prop('disabled', true);
+    } else if ($("input#approval_state").hasClass("active")) {
+        $("input#approval_action").prop('disabled', true);
+    }
+
+    $("input#draft_state").click(function () {
+        $("input#draft_action").prop('disabled', true);
+        $("input#review_action").prop('disabled', false);
+        $("input#approval_action").prop('disabled', false);
+    });
+
+    $("input#review_state").click(function () {
+        $("input#draft_action").prop('disabled', false);
+        $("input#review_action").prop('disabled', true);
+        $("input#approval_action").prop('disabled', false);
+    });
+
+    $("input#approval_state").click(function () {
+        $("input#draft_action").prop('disabled', false);
+        $("input#review_action").prop('disabled', false);
+        $("input#approval_action").prop('disabled', true);
+    });
+
+    $("input#effective_state").click(function () {
+        $("input#draft_action").prop('disabled', false);
+        $("input#review_action").prop('disabled', false);
+        $("input#approval_action").prop('disabled', false);
+    });
+
     $("#document_filter_buttons li").click(function () {
         $(this).addClass("active");
         $(this).siblings("li").each(function () {
