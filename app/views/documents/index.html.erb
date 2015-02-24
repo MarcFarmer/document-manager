@@ -1,3 +1,4 @@
+<% disabled_button = 'disabled="disabled"' %>
 <% selected_document_filter = 'class=active' %>
 <% selected_status_filter = 'active btn-warning' %>
 
@@ -10,27 +11,30 @@
 <% end %>
 
 <ul class="nav nav-tabs nav-pills nav-justified" id="document_filter_buttons" style="font-size: 18pt">
-  <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
-  <li role="presentation" <%= selected_document_filter if @initial_document_filter == "your_actions" %>><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
-  <li role="presentation" <%= selected_document_filter if @initial_document_filter == "all_documents" %>><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
+  <li id="yourDocFilter" role="presentation" <%= selected_document_filter if @initial_document_filter == "your_documents" %>><%= link_to "Your documents", your_documents_path, method: :post, remote: true %></li>
+  <li id="yourActFilter" role="presentation" <%= selected_document_filter if @initial_document_filter == "your_actions" %>><%= link_to "Your actions", your_actions_path, method: :post, remote: true %></li>
+  <li id="allDocFilter" role="presentation" <%= selected_document_filter if @initial_document_filter == "all_documents" %>><%= link_to "All documents", all_documents_path, method: :post, remote: true %></li>
 </ul>
 <br/>
 
 <%= form_for :document, method: :put, remote: true do |f| %>
     <div id="status_filter_buttons" style="width:103%">
-      <%= f.submit "Draft", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 0}", name: "status" %>
-      <%= f.submit "For review", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 1}", name: "status" %>
-      <%= f.submit "For approval", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 2}", name: "status" %>
-      <%= f.submit "Approved", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 3}", name: "status" %>
+      <%= f.submit "Draft", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 0}", name: "status", id: "draft_state" %>
+      <%= f.submit "For review", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 1}", name: "status", id: "review_state" %>
+      <%= f.submit "For approval", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 2}", name: "status", id: "approval_state" %>
+      <%= f.submit "Effective", style: "width:24%", class: "btn btn-lg #{selected_status_filter if @initial_status_filter == 3}", name: "status", id: "effective_state" %>
     </div>
 
     <br/>
 
-    <div style="float: left">
-      <%= f.submit "Send for review", class: "btn btn-info", name: "submit" %>
-      <%= f.submit "Send for approval", class: "btn btn-info", name: "submit" %>
-      <%= f.submit "Delete", class: "btn btn-info", name: "submit" %>
-    </div>
+    <% if !@current_user_is_basic %>
+        <div id="movingButtons" style="float: left">
+          <%= f.submit "Revert to draft", class: "btn btn-info", name: "submit", id: "draft_action" %>
+          <%= f.submit "Send for review", class: "btn btn-info", name: "submit", id: "review_action" %>
+          <%= f.submit "Send for approval", class: "btn btn-info", name: "submit", id: "approval_action" %>
+          <%= f.submit "Delete", class: "btn btn-info", name: "submit", id: "delete_action" %>
+        </div>
+    <% end %>
 
     <br/><br/><br/>
 

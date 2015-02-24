@@ -23,6 +23,20 @@ class DocumentTypesController < ApplicationController
   # GET /document_types/1/edit
   # def edit
   # end
+  def edit
+   @document_type = DocumentType.find(params[:id])
+  end
+
+  def update
+    @document_type = DocumentType.find(params[:id])
+    @document_type.update(name: params[:document_type][:name])
+
+
+    @document_types = DocumentType.where(organisation_id: get_current_organisation.id)
+    @document_type = DocumentType.new
+    render :index
+  end
+
 
   def create
     @document_type = DocumentType.new(name: params[:create][:name], organisation_id: get_current_organisation.id)
@@ -66,4 +80,5 @@ class DocumentTypesController < ApplicationController
   # def document_type_params
   #   params.require(:document_type).permit(:name)
   # end
+
 end
