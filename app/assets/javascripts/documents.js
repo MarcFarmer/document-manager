@@ -79,4 +79,22 @@ $(document).ready(function () {
             $(this).removeClass("active btn-warning");
         });
     });
+
+    $("#yourDocFilter").click(function(){
+        $("#movingButtons").show();
+    });
+
+    $("#yourActFilter").click(function(){
+        $("#movingButtons").hide();
+    });
+
+    $("#allDocFilter").click(function(){
+        $("#movingButtons").hide();
+    });
+
+    if($("#yourDocFilter").hasClass("active")){
+        $("#movingButtons").show();
+    }else{
+        $("#movingButtons").hide();
+    }
 });
