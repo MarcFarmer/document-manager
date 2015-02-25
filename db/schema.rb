@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150219225299) do
+ActiveRecord::Schema.define(version: 20150224230916) do
 
   create_table "approvals", force: :cascade do |t|
     t.integer  "status"
@@ -20,6 +20,18 @@ ActiveRecord::Schema.define(version: 20150219225299) do
     t.datetime "created_at",  null: false
     t.datetime "updated_at",  null: false
   end
+
+  create_table "document_revisions", force: :cascade do |t|
+    t.integer  "major_version"
+    t.integer  "minor_version"
+    t.string   "content"
+    t.string   "change_control"
+    t.integer  "document_id"
+    t.datetime "created_at",     null: false
+    t.datetime "updated_at",     null: false
+  end
+
+  add_index "document_revisions", ["document_id"], name: "index_document_revisions_on_document_id"
 
   create_table "document_types", force: :cascade do |t|
     t.string   "name"
@@ -42,6 +54,9 @@ ActiveRecord::Schema.define(version: 20150219225299) do
     t.string   "doc_content_type"
     t.integer  "doc_file_size"
     t.datetime "doc_updated_at"
+    t.string   "major_version"
+    t.string   "minor_version"
+    t.boolean  "do_update"
   end
 
   create_table "organisation_users", force: :cascade do |t|

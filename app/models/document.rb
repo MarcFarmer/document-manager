@@ -6,6 +6,9 @@ class Document < ActiveRecord::Base
   has_many :readers
   belongs_to :document_type
 
+  has_many :document_revisions
+  accepts_nested_attributes_for :document_revisions
+
   # paperclip gem
   has_attached_file :doc
   do_not_validate_attachment_file_type :doc     # TODO choose valid file types
