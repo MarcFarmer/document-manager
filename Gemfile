@@ -12,6 +12,9 @@ gem 'tinymce-rails', '4.1.6'
 # For file uploading
 gem 'paperclip', '~> 4.2'
 
+# Document version comparison
+gem 'diffy', '~> 3.0.7'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 

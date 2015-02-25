@@ -150,6 +150,10 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def revision
+    @document = Document.find(params[:id])
+  end
+
   def handle_status
     if params[:status] != nil # view documents with different status
       set_status_filter status_change_to_int params[:status]
