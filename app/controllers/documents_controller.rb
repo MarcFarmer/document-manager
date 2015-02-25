@@ -103,7 +103,12 @@ class DocumentsController < ApplicationController
   def edit
     @document = Document.find(params[:id])
     if @document.user != current_user
-      redirect_to action: 'index', notice: 'You can only edit documents that you created.'
+      flash[:warning] = 'You can only edit documents that are in the Draft state.'
+      redirect_to action: 'index'
+    end
+    if @document.status != 0
+      flash[:warning] = 'You can only edit documents that are in the Draft state.'
+      redirect_to action: 'index'
     end
     setup_edit
   end
