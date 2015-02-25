@@ -5,6 +5,8 @@
     <%= link_to 'Delete', @document, method: :delete, data: { confirm: 'Are you sure you want to delete this document?' }, class:"btn btn-danger" %>
 <% end %>
 
+<hr />
+
 <!-- Separate document information by tabs -->
 <div id="content">
   <ul id="tabs" class="nav nav-tabs nav-pills nav-justified" data-tabs="tabs" style="font-size: 18pt">
@@ -12,6 +14,7 @@
     <li><a href="#document_assigned_users" data-toggle="tab">Assigned Users</a></li>
     <li><a href="#document_previous_versions" data-toggle="tab">Previous Versions</a></li>
   </ul>
+
   <div id="my-tab-content" class="tab-content">
     <div class="tab-pane active" id="document_content">
       <p>
@@ -57,6 +60,7 @@
         <% end %>
       </p>
     </div>
+
     <div class="tab-pane" id="document_assigned_users">
       <p>
       <h3>Assigned to:</h3>
@@ -150,6 +154,7 @@
       <% end %>
       </p>
     </div>
+
     <div class="tab-pane" id="document_previous_versions">
       <p>TODO</p>
     </div>
@@ -211,6 +216,7 @@
               <% end %>
             </h4>
           </div>
+
           <div class="modal-body">
             <% if @is_reviewer %>
                 I have reviewed this document.
