@@ -31,6 +31,19 @@
             <div class="field">
               <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
               <%= tinymce %>
+
+              <%= form.label :change_control %><br>
+              <% if @document.do_update == true %>
+                <%= form.text_field :change_control, :value => "" %>
+              <% else %>
+                <%= form.text_field :change_control %>
+              <% end %>
+
+              <%# <%= form.fields_for :document_revisions do |f| %>
+              <%#   <%= f.label :change_control, "Change control message:" %>
+              <%#   <%= f.text_field :change_control, :size => 130 %>
+              <%# <% end %>
+
             </div>
         <% end %>
         <br />
@@ -43,11 +56,6 @@
         <div class="field" id="document_editor_field">
           <%= form.text_area :content, :class => "tinymce", :rows => 10, :cols => 120 %>
           <%= tinymce %>
-
-          <%= form.fields_for :document_revisions do |f| %>
-            <%= f.label :change_control, "Change control message:" %>
-            <%= f.text_field :change_control, :size => 130 %>
-          <% end %>
 
         </div>
         <br />

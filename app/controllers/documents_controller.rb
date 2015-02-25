@@ -85,6 +85,7 @@ class DocumentsController < ApplicationController
     @document.major_version = "0"
     @document.minor_version = "1"
     @document.do_update = false
+    @document.change_control = "Initial creation."
 
     if @document.save
       redirect_to action: 'index', notice: 'Document was successfully created.'
@@ -93,10 +94,10 @@ class DocumentsController < ApplicationController
       render action: 'new', alert: 'Document could not be created'
     end
 
-    @document_revision = DocumentRevision.new(major_version: 0, minor_version: 1, content: @document.content,
-                                              change_control: params[:document][:document_revisions_attributes]["0"][:change_control],
-                                              document_id: @document.id)
-    @document_revision.save
+    # @document_revision = DocumentRevision.new(major_version: 0, minor_version: 1, content: @document.content,
+    #                                           change_control: params[:document][:document_revisions_attributes]["0"][:change_control],
+    #                                           document_id: @document.id)
+    # @document_revision.save
   end
 
   def edit
@@ -111,8 +112,13 @@ class DocumentsController < ApplicationController
     @document = Document.find(params[:id])
 
     if @document.do_update == true
+      @document_revision = DocumentRevision.new(major_version: @document.major_version, minor_version: @document.minor_version, content: @document.content,
+                                                change_control: @document.change_control, document_id: @document.id)
+
       @document.minor_version = (@document.minor_version.to_i + 1).to_s
       @document.do_update = false
+
+      @document_revision.save
     end
 
     if @document.update(document_params)
@@ -223,7 +229,12 @@ class DocumentsController < ApplicationController
       if approvals.empty?
         a.document.update(status: 3)    # document is now effective
 
+
         document = a.document
+        @document_revision = DocumentRevision.new(major_version: document.major_version, minor_version: document.minor_version, content: document.content,
+                                                  change_control: document.change_control, document_id: document.id)
+        @document_revision.save
+
         document.major_version = (document.major_version.to_i + 1).to_s
         document.minor_version = "0"
         document.save
@@ -324,8 +335,10 @@ class DocumentsController < ApplicationController
   end
 
   def document_params
+    # params.require(:document).permit(:assigned_to_all, :content, :doc, :document_type_id, :title, :user_id,
+    #                                  document_revisions_attributes: [:change_control])
     params.require(:document).permit(:assigned_to_all, :content, :doc, :document_type_id, :title, :user_id,
-                                     document_revisions_attributes: [:change_control])
+                                     :change_control)
   end
 
   def check_current_organisation
