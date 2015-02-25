@@ -84,7 +84,7 @@ class DocumentsController < ApplicationController
 
       #TODO: Send email for reviewer assignment
       #Notifier.assign_role(email,doc_name,creator,role)
-      Notifier.assign_role('andrewnguyen.x@gmail.com','test-doc-1','Andrew Nguyen','Reviewer')
+      Notifier.assign_role('andrewnguyen.x@gmail.com','test-doc-1','Andrew Nguyen','Reviewer').deliver_now
 
     end
 
@@ -99,7 +99,7 @@ class DocumentsController < ApplicationController
 
       #TODO: Send email for approver assignment
       #Notifier.assign_role(email,doc_name,creator,role)
-      Notifier.assign_role('andrewnguyen.x@gmail.com','test-doc-1','Andrew Nguyen','Approver')
+      Notifier.assign_role('andrewnguyen.x@gmail.com','test-doc-1','Andrew Nguyen','Approver').deliver_now
     end
 
   end
