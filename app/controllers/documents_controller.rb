@@ -84,6 +84,7 @@ class DocumentsController < ApplicationController
 
     @document.major_version = "0"
     @document.minor_version = "1"
+    @document.do_update = false
 
     if @document.save
       redirect_to action: 'index', notice: 'Document was successfully created.'
@@ -108,6 +109,11 @@ class DocumentsController < ApplicationController
 
   def update
     @document = Document.find(params[:id])
+
+    if @document.do_update == true
+      @document.minor_version = (@document.minor_version.to_i + 1).to_s
+      @document.do_update = false
+    end
 
     if @document.update(document_params)
       # also update reviewers and approvers
@@ -150,6 +156,11 @@ class DocumentsController < ApplicationController
         new_status = status_change_to_int params[:submit]
         params[:selected_documents].each do |doc_id, select_action|
           d = Document.find(doc_id.to_i)
+
+          if d.status == @@STATUS_DRAFT
+            d.do_update = true
+          end
+          
           d.status = new_status
           d.save
         end
@@ -211,6 +222,11 @@ class DocumentsController < ApplicationController
       approvals = Approval.where(document: a.document).where.not(status: 1)   # approvals where status != approved
       if approvals.empty?
         a.document.update(status: 3)    # document is now effective
+
+        document = a.document
+        document.major_version = (document.major_version.to_i + 1).to_s
+        document.minor_version = "0"
+        document.save
       end
     elsif params[:decline] != nil
       a = Approval.find params[:relation_id].to_i

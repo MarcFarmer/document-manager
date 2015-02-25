@@ -35,7 +35,11 @@
           <%= d.updated_at %>
         </td>
         <td>
-          <%= d.document_type.name %>
+          <% if d.document_type == nil %>
+            Unspecified
+          <% else %>
+            <%= d.document_type.name %>
+          <% end%>
         </td>
         <td>
           <%= d.major_version %>.<%= d.minor_version %>

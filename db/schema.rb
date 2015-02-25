@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150224132437) do
+ActiveRecord::Schema.define(version: 20150224230916) do
 
   create_table "approvals", force: :cascade do |t|
     t.integer  "status"
@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 20150224132437) do
     t.datetime "doc_updated_at"
     t.string   "major_version"
     t.string   "minor_version"
+    t.boolean  "do_update"
   end
 
   create_table "organisation_users", force: :cascade do |t|
