@@ -1,9 +1,14 @@
-<%= render partial: 'revision_heading', locals: {document: @document} %>
+<%= render partial: 'revision_heading', locals: {document: @document, revision: @revision} %>
 
-<% if @document.content.blank? %>
-    todo
-<% else %>
+<hr />
+
+<p>
+  <b>Document content: </b>
+  <% if @document.content.blank? %>
+      <%= link_to "Download document", @revision.doc.url(:original, false) %> (current version, uploaded revision not implemented)
+  <% else %>
     <div class="well">
-      <%= @document.content.html_safe %>
+      <%= @revision.content.html_safe %>
     </div>
-<% end %>
+  <% end %>
+</p>

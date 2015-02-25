@@ -152,6 +152,12 @@ class DocumentsController < ApplicationController
 
   def revision
     @document = Document.find(params[:id])
+    @revision = DocumentRevision.find_by_document_id_and_major_version_and_minor_version params[:id], params[:major], params[:minor]
+    if @revision == nil
+      setup_show
+      flash[:warning] = "#{@document.title} revision #{params[:major]}.#{params[:minor]} was not found."
+      redirect_to document_path(params[:id])
+    end
   end
 
   def handle_status

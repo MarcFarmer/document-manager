@@ -34,4 +34,8 @@ module DocumentsHelper
       'Unknown'
     end
   end
+
+  def get_document_version document
+    "#{document.major_version}.#{document.minor_version}"
+  end
 end
