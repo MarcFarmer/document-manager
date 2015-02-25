@@ -38,26 +38,18 @@
         <% if @document.document_type == nil %>
             Unspecified
         <% else %>
-            <%= @document.doc %>
+            <%= @document.document_type %>
         <% end %>
       </p>
       <p>
         <b>Document content: </b>
         <% if @document.content.blank? %>
-            No document content created
+            <%= link_to "Download document", @document.doc.url(:original, false) %>
         <% else %>
           <div class="well">
             <%= @document.content.html_safe %>
           </div>
       <% end %>
-      </p>
-      <p>
-        <b>Document file: </b>
-        <% if @document.doc_file_name == nil %>
-            No document file attached
-        <% else %>
-            <%= @document.doc %>
-        <% end %>
       </p>
     </div>
 
