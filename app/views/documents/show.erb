@@ -213,3 +213,33 @@
     </div>
 
 <% end %>
+
+<br />
+
+<div id = "document_type_list">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>
+          Revision Number
+        </th>
+        <th>
+          Commit Message
+        </th>
+        <th>
+          Contents (TODO: LINK TO CONTENTS)
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% @document_revisions.each do |doc_revision| %>
+        <tr>
+          <td><%= doc_revision.major_version %>.<%= doc_revision.minor_version %></td>
+          <td><%= doc_revision.change_control %></td>
+          <td><%= doc_revision.content %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table> 
+</div>

@@ -261,6 +261,7 @@ class DocumentsController < ApplicationController
   def setup_show
     @document = Document.find(params[:id])
     @user = @document.user
+    @document_revisions = DocumentRevision.where(document_id: @document.id)
 
     @reader_users = []
 
