@@ -259,9 +259,8 @@ class DocumentsController < ApplicationController
   end
 
   def setup_new
-    current_user_id = current_user.id
-    current_org_id = get_current_organisation.id
-    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    # user can assign themself to roles. to disable this, add: .where.not(user_id: current_user.id)
+    organisation_users = OrganisationUser.where(organisation_id: get_current_organisation.id, accepted: true)
     @users = []
     organisation_users.each do |ou|
       user = ou.user
