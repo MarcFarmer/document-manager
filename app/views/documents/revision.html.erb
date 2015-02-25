@@ -1,3 +1,9 @@
 <%= render partial: 'revision_heading', locals: {document: @document} %>
 
-<%= @revision %>
+<% if @document.content.blank? %>
+    todo
+<% else %>
+    <div class="well">
+      <%= @document.content.html_safe %>
+    </div>
+<% end %>
