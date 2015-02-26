@@ -199,6 +199,7 @@ class DocumentsController < ApplicationController
 
   def revision
     @document = Document.find(params[:id])
+    @document_revisions = DocumentRevision.where(document_id: @document.id).order(id: :desc)
     @revision = DocumentRevision.find_by_document_id_and_major_version_and_minor_version params[:id], params[:major], params[:minor]
     if @revision == nil
       setup_show
@@ -318,7 +319,7 @@ class DocumentsController < ApplicationController
   def setup_show
     @document = Document.find(params[:id])
     @user = @document.user
-    @document_revisions = DocumentRevision.where(document_id: @document.id)
+    @document_revisions = DocumentRevision.where(document_id: @document.id).order(id: :desc)
 
     @reader_users = []
 

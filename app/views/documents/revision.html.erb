@@ -1,4 +1,22 @@
 <%= render partial: 'revision_heading', locals: {document: @document, revision: @revision} %>
+<br /><br />
+
+<% if !@document_revisions.empty? %>
+    <div class="dropdown">
+      <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-expanded="true">
+        Compare to another revision
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+        <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= compare_path @document.id, 0, @revision.id %>"><%= get_document_version @document %> (current)</a></li>
+        <% @document_revisions.each do |rev| %>
+            <% if rev.id != @revision.id %>
+                <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= compare_path @document.id, rev.id, @revision.id %>"><%= get_document_version rev %></a></li>
+            <% end %>
+        <% end %>
+      </ul>
+    </div>
+<% end %>
 
 <hr />
 
