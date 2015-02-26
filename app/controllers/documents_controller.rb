@@ -177,16 +177,22 @@ class DocumentsController < ApplicationController
 
     # check for revision id == 0 (current revision)
     if params[:revision1] == '0'
-      @html_diff = get_html_diff DocumentRevision.find(params[:revision2]), @document
+      @older_revision = DocumentRevision.find(params[:revision2])
+      @newer_revision = @document
     elsif params[:revision2] == '0'
-      @html_diff = get_html_diff DocumentRevision.find(params[:revision1]), @document
+      @older_revision = DocumentRevision.find(params[:revision1])
+      @newer_revision = @document
     else
       if params[:revision1].to_i < params[:revision2].to_i    # revision 1 id is smaller, it is an older revision
-        @html_diff = get_html_diff DocumentRevision.find(params[:revision1]), DocumentRevision.find(params[:revision2])
+        @older_revision = DocumentRevision.find(params[:revision1])
+        @newer_revision = DocumentRevision.find(params[:revision2])
       else
-        @html_diff = get_html_diff DocumentRevision.find(params[:revision2]), DocumentRevision.find(params[:revision1])
+        @older_revision = DocumentRevision.find(params[:revision2])
+        @newer_revision = DocumentRevision.find(params[:revision1])
       end
     end
+
+    @html_diff = get_html_diff @older_revision, @newer_revision
   end
 
   def revision
@@ -511,6 +517,6 @@ class DocumentsController < ApplicationController
 
   # older revision on the left => lines that are present in newer_rev but not older_rev are displayed as "added" lines
   def get_html_diff older_rev, newer_rev
-    Diffy::Diff.new(older_rev.content, newer_rev.content).to_s(:html)
+    Diffy::Diff.new(older_rev.content.html_safe, newer_rev.content.html_safe, :allow_empty_diff => false).to_s(:html).html_safe
   end
 end
