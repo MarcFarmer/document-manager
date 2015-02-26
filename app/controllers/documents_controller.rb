@@ -163,6 +163,7 @@ class DocumentsController < ApplicationController
       flash[:danger] = 'Document was not deleted.'
     end
     redirect_to documents_path
+  end
 
   def revision
     @document = Document.find(params[:id])
