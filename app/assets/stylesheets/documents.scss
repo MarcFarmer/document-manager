@@ -1,3 +1,17 @@
 // Place all the styles related to the documents controller here.
 // They will automatically be included in application.css.
 // You can use Sass (SCSS) here: http://sass-lang.com/
+
+li.del, li.ins, li.unchanged {
+    list-style-type:none;
+}
+
+del {
+  color: red;
+  text-decoration: none;
+}
+
+ins {
+  color: green;
+  text-decoration: none;
+}

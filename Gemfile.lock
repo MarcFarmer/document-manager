@@ -73,6 +73,7 @@ GEM
     globalid (0.3.3)
       activesupport (>= 4.1.0)
     hike (1.2.3)
+    htmlentities (4.3.3)
     i18n (0.7.0)
     jbuilder (2.2.8)
       activesupport (>= 3.0.0, < 5)
@@ -199,6 +200,7 @@ DEPENDENCIES
   coffee-script-source (= 1.8.0)
   devise (= 3.4.1)
   diffy (~> 3.0.7)
+  htmlentities (~> 4.3.3)
   jbuilder (~> 2.0)
   jquery-rails
   jquery-turbolinks (~> 2.1.0)

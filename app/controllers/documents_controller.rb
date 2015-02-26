@@ -1,4 +1,6 @@
 class DocumentsController < ApplicationController
+  require 'htmlentities'
+
   @@DF_YOUR_DOCUMENTS = 'your_documents'
   @@DF_YOUR_ACTIONS = 'your_actions'
   @@DF_ALL_DOCUMENTS = 'all_documents'
@@ -517,6 +519,9 @@ class DocumentsController < ApplicationController
 
   # older revision on the left => lines that are present in newer_rev but not older_rev are displayed as "added" lines
   def get_html_diff older_rev, newer_rev
-    Diffy::Diff.new(older_rev.content.html_safe, newer_rev.content.html_safe, :allow_empty_diff => false).to_s(:html).html_safe
+    diff_output = Diffy::Diff.new(older_rev.content, newer_rev.content, :allow_empty_diff => false).to_s(:html_simple)
+    print diff_output
+    coder = HTMLEntities.new
+    coder.decode(diff_output)
   end
 end
