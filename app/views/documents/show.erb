@@ -17,6 +17,7 @@
 
   <div id="my-tab-content" class="tab-content">
     <div class="tab-pane active" id="document_content">
+      <br />
       <p>
         <b>Created by: </b>
         <%= @user.email %>
@@ -148,7 +149,35 @@
     </div>
 
     <div class="tab-pane" id="document_previous_versions">
-      <p>TODO</p>
+      <br />
+
+      <div id = "document_type_list">
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>
+                Revision Number
+              </th>
+              <th>
+                Commit Message
+              </th>
+              <th>
+                Contents
+              </th>
+            </tr>
+          </thead>
+
+          <tbody>
+            <% @document_revisions.each do |doc_revision| %>
+              <tr>
+                <td><%= get_document_version doc_revision %></td>
+                <td><%= doc_revision.change_control %></td>
+                <td><%= link_to 'View', revision_path(doc_revision.document_id, doc_revision.major_version, doc_revision.minor_version) %></td>
+              </tr>
+            <% end %>
+          </tbody>
+        </table> 
+      </div>
     </div>
   </div>
 </div>
@@ -241,33 +270,3 @@
     </div>
 
 <% end %>
-
-<br />
-
-<div id = "document_type_list">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>
-          Revision Number
-        </th>
-        <th>
-          Commit Message
-        </th>
-        <th>
-          Contents
-        </th>
-      </tr>
-    </thead>
-
-    <tbody>
-      <% @document_revisions.each do |doc_revision| %>
-        <tr>
-          <td><%= get_document_version doc_revision %></td>
-          <td><%= doc_revision.change_control %></td>
-          <td><%= link_to 'View', revision_path(doc_revision.document_id, doc_revision.major_version, doc_revision.minor_version) %></td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table> 
-</div>
