@@ -295,6 +295,8 @@ class DocumentsController < ApplicationController
 
     @reader_users = []
 
+    commontator_thread_show(@document)
+
     readers = Reader.where(document: @document)
     readers.each do |r|
       @reader_users << {reader: r, user: r.user}

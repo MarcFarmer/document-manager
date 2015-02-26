@@ -1,4 +1,6 @@
 class Document < ActiveRecord::Base
+  acts_as_commontable
+
   belongs_to :user
   belongs_to :organisation
   has_many :approvals
