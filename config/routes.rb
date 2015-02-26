@@ -20,7 +20,6 @@ Rails.application.routes.draw do
     end
   end
 
-  get 'documents/index'
   get 'documents/dashboard'
   match 'documents', to: 'documents#handle_status', via: :put, as: :handle_status
 
@@ -39,7 +38,7 @@ Rails.application.routes.draw do
 
   root to: "organisations#index"
 
-
+  mount Rapidfire::Engine => "/rapidfire"
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

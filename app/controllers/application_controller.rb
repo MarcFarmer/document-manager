@@ -20,6 +20,14 @@ class ApplicationController < ActionController::Base
     type == @@USER_TYPE_QUALITY ? true : false
   end
 
+  #############
+
+  def can_administer?
+    current_user
+  end
+
+  #############
+
   def is_basic type
     type == @@USER_TYPE_BASIC ? true : false
   end

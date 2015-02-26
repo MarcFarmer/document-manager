@@ -68,6 +68,9 @@ group :development, :test do
   #gem for emailing
   gem 'actionmailer'
 
+  #gem for questionnaire
+  gem 'rapidfire'
+
 end
 
 group :production do
