@@ -155,6 +155,16 @@ class DocumentsController < ApplicationController
     end
   end
 
+  def destroy
+    @document = Document.find(params[:id])
+    if @document.destroy
+      flash[:success] = 'Document was successfully deleted.'
+    else
+      flash[:danger] = 'Document was not deleted.'
+    end
+    redirect_to documents_path
+  end
+
   def revision
     @document = Document.find(params[:id])
     @revision = DocumentRevision.find_by_document_id_and_major_version_and_minor_version params[:id], params[:major], params[:minor]

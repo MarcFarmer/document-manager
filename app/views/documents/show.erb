@@ -1,157 +1,184 @@
 <h1><%= @document.title %></h1>
+
 <% if @user == @document.user && @document.status == 0 %>
     <%= link_to 'Edit', edit_document_path(@document.id), class:"btn btn-warning" %>
     <%= link_to 'Delete', @document, method: :delete, data: { confirm: 'Are you sure you want to delete this document?' }, class:"btn btn-danger" %>
 <% end %>
-<p>
-  <b>Created by: </b>
-  <%= @user.email %>
-</p>
-<p>
-  <b>Created at: </b>
-  <%= @document.created_at %>
-</p>
-<p>
-  <b>Updated at: </b>
-  <%= @document.updated_at %>
-</p>
-<p>
-  <b>Status: </b>
-  <%= status_to_string @document.status %>
-</p>
-<p>
-  <b>Document type: </b>
-  <% if @document.document_type == nil %>
-    Unspecified
-  <% else %>
-    <%= @document.doc %>
-  <% end %>
-</p>
-<p>
-  <b>Document content: </b>
-  <% if @document.content.blank? %>
-      No document content created
-  <% else %>
-    <div class="well">
-      <%= @document.content.html_safe %>
-    </div>
-  <% end %>
-</p>
-<p>
-  <b>Document file: </b>
-  <% if @document.doc_file_name == nil %>
-      No document file attached
-  <% else %>
-      <%= @document.doc %>
-  <% end %>
-</p>
 
-<p>
-  <h3>Assigned to:</h3>
-  <% if @document.assigned_to_all %>
-      All users in the organisation have been assigned to read this document.
-  <% elsif @reader_users.empty? %>
-      No users selected to read this document.
-  <% else %>
-      <table class="table table-striped">
-        <thead>
-        <tr>
-          <th>
-            User
-          </th>
-        </tr>
-        </thead>
-        <tbody>
-        <% @reader_users.each do |r| %>
-            <tr>
-              <td>
-                <%= r[:user].email %>
-              </td>
-            </tr>
+<hr />
+
+<!-- Separate document information by tabs -->
+<div id="content">
+  <ul id="tabs" class="nav nav-tabs nav-pills nav-justified" data-tabs="tabs" style="font-size: 18pt">
+    <li class="active"><a href="#document_content" data-toggle="tab">Content</a></li>
+    <li><a href="#document_assigned_users" data-toggle="tab">Assigned Users</a></li>
+    <li><a href="#document_previous_versions" data-toggle="tab">Previous Versions</a></li>
+  </ul>
+
+  <div id="my-tab-content" class="tab-content">
+    <div class="tab-pane active" id="document_content">
+      <p>
+        <b>Created by: </b>
+        <%= @user.email %>
+      </p>
+      <p>
+        <b>Created at: </b>
+        <%= @document.created_at %>
+      </p>
+      <p>
+        <b>Updated at: </b>
+        <%= @document.updated_at %>
+      </p>
+      <p>
+        <b>Status: </b>
+        <%= status_to_string @document.status %>
+      </p>
+      <p>
+        <b>Document type: </b>
+        <% if @document.document_type == nil %>
+            Unspecified
+        <% else %>
+            <%= @document.document_type %>
         <% end %>
-        </tbody>
-      </table>
-  <% end %>
-</p>
-
-<p>
-  <h3>Reviewers:</h3>
-  <% if @review_users.empty? %>
-    No users selected to review this document.
-  <% else %>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th>
-          User
-        </th>
-        <th>
-          Reviewed
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @review_users.each do |r| %>
-          <tr>
-            <td>
-              <%= r[:user].email %>
-            </td>
-            <td>
-              <%= review_status_to_string r[:review].status %>
-            </td>
-          </tr>
+      </p>
+      <p>
+        <b>Document content: </b>
+        <% if @document.content.blank? %>
+            <%= link_to "Download document", @document.doc.url(:original, false) %>
+        <% else %>
+          <div class="well">
+            <%= @document.content.html_safe %>
+          </div>
       <% end %>
-      </tbody>
-    </table>
-  <% end %>
-</p>
+      </p>
+    </div>
 
-<p>
-<h3>Approvals:</h3>
-<% if @approval_users.empty? %>
-    No users selected to approve this document.
-<% else %>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th>
-          User
-        </th>
-        <th>
-          Approved
-        </th>
-      </tr>
-      </thead>
-      <tbody>
-      <% @approval_users.each do |a| %>
-          <tr>
-            <td>
-              <%= a[:user].email %>
-            </td>
-            <td>
-              <%= approval_status_to_string a[:approval].status %>
-            </td>
-          </tr>
+    <div class="tab-pane" id="document_assigned_users">
+      <p>
+      <h3>Assigned to:</h3>
+      <% if @document.assigned_to_all %>
+          All users in the organisation have been assigned to read this document.
+      <% elsif @reader_users.empty? %>
+          No users selected to read this document.
+      <% else %>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>
+                User
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @reader_users.each do |r| %>
+                <tr>
+                  <td>
+                    <%= r[:user].email %>
+                  </td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
       <% end %>
-      </tbody>
-    </table>
-<% end %>
-</p>
+      </p>
+
+      <p>
+      <h3>Reviewers:</h3>
+      <% if @review_users.empty? %>
+          No users selected to review this document.
+      <% else %>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>
+                User
+              </th>
+              <th>
+                Reviewed
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @review_users.each do |r| %>
+                <tr>
+                  <td>
+                    <%= r[:user].email %>
+                  </td>
+                  <td>
+                    <%= review_status_to_string r[:review].status %>
+                  </td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+      <% end %>
+      </p>
+
+      <p>
+      <h3>Approvals:</h3>
+      <% if @approval_users.empty? %>
+          No users selected to approve this document.
+      <% else %>
+          <table class="table table-striped">
+            <thead>
+            <tr>
+              <th>
+                User
+              </th>
+              <th>
+                Approved
+              </th>
+            </tr>
+            </thead>
+            <tbody>
+            <% @approval_users.each do |a| %>
+                <tr>
+                  <td>
+                    <%= a[:user].email %>
+                  </td>
+                  <td>
+                    <%= approval_status_to_string a[:approval].status %>
+                  </td>
+                </tr>
+            <% end %>
+            </tbody>
+          </table>
+      <% end %>
+      </p>
+    </div>
+
+    <div class="tab-pane" id="document_previous_versions">
+      <p>TODO</p>
+    </div>
+  </div>
+</div>
 
 <% if @is_reviewer || @is_approver %>
+    <hr />
+
     <%= form_tag 'save_role_response', method: :put do %>
         <%= hidden_field_tag :id, @document.id %>
         <%= hidden_field_tag :relation_id, @relation_id %>
         <!-- Button trigger modal -->
         <% if @is_reviewer %>
+            <%= @document.user.email %> has assigned you to review this document.
+            <% if @review.status == 0 %>
+                You have not yet reviewed this document.
+            <% end %>
+            <br /><br />
             <% if @review.status != 1 %>
                 <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
-                      Mark as reviewed
+                  Mark as reviewed
                 </button>
             <% else %>
                 You have already marked this document as reviewed.
             <% end %>
-        <% else %>
+        <% else # is approver %>
+            <%= @document.user.email %> has assigned you to approve this document.
+            <% if @approval.status == 0 %>
+                You have not yet approved or declined this document.
+            <% end %>
+            <br /><br />
             <% if @approval.status != 1 %>
                 <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">
                   Approve
@@ -181,6 +208,7 @@
               <% end %>
             </h4>
           </div>
+
           <div class="modal-body">
             <% if @is_reviewer %>
                 I have reviewed this document.
