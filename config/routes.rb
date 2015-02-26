@@ -39,7 +39,7 @@ Rails.application.routes.draw do
 
   root to: "organisations#index"
 
-
+  match 'documents/:id/revision/:major-:minor' => 'documents#revision', via: :get, as: 'revision'
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
