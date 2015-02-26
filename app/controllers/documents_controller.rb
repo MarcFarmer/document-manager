@@ -165,6 +165,30 @@ class DocumentsController < ApplicationController
     redirect_to documents_path
   end
 
+  def compare
+    @document = Document.find(params[:id])
+    @html_diff = ''
+
+    if params[:revision1] == params[:revision2]
+      flash[:danger] = 'You cannot compare a document revision to itself.'
+      redirect_to document_path @document.id
+      return
+    end
+
+    # check for revision id == 0 (current revision)
+    if params[:revision1] == '0'
+      @html_diff = get_html_diff DocumentRevision.find(params[:revision2]), @document
+    elsif params[:revision2] == '0'
+      @html_diff = get_html_diff DocumentRevision.find(params[:revision1]), @document
+    else
+      if params[:revision1].to_i < params[:revision2].to_i    # revision 1 id is smaller, it is an older revision
+        @html_diff = get_html_diff DocumentRevision.find(params[:revision1]), DocumentRevision.find(params[:revision2])
+      else
+        @html_diff = get_html_diff DocumentRevision.find(params[:revision2]), DocumentRevision.find(params[:revision1])
+      end
+    end
+  end
+
   def revision
     @document = Document.find(params[:id])
     @revision = DocumentRevision.find_by_document_id_and_major_version_and_minor_version params[:id], params[:major], params[:minor]
@@ -483,5 +507,10 @@ class DocumentsController < ApplicationController
       end
     end
     reader_documents
+  end
+
+  # older revision on the left => lines that are present in newer_rev but not older_rev are displayed as "added" lines
+  def get_html_diff older_rev, newer_rev
+    Diffy::Diff.new(older_rev.content, newer_rev.content).to_s(:html)
   end
 end

@@ -15,7 +15,7 @@
       </button>
       <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
         <% @document_revisions.each do |rev| %>
-            <li role="presentation"><a role="menuitem" tabindex="-1" href="#"><%= rev.id %></a></li>
+            <li role="presentation"><a role="menuitem" tabindex="-1" href="<%= compare_path @document.id, rev.id, 0 %>"><%= get_document_version rev %></a></li>
         <% end %>
       </ul>
     </div>
