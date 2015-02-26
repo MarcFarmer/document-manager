@@ -518,10 +518,9 @@ class DocumentsController < ApplicationController
   end
 
   # older revision on the left => lines that are present in newer_rev but not older_rev are displayed as "added" lines
+  # Diffy html diff encodes (escapes) HTML tags, use HTMLEntities gem to encode them back into HTML tags
   def get_html_diff older_rev, newer_rev
     diff_output = Diffy::Diff.new(older_rev.content, newer_rev.content, :allow_empty_diff => false).to_s(:html_simple)
-    print diff_output
-    coder = HTMLEntities.new
-    coder.decode(diff_output)
+    HTMLEntities.new.decode(diff_output)
   end
 end
