@@ -41,7 +41,11 @@ Rails.application.routes.draw do
 
   match 'documents/:id/revision/:major-:minor' => 'documents#revision', via: :get, as: 'revision'
 
+
   match 'documents/:id/compare/:revision1/:revision2' => 'documents#compare', via: :get, as: 'compare'
+
+  mount Commontator::Engine => '/commontator'
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,4 +1,6 @@
 class User < ActiveRecord::Base
+  acts_as_commontator
+
   has_many :organisations
   has_many :approvals
   has_many :reviews

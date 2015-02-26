@@ -4,6 +4,8 @@ gem 'devise', '3.4.1'
 
 gem 'rails4-autocomplete', '1.1.1'
 
+gem 'commontator', '4.10.3'
+
 gem 'jquery-ui-rails', '5.0.3'
 
 # Document editor
