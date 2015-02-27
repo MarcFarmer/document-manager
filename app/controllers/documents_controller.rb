@@ -42,8 +42,16 @@ class DocumentsController < ApplicationController
     @document.organisation = get_current_organisation
     @document.status = @@STATUS_DRAFT
 
-    reviewerArray = params[:document][:reviews]
-    reviewerArray.each do |blah|
+    if @document.save
+      # continue, create relations
+    else
+      setup_new
+      render action: 'new', alert: 'Document could not be created'
+      return
+    end
+
+    reviewerArray = params[:reviews]
+    reviewerArray.each do |blah, action|
       next if blah.blank?
       blah2 = Review.new
       blah2.user_id = blah.to_i
@@ -57,8 +65,8 @@ class DocumentsController < ApplicationController
 
     end
 
-    approvalArray = params[:document][:approvals]
-    approvalArray.each do |blah|
+    approvalArray = params[:approvals]
+    approvalArray.each do |blah, action|
       next if blah.blank?
       blah2 = Approval.new
       blah2.user_id = blah.to_i
@@ -72,8 +80,8 @@ class DocumentsController < ApplicationController
     end
 
     if params[:document][:assigned_to_all] != nil
-      readerIds = params[:document][:readers]
-      readerIds.each do |id|
+      readerIds = params[:readers]
+      readerIds.each do |id, action|
         next if id.blank?
         r = Reader.new
         r.user_id = id.to_i
@@ -87,12 +95,7 @@ class DocumentsController < ApplicationController
     @document.do_update = false
     @document.change_control = "Initial creation."
 
-    if @document.save
-      redirect_to action: 'index', notice: 'Document was successfully created.'
-    else
-      setup_new
-      render action: 'new', alert: 'Document could not be created'
-    end
+    redirect_to action: 'index', notice: 'Document was successfully created.'
 
     # @document_revision = DocumentRevision.new(major_version: 0, minor_version: 1, content: @document.content,
     #                                           change_control: params[:document][:document_revisions_attributes]["0"][:change_control],
@@ -128,8 +131,8 @@ class DocumentsController < ApplicationController
 
     if @document.update(document_params)
       # also update reviewers and approvers
-      reviewerArray = params[:document][:reviews]
-      reviewerArray.each do |blah|
+      reviewerArray = params[:reviews]
+      reviewerArray.each do |blah, action|
         next if blah.blank?
         blah2 = Review.new
         blah2.user_id = blah.to_i
@@ -138,8 +141,8 @@ class DocumentsController < ApplicationController
         blah2.save
       end
 
-      approvalArray = params[:document][:approvals]
-      approvalArray.each do |blah|
+      approvalArray = params[:approvals]
+      approvalArray.each do |blah, action|
         next if blah.blank?
         blah2 = Approval.new
         blah2.user_id = blah.to_i
@@ -331,9 +334,11 @@ class DocumentsController < ApplicationController
     # user can assign themself to roles. to disable this, add: .where.not(user_id: current_user.id)
     organisation_users = OrganisationUser.where(organisation_id: get_current_organisation.id, accepted: true)
     @users = []
+    @users_to_select = []
     organisation_users.each do |ou|
       user = ou.user
       @users << [user.email, user.id]
+      @users_to_select << user
     end
 
     @current_user_id = current_user.id
@@ -352,9 +357,11 @@ class DocumentsController < ApplicationController
     current_org_id = get_current_organisation.id
     organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
     @users = []
+    @users_to_select = []
     organisation_users.each do |ou|
       user = ou.user
       @users << [user.email, user.id]
+      @users_to_select << user
     end
 
     @current_user_id = current_user.id

@@ -1,0 +1,13 @@
+<div class="field">
+  <% users.each do |user| %>
+      <label>
+        <input name="[<%= params_hash %>][<%= user.id %>]" type="checkbox"
+            <% if selected_users.include?(user.id) %>
+                checked
+            <% end %>
+        />
+        <%= user.email %>
+      </label>
+      <br />
+  <% end %>
+</div>
