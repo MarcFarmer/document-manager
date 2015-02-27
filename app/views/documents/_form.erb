@@ -61,11 +61,15 @@
         <br />
     <% end %>
 
-    <div class="field">
-      <%= radio_button_tag('document[assigned_to_all]', 'true', (@edit && @document.assigned_to_all) ? true : false) %>
-      <%= label_tag(:assigned_to_all_true, "I want all users to read this document") %>
-      <%= radio_button_tag('document[assigned_to_all]', 'false', (@edit && !@document.assigned_to_all) ? true : false) %>
-      <%= label_tag(:assigned_to_all_false, "I want to choose specific users who will read this document") %>
+    <div class="btn-group field">
+      <label class="btn btn-warning btn-lg">
+        <%= radio_button_tag('document[assigned_to_all]', 'true', (@edit && @document.assigned_to_all) ? true : false) %>
+        This document is visible to all users.
+      </label>
+      <label class="btn btn-warning btn-lg">
+        <%= radio_button_tag('document[assigned_to_all]', 'false', (@edit && !@document.assigned_to_all) ? true : false) %>
+        This document is visible to specific users.
+      </label>
     </div>
 
     <div class="field" id="user_selection">
