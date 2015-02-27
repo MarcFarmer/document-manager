@@ -21,6 +21,15 @@ class Document < ActiveRecord::Base
   validates :status, presence: true
   validate :content_xor_doc
 
+  #tags
+
+  has_many :organisation_tags
+  has_many :document_tags , :through => :organisation_tags
+
+
+
+
+
   private
 
   def content_xor_doc

@@ -1,0 +1,12 @@
+<h1>Document Tags</h1>
+<br>
+
+
+<%= form_for :create, method: :put, remote: true do |f| %>
+    <%= f.label :name %><strong>:</strong>
+    <%= f.text_field :name %>
+    <%= f.submit "Add", class: "btn btn-medium", name: "add" %>
+<% end %>
+
+
+<%= render partial: 'document_tags', locals: {document_tags: @document_tags} %>

@@ -27,6 +27,9 @@ Rails.application.routes.draw do
   resources :document_types
   match '/document_types', to: 'document_types#create', via: :put, as: :create
 
+  resources :document_tags
+  match '/document_tags', to: 'document_tags#create', via: :put, as: :document_tags_create
+
   match 'organisations/save_current_organisation', to: 'organisations#save_current_organisation', via: :post
   match "organisations/accept_organisation_invitation", to: 'organisations#accept_organisation_invitation', via: :post
 

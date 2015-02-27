@@ -77,6 +77,11 @@
       <%= form.select(:document_type_id, document_types, {:multiple => true, :size => 20}) %>
     </div>
 
+    <div class="field">
+      <h2>Select document tags for the document</h2>
+      <%= form.select(:document_tags, document_tags, {prompt: 'Select any tags'}, { :multiple => true, :size => 20 } ) %>
+    </div>
+
     <br />
 
     <div class="actions">

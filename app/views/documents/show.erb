@@ -47,6 +47,19 @@
 </p>
 
 <p>
+<h3>Tags:</h3>
+<% if @document_tags.empty? %>
+    No tags assigned to this document.
+<% else %>
+      <% @document_tags.each do |a| %>
+              <%= a %>,
+      <% end %>
+<% end %>
+</p>
+
+
+
+<p>
   <h3>Assigned to:</h3>
   <% if @document.assigned_to_all %>
       All users in the organisation have been assigned to read this document.

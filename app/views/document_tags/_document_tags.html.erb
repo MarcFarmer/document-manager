@@ -1,0 +1,27 @@
+<div id = "document_type_list">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>
+          Tag Name
+        </th>
+        <th>
+          Edit
+        </th>
+        <th>
+          Delete
+        </th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <% document_tags.each do |tag| %>
+        <tr>
+          <td><%= tag.name %></td>
+          <td><%= link_to 'Edit', edit_document_tag_path(tag.id) ,class:"btn btn-sm btn-danger" %></td>
+          <td><%= link_to 'Destroy', tag, method: :delete, data: { confirm: 'Are you sure?' },class:"btn btn-sm btn-danger" %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table> 
+</div>

@@ -51,6 +51,18 @@ class DocumentsController < ApplicationController
       blah2.status = 0
       blah2.save
 
+      print("asghalsrigharuiovhnszavnhuasioruhvfnvn----------------=================================================------------=")
+    tagArray = params[:document][:document_tags]
+      tagArray.each do |blah|
+        next if blah.blank?
+        blah2 = OrganisationTag.new
+        blah2.document = @document
+        blah2.document_tag_id = blah.to_i
+        blah2.save
+      end
+
+
+
       #TODO: Send email for reviewer assignment
       #Notifier.assign_role(email,doc_name,creator,role)
       Notifier.assign_role('andrewnguyen.x@gmail.com','test-doc-1','Andrew Nguyen','Reviewer')
@@ -272,6 +284,16 @@ class DocumentsController < ApplicationController
       @approval_users << {approval: a, user: a.user}
     end
 
+
+    @document_tags = []
+
+    tags = OrganisationTag.where(document_id: @document.id)
+    tags.each do |a|
+      tag = a.document_tag
+      @document_tags << tag.name
+    end
+
+
     @review = Review.find_by_user_id_and_document_id current_user.id, @document.id
     @approval = Approval.find_by_user_id_and_document_id current_user.id, @document.id
     if @document.status == @@STATUS_FOR_REVIEW && @review != nil
@@ -290,6 +312,12 @@ class DocumentsController < ApplicationController
     organisation_users.each do |ou|
       user = ou.user
       @users << [user.email, user.id]
+    end
+
+    organisation_tags = DocumentTag.where(organisation_id: get_current_organisation.id)
+    @document_tags = []
+    organisation_tags.each do |ot|
+      @document_tags << [ot.name, ot.id]
     end
 
     @current_user_id = current_user.id
