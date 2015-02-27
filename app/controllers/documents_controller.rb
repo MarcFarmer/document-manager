@@ -184,10 +184,12 @@ class DocumentsController < ApplicationController
         Approval.create(user_id: id, document: @document, status: 0)
       end
 
-      redirect_to action: 'show', notice: 'Document was successfully updated.'
+      flash[:success] = 'Document was successfully updated.'
+      redirect_to action: 'show'
     else
       setup_edit
-      render action: 'edit', alert: 'Document could not be updated.'
+      flash[:danger] = 'Document could not be updated.'
+      render action: 'edit'
     end
   end
 
@@ -460,7 +462,8 @@ class DocumentsController < ApplicationController
 
   def check_current_organisation
     if get_current_organisation == nil
-      redirect_to root_path, notice: "You must select an organisation before viewing documents."
+      flash[:warning] = "You must select an organisation before viewing documents."
+      redirect_to root_path
     end
   end
 
