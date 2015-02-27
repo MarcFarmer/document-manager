@@ -139,13 +139,9 @@ class DocumentsController < ApplicationController
       current_reviewer_ids = current_reviews.collect {|r| r.user.id}
       if params[:reviews] != nil
         reviewerArray = params[:reviews].keys.collect {|p| p.to_i}
-        print "-----------------------------revArray\n"
-        print reviewerArray
-        print "-----------------------------\n"
       else
         reviewerArray = []
       end
-
 
       # check for any id that exists in current relations, but not in selection. Remove relation with this id
       (current_reviewer_ids - reviewerArray).each do |id|
@@ -157,16 +153,23 @@ class DocumentsController < ApplicationController
         Review.create(user_id: id, document: @document, status: 0)
       end
 
-      if params[:approvals] != nil
-        approvalArray = params[:approvals]
-        approvalArray.each do |blah, action|
-          next if blah.blank?
-          blah2 = Approval.new
-          blah2.user_id = blah.to_i
-          blah2.document = @document
-          blah2.status = 0
-          blah2.save
-        end
+
+      current_approvals = Approval.where document: @document
+      current_approver_ids = current_approvals.collect {|a| a.user.id}
+      if params[:reviews] != nil
+        approverArray = params[:approvals].keys.collect {|p| p.to_i}
+      else
+        approverArray = []
+      end
+
+      # check for any id that exists in current relations, but not in selection. Remove relation with this id
+      (current_approver_ids - approverArray).each do |id|
+        Approval.find_by_document_id_and_user_id(@document.id, id).destroy
+      end
+
+      # check for any id that exists in new relations, but not in selection. Create relation with this id
+      (approverArray - current_approver_ids).each do |id|
+        Approval.create(user_id: id, document: @document, status: 0)
       end
 
       redirect_to action: 'show', notice: 'Document was successfully updated.'
