@@ -1,0 +1,32 @@
+<div class="field">
+    <table class="table table-striped">
+        <thead>
+            <th></th>
+            <th></th>
+            <th></th>
+        </thead>
+      <tbody>
+
+      </tbody>
+      <% i = 0 %>
+      <% users.each do |user| %>
+          <% if i % 3 == 0 %>
+            <tr>
+          <% end %>
+            <td>
+              <label>
+                <input name="[<%= params_hash %>][<%= user.id %>]" type="checkbox"
+                       <% if selected_users.include?(user.id) %>
+                       checked
+                       <% end %>
+                       />
+                <%= user.email %>
+              </label>
+            </td>
+          <% if i % 3 == 2 %>
+              </tr>
+          <% end %>
+          <% i += 1 %>
+      <% end %>
+    </table>
+</div>

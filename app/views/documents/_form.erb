@@ -38,12 +38,6 @@
               <% else %>
                 <%= form.text_field :change_control %>
               <% end %>
-
-              <%# <%= form.fields_for :document_revisions do |f| %>
-              <%#   <%= f.label :change_control, "Change control message:" %>
-              <%#   <%= f.text_field :change_control, :size => 130 %>
-              <%# <% end %>
-
             </div>
         <% end %>
         <br />
@@ -62,22 +56,19 @@
     <% end %>
 
     <div class="field">
-      <%= radio_button_tag('document[assigned_to_all]', 'true') %>
-      <%= label_tag(:assigned_to_all_true, "I want all users to read this document") %>
-      <%= radio_button_tag('document[assigned_to_all]', 'false') %>
-      <%= label_tag(:assigned_to_all_false, "I want to choose specific users who will read this document") %>
-    </div>
-
-    <div class="field" id="user_selection">
-      <h2>Assign users to read the document</h2>
-      <%= form.select(:readers, @users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
-    </div>
-
-    <div class="field">
       <h2>Select users to review the document</h2>
-      <%= form.select(:reviews, users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
+      <% if @edit %>
+          <%= render partial: 'user_select', locals: {params_hash: 'reviews', selected_users: @existing_reviewer_ids, users: @users_to_select} %>
+      <% else %>
+          <%= render partial: 'user_select', locals: {params_hash: 'reviews', selected_users: [], users: @users_to_select} %>
+      <% end %>
+
       <h2>Select users to approve the document</h2>
-      <%= form.select(:approvals, users, {prompt: 'Select any amount of users'}, { :multiple => true, :size => 20 } ) %>
+      <% if @edit %>
+          <%= render partial: 'user_select', locals: {params_hash: 'approvals', selected_users: @existing_approver_ids, users: @users_to_select} %>
+      <% else %>
+          <%= render partial: 'user_select', locals: {params_hash: 'approvals', selected_users: [], users: @users_to_select} %>
+      <% end %>
     </div>
 
     <div class="field">
@@ -86,6 +77,28 @@
     </div>
 
     <br />
+
+    <div class="btn-group field">
+      <label class="btn btn-warning btn-lg">
+        <%= radio_button_tag('document[assigned_to_all]', 'true', ((@edit && @document.assigned_to_all) || @edit != true) ? true : false) %>
+        This document is visible to all users.
+      </label>
+      <label class="btn btn-warning btn-lg">
+        <%= radio_button_tag('document[assigned_to_all]', 'false', (@edit && !@document.assigned_to_all) ? true : false) %>
+        This document is visible to specific users.
+      </label>
+    </div>
+
+    <div class="field" id="user_selection">
+      <h2>Choose which users the document is visible for</h2>
+      <% if @edit %>
+          <%= render partial: 'user_select', locals: {params_hash: 'readers', selected_users: @existing_reader_ids, users: @users_to_select} %>
+      <% else %>
+          <%= render partial: 'user_select', locals: {params_hash: 'readers', selected_users: [], users: @users_to_select} %>
+      <% end %>
+    </div>
+
+    <br /><br />
 
     <div class="actions">
       <%= form.submit %>

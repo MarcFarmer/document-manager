@@ -44,65 +44,59 @@ class DocumentsController < ApplicationController
     @document.organisation = get_current_organisation
     @document.status = @@STATUS_DRAFT
 
-    reviewerArray = params[:document][:reviews]
-    reviewerArray.each do |blah|
-      next if blah.blank?
-      blah2 = Review.new
-      blah2.user_id = blah.to_i
-      blah2.document = @document
-      blah2.status = 0
-      blah2.save
-
-      #TODO: Send email for reviewer assignment
-      #Notifier.assign_role(email,doc_name,creator,role)
-      Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).email,'Reviewer')
-
-    end
-
-    approvalArray = params[:document][:approvals]
-    approvalArray.each do |blah|
-      next if blah.blank?
-      blah2 = Approval.new
-      blah2.user_id = blah.to_i
-      blah2.document = @document
-      blah2.status = 0
-      blah2.save
-
-      #TODO: Send email for approver assignment
-      #Notifier.assign_role(email,doc_name,creator,role)
-      # puts(User.find(blah2.user_id).email)
-      # puts(@document.title)
-      # puts(User.find(@document.user_id).name)
-      Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).email,'Approver')
-    end
-
-    if params[:document][:assigned_to_all] != nil
-      readerIds = params[:document][:readers]
-      readerIds.each do |id|
-        next if id.blank?
-        r = Reader.new
-        r.user_id = id.to_i
-        r.document = @document
-        r.save
-      end
-    end
-
     @document.major_version = "0"
     @document.minor_version = "1"
     @document.do_update = false
     @document.change_control = "Initial creation."
 
     if @document.save
-      redirect_to action: 'index', notice: 'Document was successfully created.'
+      # continue, create relations
     else
       setup_new
       render action: 'new', alert: 'Document could not be created'
+      return
     end
 
-    # @document_revision = DocumentRevision.new(major_version: 0, minor_version: 1, content: @document.content,
-    #                                           change_control: params[:document][:document_revisions_attributes]["0"][:change_control],
-    #                                           document_id: @document.id)
-    # @document_revision.save
+    if params[:reviews] != nil
+      reviewerArray = params[:reviews]
+      reviewerArray.each do |blah, action|
+        next if blah.blank?
+        blah2 = Review.new
+        blah2.user_id = blah.to_i
+        blah2.document = @document
+        blah2.status = 0
+        blah2.save
+        Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).email,'Reviewer')
+      end
+    end
+
+    if params[:approvals] != nil
+      approvalArray = params[:approvals]
+      approvalArray.each do |blah, action|
+        next if blah.blank?
+        blah2 = Approval.new
+        blah2.user_id = blah.to_i
+        blah2.document = @document
+        blah2.status = 0
+        blah2.save
+        Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).email,'Approver')
+      end
+    end
+
+    if params[:document][:assigned_to_all] != nil
+      if params[:readers] != nil
+        readerIds = params[:readers]
+        readerIds.each do |id, action|
+          next if id.blank?
+          r = Reader.new
+          r.user_id = id.to_i
+          r.document = @document
+          r.save
+        end
+      end
+    end
+
+    redirect_to action: 'index', notice: 'Document was successfully created.'
   end
 
   def edit
@@ -132,31 +126,70 @@ class DocumentsController < ApplicationController
     end
 
     if @document.update(document_params)
-      # also update reviewers and approvers
-      reviewerArray = params[:document][:reviews]
-      reviewerArray.each do |blah|
-        next if blah.blank?
-        blah2 = Review.new
-        blah2.user_id = blah.to_i
-        blah2.document = @document
-        blah2.status = 0
-        blah2.save
+      if @document.assigned_to_all != true
+        current_readers = Reader.where document: @document
+        current_reader_ids = current_readers.collect {|r| r.user.id}
+        if params[:reviews] != nil
+          readerArray = params[:readers].keys.collect {|p| p.to_i}
+        else
+          readerArray = []
+        end
+
+        # check for any id that exists in current relations, but not in selection. Remove relation with this id
+        (current_reader_ids - readerArray).each do |id|
+          Reader.find_by_document_id_and_user_id(@document.id, id).destroy
+        end
+
+        # check for any id that exists in new relations, but not in selection. Create relation with this id
+        (readerArray - current_reader_ids).each do |id|
+          Reader.create(user_id: id, document: @document)
+        end
       end
 
-      approvalArray = params[:document][:approvals]
-      approvalArray.each do |blah|
-        next if blah.blank?
-        blah2 = Approval.new
-        blah2.user_id = blah.to_i
-        blah2.document = @document
-        blah2.status = 0
-        blah2.save
+
+      current_reviews = Review.where document: @document
+      current_reviewer_ids = current_reviews.collect {|r| r.user.id}
+      if params[:reviews] != nil
+        reviewerArray = params[:reviews].keys.collect {|p| p.to_i}
+      else
+        reviewerArray = []
       end
 
-      redirect_to action: 'show', notice: 'Document was successfully updated.'
+      # check for any id that exists in current relations, but not in selection. Remove relation with this id
+      (current_reviewer_ids - reviewerArray).each do |id|
+        Review.find_by_document_id_and_user_id(@document.id, id).destroy
+      end
+
+      # check for any id that exists in new relations, but not in selection. Create relation with this id
+      (reviewerArray - current_reviewer_ids).each do |id|
+        Review.create(user_id: id, document: @document, status: 0)
+      end
+
+
+      current_approvals = Approval.where document: @document
+      current_approver_ids = current_approvals.collect {|a| a.user.id}
+      if params[:reviews] != nil
+        approverArray = params[:approvals].keys.collect {|p| p.to_i}
+      else
+        approverArray = []
+      end
+
+      # check for any id that exists in current relations, but not in selection. Remove relation with this id
+      (current_approver_ids - approverArray).each do |id|
+        Approval.find_by_document_id_and_user_id(@document.id, id).destroy
+      end
+
+      # check for any id that exists in new relations, but not in selection. Create relation with this id
+      (approverArray - current_approver_ids).each do |id|
+        Approval.create(user_id: id, document: @document, status: 0)
+      end
+
+      flash[:success] = 'Document was successfully updated.'
+      redirect_to action: 'show'
     else
       setup_edit
-      render action: 'edit', alert: 'Document could not be updated.'
+      flash[:danger] = 'Document could not be updated.'
+      render action: 'edit'
     end
   end
 
@@ -368,9 +401,11 @@ class DocumentsController < ApplicationController
     # user can assign themself to roles. to disable this, add: .where.not(user_id: current_user.id)
     organisation_users = OrganisationUser.where(organisation_id: get_current_organisation.id, accepted: true)
     @users = []
+    @users_to_select = []
     organisation_users.each do |ou|
       user = ou.user
       @users << [user.email, user.id]
+      @users_to_select << user
     end
 
     @current_user_id = current_user.id
@@ -387,11 +422,26 @@ class DocumentsController < ApplicationController
 
     current_user_id = current_user.id
     current_org_id = get_current_organisation.id
-    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true)
     @users = []
+    @users_to_select = []
+    @existing_approver_ids = []
+    @existing_reader_ids = []
+    @existing_reviewer_ids = []
+
     organisation_users.each do |ou|
       user = ou.user
       @users << [user.email, user.id]
+      @users_to_select << user
+      if Approval.exists?(document: @document, user: user)
+        @existing_approver_ids << user.id
+      end
+      if Reader.exists?(document: @document, user: user)
+        @existing_reader_ids << user.id
+      end
+      if Review.exists?(document: @document, user: user)
+        @existing_reviewer_ids << user.id
+      end
     end
 
     @current_user_id = current_user.id
@@ -412,7 +462,8 @@ class DocumentsController < ApplicationController
 
   def check_current_organisation
     if get_current_organisation == nil
-      redirect_to root_path, notice: "You must select an organisation before viewing documents."
+      flash[:warning] = "You must select an organisation before viewing documents."
+      redirect_to root_path
     end
   end
 
