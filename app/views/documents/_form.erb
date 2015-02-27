@@ -61,26 +61,6 @@
         <br />
     <% end %>
 
-    <div class="btn-group field">
-      <label class="btn btn-warning btn-lg">
-        <%= radio_button_tag('document[assigned_to_all]', 'true', (@edit && @document.assigned_to_all) ? true : false) %>
-        This document is visible to all users.
-      </label>
-      <label class="btn btn-warning btn-lg">
-        <%= radio_button_tag('document[assigned_to_all]', 'false', (@edit && !@document.assigned_to_all) ? true : false) %>
-        This document is visible to specific users.
-      </label>
-    </div>
-
-    <div class="field" id="user_selection">
-      <h2>Assign users to read the document</h2>
-      <% if @edit %>
-          <%= render partial: 'user_select', locals: {params_hash: 'readers', selected_users: @existing_reader_ids, users: @users_to_select} %>
-      <% else %>
-          <%= render partial: 'user_select', locals: {params_hash: 'readers', selected_users: [], users: @users_to_select} %>
-      <% end %>
-    </div>
-
     <div class="field">
       <h2>Select users to review the document</h2>
       <% if @edit %>
@@ -103,6 +83,28 @@
     </div>
 
     <br />
+
+    <div class="btn-group field">
+      <label class="btn btn-warning btn-lg">
+        <%= radio_button_tag('document[assigned_to_all]', 'true', (@edit && @document.assigned_to_all) ? true : false) %>
+        This document is visible to all users.
+      </label>
+      <label class="btn btn-warning btn-lg">
+        <%= radio_button_tag('document[assigned_to_all]', 'false', (@edit && !@document.assigned_to_all) ? true : false) %>
+        This document is visible to specific users.
+      </label>
+    </div>
+
+    <div class="field" id="user_selection">
+      <h2>Choose which users the document is visible for</h2>
+      <% if @edit %>
+          <%= render partial: 'user_select', locals: {params_hash: 'readers', selected_users: @existing_reader_ids, users: @users_to_select} %>
+      <% else %>
+          <%= render partial: 'user_select', locals: {params_hash: 'readers', selected_users: [], users: @users_to_select} %>
+      <% end %>
+    </div>
+
+    <br /><br />
 
     <div class="actions">
       <%= form.submit %>
