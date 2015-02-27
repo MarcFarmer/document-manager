@@ -1,4 +1,10 @@
 Rails.application.routes.draw do
+  resources :answers
+
+  resources :questions
+
+  resources :trainings
+
   resources :organisations do
     collection do
       get :invite
