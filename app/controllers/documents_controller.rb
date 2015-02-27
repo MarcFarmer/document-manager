@@ -50,43 +50,49 @@ class DocumentsController < ApplicationController
       return
     end
 
-    reviewerArray = params[:reviews]
-    reviewerArray.each do |blah, action|
-      next if blah.blank?
-      blah2 = Review.new
-      blah2.user_id = blah.to_i
-      blah2.document = @document
-      blah2.status = 0
-      blah2.save
+    if params[:reviews] != nil
+      reviewerArray = params[:reviews]
+      reviewerArray.each do |blah, action|
+        next if blah.blank?
+        blah2 = Review.new
+        blah2.user_id = blah.to_i
+        blah2.document = @document
+        blah2.status = 0
+        blah2.save
 
-      #TODO: Send email for reviewer assignment
-      #Notifier.assign_role(email,doc_name,creator,role)
-      # Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).name,'Reviewer')
+        #TODO: Send email for reviewer assignment
+        #Notifier.assign_role(email,doc_name,creator,role)
+        # Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).name,'Reviewer')
 
+      end
     end
 
-    approvalArray = params[:approvals]
-    approvalArray.each do |blah, action|
-      next if blah.blank?
-      blah2 = Approval.new
-      blah2.user_id = blah.to_i
-      blah2.document = @document
-      blah2.status = 0
-      blah2.save
+    if params[:approvals] != nil
+      approvalArray = params[:approvals]
+      approvalArray.each do |blah, action|
+        next if blah.blank?
+        blah2 = Approval.new
+        blah2.user_id = blah.to_i
+        blah2.document = @document
+        blah2.status = 0
+        blah2.save
 
-      #TODO: Send email for approver assignment
-      #Notifier.assign_role(email,doc_name,creator,role)
-      # Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).name,'Approver')
+        #TODO: Send email for approver assignment
+        #Notifier.assign_role(email,doc_name,creator,role)
+        # Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).name,'Approver')
+      end
     end
 
     if params[:document][:assigned_to_all] != nil
-      readerIds = params[:readers]
-      readerIds.each do |id, action|
-        next if id.blank?
-        r = Reader.new
-        r.user_id = id.to_i
-        r.document = @document
-        r.save
+      if params[:readers] != nil
+        readerIds = params[:readers]
+        readerIds.each do |id, action|
+          next if id.blank?
+          r = Reader.new
+          r.user_id = id.to_i
+          r.document = @document
+          r.save
+        end
       end
     end
 
@@ -96,11 +102,6 @@ class DocumentsController < ApplicationController
     @document.change_control = "Initial creation."
 
     redirect_to action: 'index', notice: 'Document was successfully created.'
-
-    # @document_revision = DocumentRevision.new(major_version: 0, minor_version: 1, content: @document.content,
-    #                                           change_control: params[:document][:document_revisions_attributes]["0"][:change_control],
-    #                                           document_id: @document.id)
-    # @document_revision.save
   end
 
   def edit
@@ -135,30 +136,37 @@ class DocumentsController < ApplicationController
       # TODO update readers
 
       current_reviews = Review.where document: @document
-      current_review_ids = current_reviews.collect {|r| r.id}
-      reviewerArray = params[:reviews].keys.collect {|p| p.to_i}
+      current_reviewer_ids = current_reviews.collect {|r| r.user.id}
+      if params[:reviews] != nil
+        reviewerArray = params[:reviews].keys.collect {|p| p.to_i}
+        print "-----------------------------revArray\n"
+        print reviewerArray
+        print "-----------------------------\n"
+      else
+        reviewerArray = []
+      end
+
 
       # check for any id that exists in current relations, but not in selection. Remove relation with this id
-      (current_review_ids - reviewerArray).each do |id|
-        print "-----------------------------\n"
-        print id
-        print "-----------------------------\n"
+      (current_reviewer_ids - reviewerArray).each do |id|
         Review.find_by_document_id_and_user_id(@document.id, id).destroy
       end
 
       # check for any id that exists in new relations, but not in selection. Create relation with this id
-      (reviewerArray - current_review_ids).each do |id|
+      (reviewerArray - current_reviewer_ids).each do |id|
         Review.create(user_id: id, document: @document, status: 0)
       end
 
-      approvalArray = params[:approvals]
-      approvalArray.each do |blah, action|
-        next if blah.blank?
-        blah2 = Approval.new
-        blah2.user_id = blah.to_i
-        blah2.document = @document
-        blah2.status = 0
-        blah2.save
+      if params[:approvals] != nil
+        approvalArray = params[:approvals]
+        approvalArray.each do |blah, action|
+          next if blah.blank?
+          blah2 = Approval.new
+          blah2.user_id = blah.to_i
+          blah2.document = @document
+          blah2.status = 0
+          blah2.save
+        end
       end
 
       redirect_to action: 'show', notice: 'Document was successfully updated.'
@@ -365,7 +373,7 @@ class DocumentsController < ApplicationController
 
     current_user_id = current_user.id
     current_org_id = get_current_organisation.id
-    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
+    organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true)
     @users = []
     @users_to_select = []
     @existing_approver_ids = []
