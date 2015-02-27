@@ -93,12 +93,8 @@ class OrganisationsController < ApplicationController
 
         Notifier.org_invite(selected_email,Organisation.find(invited_user.organisation_id).name,User.find(invited_user.inviter_id).email).deliver_now
       end
-      redirect_to :organisations, notice: "Registreed user has been invited."
+      redirect_to :organisations, notice: "Registered user has been invited."
     end
-  end
-
-  def show
-
   end
 
   def users
