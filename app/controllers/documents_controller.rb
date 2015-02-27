@@ -1,4 +1,6 @@
 class DocumentsController < ApplicationController
+  require 'htmlentities'
+
   @@DF_YOUR_DOCUMENTS = 'your_documents'
   @@DF_YOUR_ACTIONS = 'your_actions'
   @@DF_ALL_DOCUMENTS = 'all_documents'
@@ -165,8 +167,39 @@ class DocumentsController < ApplicationController
     redirect_to documents_path
   end
 
+  def compare
+    @document = Document.find(params[:id])
+    @html_diff = ''
+
+    if params[:revision1] == params[:revision2]
+      flash[:danger] = 'You cannot compare a document revision to itself.'
+      redirect_to document_path @document.id
+      return
+    end
+
+    # check for revision id == 0 (current revision)
+    if params[:revision1] == '0'
+      @older_revision = DocumentRevision.find(params[:revision2])
+      @newer_revision = @document
+    elsif params[:revision2] == '0'
+      @older_revision = DocumentRevision.find(params[:revision1])
+      @newer_revision = @document
+    else
+      if params[:revision1].to_i < params[:revision2].to_i    # revision 1 id is smaller, it is an older revision
+        @older_revision = DocumentRevision.find(params[:revision1])
+        @newer_revision = DocumentRevision.find(params[:revision2])
+      else
+        @older_revision = DocumentRevision.find(params[:revision2])
+        @newer_revision = DocumentRevision.find(params[:revision1])
+      end
+    end
+
+    @html_diff = get_html_diff @older_revision, @newer_revision
+  end
+
   def revision
     @document = Document.find(params[:id])
+    @document_revisions = DocumentRevision.where(document_id: @document.id).order(id: :desc)
     @revision = DocumentRevision.find_by_document_id_and_major_version_and_minor_version params[:id], params[:major], params[:minor]
     if @revision == nil
       setup_show
@@ -291,7 +324,7 @@ class DocumentsController < ApplicationController
   def setup_show
     @document = Document.find(params[:id])
     @user = @document.user
-    @document_revisions = DocumentRevision.where(document_id: @document.id)
+    @document_revisions = DocumentRevision.where(document_id: @document.id).order(id: :desc)
 
     @reader_users = []
 
@@ -490,5 +523,12 @@ class DocumentsController < ApplicationController
       end
     end
     reader_documents
+  end
+
+  # older revision on the left => lines that are present in newer_rev but not older_rev are displayed as "added" lines
+  # Diffy html diff encodes (escapes) HTML tags, use HTMLEntities gem to encode them back into HTML tags
+  def get_html_diff older_rev, newer_rev
+    diff_output = Diffy::Diff.new(older_rev.content, newer_rev.content, :allow_empty_diff => false).to_s(:html_simple)
+    HTMLEntities.new.decode(diff_output)
   end
 end

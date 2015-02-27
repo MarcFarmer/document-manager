@@ -1,0 +1,14 @@
+<h1><%= @document.title %> - <small>Comparing <%= get_document_version @newer_revision %> (newer) to <%= get_document_version @older_revision %> (older).</small></h1>
+<%= link_to "View current document (revision #{get_document_version @document})", document_path(@document.id.to_i) %>
+
+<hr />
+
+<p>
+  <ins>Green content</ins> is present in revision <%= get_document_version @newer_revision %> but not revision <%= get_document_version @older_revision %>.
+  <br />
+  <del>Red content</del> is present in revision <%= get_document_version @older_revision %> but not revision <%= get_document_version @newer_revision %>.
+</p>
+
+<div class="well" id="document_diff">
+  <%= @html_diff.html_safe %>
+</div>
