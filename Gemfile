@@ -17,6 +17,9 @@ gem 'paperclip', '~> 4.2'
 # Document version comparison
 gem 'diffy', '~> 3.0.7'
 
+# Unescape HTML in output of document version comparison
+gem 'htmlentities', '~> 4.3.3'
+
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.2.0'
 
