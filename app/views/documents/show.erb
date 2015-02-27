@@ -188,7 +188,7 @@
             <% @document_revisions.each do |doc_revision| %>
               <tr>
                 <td><%= get_document_version doc_revision %></td>
-                <td><%= doc_revision.change_control %></td>
+                <td><%= truncate(doc_revision.change_control, :length => 120) %></td>
                 <td><%= link_to 'View', revision_path(doc_revision.document_id, doc_revision.major_version, doc_revision.minor_version) %></td>
               </tr>
             <% end %>

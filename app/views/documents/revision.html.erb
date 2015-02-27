@@ -21,6 +21,13 @@
 <hr />
 
 <p>
+  <strong>Change Control Message:</strong><br />
+  <%= @revision.change_control %>
+</p>
+
+<br />
+
+<p>
   <b>Document content: </b>
   <% if @document.content.blank? %>
       <%= link_to "Download document", @revision.doc.url(:original, false) %> (current version, uploaded revision not implemented)
