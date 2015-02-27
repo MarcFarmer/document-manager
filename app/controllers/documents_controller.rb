@@ -1,11 +1,11 @@
 class DocumentsController < ApplicationController
-  require 'htmlentities'
+  require 'htmlentities'    # decode encoded HTML tags from diff output
 
-  @@DF_YOUR_DOCUMENTS = 'your_documents'
+  @@DF_YOUR_DOCUMENTS = 'your_documents'    # document filter values for list in index view
   @@DF_YOUR_ACTIONS = 'your_actions'
   @@DF_ALL_DOCUMENTS = 'all_documents'
 
-  @@STATUS_DRAFT = 0
+  @@STATUS_DRAFT = 0    # document status filter values for list in index view
   @@STATUS_FOR_REVIEW = 1
   @@STATUS_FOR_APPROVAL = 2
   @@STATUS_APPROVED = 3
@@ -58,8 +58,8 @@ class DocumentsController < ApplicationController
     end
 
     if params[:reviews] != nil
-      reviewerArray = params[:reviews]
-      reviewerArray.each do |blah, action|
+      new_reviewer_ids = params[:reviews]
+      new_reviewer_ids.each do |blah, action|
         next if blah.blank?
         blah2 = Review.new
         blah2.user_id = blah.to_i
@@ -71,8 +71,8 @@ class DocumentsController < ApplicationController
     end
 
     if params[:approvals] != nil
-      approvalArray = params[:approvals]
-      approvalArray.each do |blah, action|
+      new_approver_ids = params[:approvals]
+      new_approver_ids.each do |blah, action|
         next if blah.blank?
         blah2 = Approval.new
         blah2.user_id = blah.to_i
@@ -85,8 +85,8 @@ class DocumentsController < ApplicationController
 
     if params[:document][:assigned_to_all] != nil
       if params[:readers] != nil
-        readerIds = params[:readers]
-        readerIds.each do |id, action|
+        new_reader_ids = params[:readers]
+        new_reader_ids.each do |id, action|
           next if id.blank?
           r = Reader.new
           r.user_id = id.to_i
@@ -115,7 +115,7 @@ class DocumentsController < ApplicationController
   def update
     @document = Document.find(params[:id])
 
-    if @document.do_update == true
+    if @document.do_update == true    # first edit since document was reverted to the draft stage
       @document_revision = DocumentRevision.new(major_version: @document.major_version, minor_version: @document.minor_version, content: @document.content,
                                                 change_control: @document.change_control, document_id: @document.id)
 
@@ -130,18 +130,18 @@ class DocumentsController < ApplicationController
         current_readers = Reader.where document: @document
         current_reader_ids = current_readers.collect {|r| r.user.id}
         if params[:reviews] != nil
-          readerArray = params[:readers].keys.collect {|p| p.to_i}
+          new_reader_ids = params[:readers].keys.collect {|p| p.to_i}
         else
-          readerArray = []
+          new_reader_ids = []
         end
 
         # check for any id that exists in current relations, but not in selection. Remove relation with this id
-        (current_reader_ids - readerArray).each do |id|
+        (current_reader_ids - new_reader_ids).each do |id|
           Reader.find_by_document_id_and_user_id(@document.id, id).destroy
         end
 
         # check for any id that exists in new relations, but not in selection. Create relation with this id
-        (readerArray - current_reader_ids).each do |id|
+        (new_reader_ids - current_reader_ids).each do |id|
           Reader.create(user_id: id, document: @document)
         end
       end
@@ -150,18 +150,18 @@ class DocumentsController < ApplicationController
       current_reviews = Review.where document: @document
       current_reviewer_ids = current_reviews.collect {|r| r.user.id}
       if params[:reviews] != nil
-        reviewerArray = params[:reviews].keys.collect {|p| p.to_i}
+        new_reviewer_ids = params[:reviews].keys.collect {|p| p.to_i}
       else
-        reviewerArray = []
+        new_reviewer_ids = []
       end
 
       # check for any id that exists in current relations, but not in selection. Remove relation with this id
-      (current_reviewer_ids - reviewerArray).each do |id|
+      (current_reviewer_ids - new_reviewer_ids).each do |id|
         Review.find_by_document_id_and_user_id(@document.id, id).destroy
       end
 
       # check for any id that exists in new relations, but not in selection. Create relation with this id
-      (reviewerArray - current_reviewer_ids).each do |id|
+      (new_reviewer_ids - current_reviewer_ids).each do |id|
         Review.create(user_id: id, document: @document, status: 0)
       end
 
@@ -214,6 +214,7 @@ class DocumentsController < ApplicationController
     end
 
     # check for revision id == 0 (current revision)
+    # older revision has lower DocumentRevision id
     if params[:revision1] == '0'
       @older_revision = DocumentRevision.find(params[:revision2])
       @newer_revision = @document
@@ -244,6 +245,7 @@ class DocumentsController < ApplicationController
     end
   end
 
+  # handle button click in document index view to change how documents are filtered, or change document(s) status
   def handle_status
     if params[:status] != nil # view documents with different status
       set_status_filter status_change_to_int params[:status]
@@ -258,7 +260,7 @@ class DocumentsController < ApplicationController
           d = Document.find(doc_id.to_i)
 
           if d.status == @@STATUS_DRAFT
-            d.do_update = true
+            d.do_update = true    # on first edit after document is reverted to draft, update minor revision
           end
           
           d.status = new_status
@@ -273,39 +275,43 @@ class DocumentsController < ApplicationController
     end
   end
 
+  # handle button click in document index view to change how documents are filtered
   def your_documents
     set_document_filter @@DF_YOUR_DOCUMENTS
     @new_documents = get_filtered_documents
     render 'handle_status.js.erb'
   end
 
+  # handle button click in document index view to change how documents are filtered
   def your_actions
     set_document_filter @@DF_YOUR_ACTIONS
     @new_documents = get_filtered_documents
     render 'handle_status.js.erb'
   end
 
+  # handle button click in document index view to change how documents are filtered
   def all_documents
     set_document_filter @@DF_ALL_DOCUMENTS
     @new_documents = get_filtered_documents
     render 'handle_status.js.erb'
   end
 
+  # handle 'Approve/Decline/Mark as reviewed' button click in document show view
   def save_role_response
-    if params[:decline] == nil
-      # password is filtered in params log by Devise gem
+    if params[:decline] == nil    # require a digital signature to approve/mark as reviewed
+      # password is filtered in params log by Devise gem (not visible in params array)
       if params[:email] != current_user.email || !current_user.valid_password?(params[:password])   # if wrong email or password
         if params[:review] != nil
           document = Review.find(params[:relation_id].to_i).document
-          flash[:danger] = 'Incorrect email or password.'
           setup_show
-          redirect_to documents_path + "/#{document.id}"
+          flash[:danger] = 'Incorrect email or password.'
+          redirect_to document_path(document.id)
           return
         else
           document = Approval.find(params[:relation_id].to_i).document
           setup_show
           flash[:danger] = 'Incorrect email or password.'
-          redirect_to documents_path + "/#{document.id}"
+          redirect_to document_path(document.id)
           return
         end
       end
@@ -323,7 +329,7 @@ class DocumentsController < ApplicationController
       if approvals.empty?
         a.document.update(status: 3)    # document is now effective
 
-
+        # update major version, reset minor version
         document = a.document
         @document_revision = DocumentRevision.new(major_version: document.major_version, minor_version: document.minor_version, content: document.content,
                                                   change_control: document.change_control, document_id: document.id)
@@ -400,12 +406,9 @@ class DocumentsController < ApplicationController
   def setup_new
     # user can assign themself to roles. to disable this, add: .where.not(user_id: current_user.id)
     organisation_users = OrganisationUser.where(organisation_id: get_current_organisation.id, accepted: true)
-    @users = []
     @users_to_select = []
     organisation_users.each do |ou|
-      user = ou.user
-      @users << [user.email, user.id]
-      @users_to_select << user
+      @users_to_select << ou.user
     end
 
     @current_user_id = current_user.id
@@ -420,10 +423,8 @@ class DocumentsController < ApplicationController
   def setup_edit
     @edit = true
 
-    current_user_id = current_user.id
     current_org_id = get_current_organisation.id
     organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true)
-    @users = []
     @users_to_select = []
     @existing_approver_ids = []
     @existing_reader_ids = []
@@ -431,7 +432,6 @@ class DocumentsController < ApplicationController
 
     organisation_users.each do |ou|
       user = ou.user
-      @users << [user.email, user.id]
       @users_to_select << user
       if Approval.exists?(document: @document, user: user)
         @existing_approver_ids << user.id
@@ -460,6 +460,7 @@ class DocumentsController < ApplicationController
                                      :change_control)
   end
 
+  # check if user has an active organisation
   def check_current_organisation
     if get_current_organisation == nil
       flash[:warning] = "You must select an organisation before viewing documents."
@@ -497,11 +498,12 @@ class DocumentsController < ApplicationController
     session[:status_filter].to_i
   end
 
+  # get documents for list in index view
   def get_filtered_documents
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
       if get_status_filter == @@STATUS_DRAFT # draft, you have been assigned as a reviewer or approver
-        get_documents_for_review | get_documents_for_approval
+        get_draft_documents_for_review | get_draft_documents_for_approval
       elsif get_status_filter == @@STATUS_FOR_REVIEW
         get_documents_for_review
       elsif get_status_filter == @@STATUS_FOR_APPROVAL
@@ -548,6 +550,28 @@ class DocumentsController < ApplicationController
     approvals = Approval.where user_id: current_user.id
     approvals.each do |a|
       if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_FOR_APPROVAL
+        documents_for_approval << a.document
+      end
+    end
+    documents_for_approval
+  end
+
+  def get_draft_documents_for_review
+    documents_for_review = []
+    reviews = Review.where user_id: current_user.id
+    reviews.each do |r|
+      if r.document.organisation == get_current_organisation && r.document.status == @@STATUS_DRAFT
+        documents_for_review << r.document
+      end
+    end
+    documents_for_review
+  end
+
+  def get_draft_documents_for_approval
+    documents_for_approval = []
+    approvals = Approval.where user_id: current_user.id
+    approvals.each do |a|
+      if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_DRAFT
         documents_for_approval << a.document
       end
     end
