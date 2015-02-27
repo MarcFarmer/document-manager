@@ -53,7 +53,7 @@ class DocumentsController < ApplicationController
 
       #TODO: Send email for reviewer assignment
       #Notifier.assign_role(email,doc_name,creator,role)
-      # Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).name,'Reviewer')
+      Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).email,'Reviewer')
 
     end
 
@@ -68,7 +68,10 @@ class DocumentsController < ApplicationController
 
       #TODO: Send email for approver assignment
       #Notifier.assign_role(email,doc_name,creator,role)
-      # Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).name,'Approver')
+      # puts(User.find(blah2.user_id).email)
+      # puts(@document.title)
+      # puts(User.find(@document.user_id).name)
+      Notifier.assign_role(User.find(blah2.user_id).email,@document.title,User.find(@document.user_id).email,'Approver')
     end
 
     if params[:document][:assigned_to_all] != nil
@@ -266,7 +269,8 @@ class DocumentsController < ApplicationController
 
         # TODO: Send email to creator of document to notify of approval
         # Notifier.doc_status(email,doc_name,outcome);
-        # Notifier.doc_status(User.find(document.user_id).email,document.name,'Approved').deliver_now
+        # puts(User.find(document.user_id).email,document.name);
+        Notifier.doc_status(User.find(document.user_id).email,document.name,'Approved').deliver_now
 
       end
     elsif params[:decline] != nil
