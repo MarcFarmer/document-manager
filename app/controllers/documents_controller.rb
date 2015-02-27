@@ -44,6 +44,11 @@ class DocumentsController < ApplicationController
     @document.organisation = get_current_organisation
     @document.status = @@STATUS_DRAFT
 
+    @document.major_version = "0"
+    @document.minor_version = "1"
+    @document.do_update = false
+    @document.change_control = "Initial creation."
+
     if @document.save
       # continue, create relations
     else
@@ -90,11 +95,6 @@ class DocumentsController < ApplicationController
         end
       end
     end
-
-    @document.major_version = "0"
-    @document.minor_version = "1"
-    @document.do_update = false
-    @document.change_control = "Initial creation."
 
     redirect_to action: 'index', notice: 'Document was successfully created.'
   end

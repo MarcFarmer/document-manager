@@ -38,12 +38,6 @@
               <% else %>
                 <%= form.text_field :change_control %>
               <% end %>
-
-              <%# <%= form.fields_for :document_revisions do |f| %>
-              <%#   <%= f.label :change_control, "Change control message:" %>
-              <%#   <%= f.text_field :change_control, :size => 130 %>
-              <%# <% end %>
-
             </div>
         <% end %>
         <br />
@@ -86,7 +80,7 @@
 
     <div class="btn-group field">
       <label class="btn btn-warning btn-lg">
-        <%= radio_button_tag('document[assigned_to_all]', 'true', (@edit && @document.assigned_to_all) ? true : false) %>
+        <%= radio_button_tag('document[assigned_to_all]', 'true', ((@edit && @document.assigned_to_all) || @edit != true) ? true : false) %>
         This document is visible to all users.
       </label>
       <label class="btn btn-warning btn-lg">
