@@ -131,14 +131,24 @@ class DocumentsController < ApplicationController
 
     if @document.update(document_params)
       # also update reviewers and approvers
-      reviewerArray = params[:reviews]
-      reviewerArray.each do |blah, action|
-        next if blah.blank?
-        blah2 = Review.new
-        blah2.user_id = blah.to_i
-        blah2.document = @document
-        blah2.status = 0
-        blah2.save
+
+      # TODO update readers
+
+      current_reviews = Review.where document: @document
+      current_review_ids = current_reviews.collect {|r| r.id}
+      reviewerArray = params[:reviews].keys.collect {|p| p.to_i}
+
+      # check for any id that exists in current relations, but not in selection. Remove relation with this id
+      (current_review_ids - reviewerArray).each do |id|
+        print "-----------------------------\n"
+        print id
+        print "-----------------------------\n"
+        Review.find_by_document_id_and_user_id(@document.id, id).destroy
+      end
+
+      # check for any id that exists in new relations, but not in selection. Create relation with this id
+      (reviewerArray - current_review_ids).each do |id|
+        Review.create(user_id: id, document: @document, status: 0)
       end
 
       approvalArray = params[:approvals]
@@ -358,10 +368,19 @@ class DocumentsController < ApplicationController
     organisation_users = OrganisationUser.where(organisation_id: current_org_id, accepted: true).where.not(user_id: current_user_id)
     @users = []
     @users_to_select = []
+    @existing_approver_ids = []
+    @existing_reviewer_ids = []
+
     organisation_users.each do |ou|
       user = ou.user
       @users << [user.email, user.id]
       @users_to_select << user
+      if Approval.exists?(document: @document, user: user)
+        @existing_approver_ids << user.id
+      end
+      if Review.exists?(document: @document, user: user)
+        @existing_reviewer_ids << user.id
+      end
     end
 
     @current_user_id = current_user.id

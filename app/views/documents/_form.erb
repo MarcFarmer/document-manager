@@ -75,9 +75,18 @@
 
     <div class="field">
       <h2>Select users to review the document</h2>
-      <%= render partial: 'user_select', locals: {params_hash: 'reviews', selected_users: [], users: @users_to_select} %>
+      <% if @edit %>
+          <%= render partial: 'user_select', locals: {params_hash: 'reviews', selected_users: @existing_reviewer_ids, users: @users_to_select} %>
+        <% else %>
+          <%= render partial: 'user_select', locals: {params_hash: 'reviews', selected_users: [], users: @users_to_select} %>
+        <% end %>
+
       <h2>Select users to approve the document</h2>
-      <%= render partial: 'user_select', locals: {params_hash: 'approvals', selected_users: [], users: @users_to_select} %>
+      <% if @edit %>
+          <%= render partial: 'user_select', locals: {params_hash: 'approvals', selected_users: @existing_approver_ids, users: @users_to_select} %>
+      <% else %>
+          <%= render partial: 'user_select', locals: {params_hash: 'approvals', selected_users: [], users: @users_to_select} %>
+      <% end %>
     </div>
 
     <div class="field">
