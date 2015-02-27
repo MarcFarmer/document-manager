@@ -40,7 +40,7 @@
         <% if @document.document_type == nil %>
             Unspecified
         <% else %>
-            <%= @document.document_type %>
+            <%= @document.document_type.name %>
         <% end %>
       </p>
       <p>
