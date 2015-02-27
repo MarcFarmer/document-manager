@@ -131,9 +131,26 @@ class DocumentsController < ApplicationController
     end
 
     if @document.update(document_params)
-      # also update reviewers and approvers
+      if @document.assigned_to_all != true
+        current_readers = Reader.where document: @document
+        current_reader_ids = current_readers.collect {|r| r.user.id}
+        if params[:reviews] != nil
+          readerArray = params[:readers].keys.collect {|p| p.to_i}
+        else
+          readerArray = []
+        end
 
-      # TODO update readers
+        # check for any id that exists in current relations, but not in selection. Remove relation with this id
+        (current_reader_ids - readerArray).each do |id|
+          Reader.find_by_document_id_and_user_id(@document.id, id).destroy
+        end
+
+        # check for any id that exists in new relations, but not in selection. Create relation with this id
+        (readerArray - current_reader_ids).each do |id|
+          Reader.create(user_id: id, document: @document)
+        end
+      end
+
 
       current_reviews = Review.where document: @document
       current_reviewer_ids = current_reviews.collect {|r| r.user.id}
