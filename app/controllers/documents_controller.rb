@@ -397,6 +397,7 @@ class DocumentsController < ApplicationController
     @users = []
     @users_to_select = []
     @existing_approver_ids = []
+    @existing_reader_ids = []
     @existing_reviewer_ids = []
 
     organisation_users.each do |ou|
@@ -405,6 +406,9 @@ class DocumentsController < ApplicationController
       @users_to_select << user
       if Approval.exists?(document: @document, user: user)
         @existing_approver_ids << user.id
+      end
+      if Reader.exists?(document: @document, user: user)
+        @existing_reader_ids << user.id
       end
       if Review.exists?(document: @document, user: user)
         @existing_reviewer_ids << user.id
