@@ -303,15 +303,15 @@ class DocumentsController < ApplicationController
       if params[:email] != current_user.email || !current_user.valid_password?(params[:password])   # if wrong email or password
         if params[:review] != nil
           document = Review.find(params[:relation_id].to_i).document
-          flash[:danger] = 'Incorrect email or password.'
           setup_show
-          redirect_to documents_path + "/#{document.id}"
+          flash[:danger] = 'Incorrect email or password.'
+          redirect_to document_path(document.id)
           return
         else
           document = Approval.find(params[:relation_id].to_i).document
           setup_show
           flash[:danger] = 'Incorrect email or password.'
-          redirect_to documents_path + "/#{document.id}"
+          redirect_to document_path(document.id)
           return
         end
       end
@@ -503,7 +503,7 @@ class DocumentsController < ApplicationController
     # check document and status filters
     if get_document_filter == @@DF_YOUR_ACTIONS
       if get_status_filter == @@STATUS_DRAFT # draft, you have been assigned as a reviewer or approver
-        get_documents_for_review | get_documents_for_approval
+        get_draft_documents_for_review | get_draft_documents_for_approval
       elsif get_status_filter == @@STATUS_FOR_REVIEW
         get_documents_for_review
       elsif get_status_filter == @@STATUS_FOR_APPROVAL
@@ -550,6 +550,28 @@ class DocumentsController < ApplicationController
     approvals = Approval.where user_id: current_user.id
     approvals.each do |a|
       if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_FOR_APPROVAL
+        documents_for_approval << a.document
+      end
+    end
+    documents_for_approval
+  end
+
+  def get_draft_documents_for_review
+    documents_for_review = []
+    reviews = Review.where user_id: current_user.id
+    reviews.each do |r|
+      if r.document.organisation == get_current_organisation && r.document.status == @@STATUS_DRAFT
+        documents_for_review << r.document
+      end
+    end
+    documents_for_review
+  end
+
+  def get_draft_documents_for_approval
+    documents_for_approval = []
+    approvals = Approval.where user_id: current_user.id
+    approvals.each do |a|
+      if a.document.organisation == get_current_organisation && a.document.status == @@STATUS_DRAFT
         documents_for_approval << a.document
       end
     end
